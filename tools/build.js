@@ -18,7 +18,9 @@ const copy = f => {
   if (!fs.existsSync(path.join(root, f))) { console.log('skip (missing):', f); return; }
   fs.copyFileSync(path.join(root, f), path.join(dist, f));
 };
-['index.html', 'style.css', 'app.js', 'data.js', 'data.extra.js', 'data.wiki.js', 'data.albums.js'].forEach(copy);
+['index.html', 'style.css', 'app.js', 'data.js', 'data.extra.js', 'data.wiki.js', 'data.albums.js', 'fonts.css'].forEach(copy);
+fs.cpSync(path.join(root, 'fonts'), path.join(dist, 'fonts'), { recursive: true });
+
 
 // data.mb.js: keep mbid, confidence, members; drop albums
 const w = {};
@@ -40,6 +42,8 @@ fs.writeFileSync(path.join(dist, '_headers'),
   Cache-Control: public, max-age=3600
 /*.css
   Cache-Control: public, max-age=3600
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
 `);
 
 let total = 0;

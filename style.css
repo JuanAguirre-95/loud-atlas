@@ -224,3 +224,18 @@ li em, .yi em { font-size: 10px; letter-spacing: .1em; text-transform: uppercase
 .legend .k { background: #e8e2d4; transform: rotate(45deg); }
 .legend .s { border: 1.5px solid #e8e2d4aa; background: #0a0707; transform: rotate(45deg); }
 .legend .l { background: #f2b134; border-radius: 50%; width: 10px; height: 10px; }
+
+/* ---- active filter pills + clickable details ---- */
+#filterbar { position: fixed; top: 58px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center; max-width: calc(100% - 720px); z-index: 5; }
+body.hasDetail #filterbar { max-width: calc(100% - 1060px); }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 3px 5px 3px 14px; border-radius: 99px; font-size: 15px; font-weight: 600;
+  background: linear-gradient(#7a1018, #3d080c); border: 1px solid var(--accent); box-shadow: 0 0 14px #c1121f66; }
+.pill button { padding: 0 7px; border-radius: 99px; font-size: 11px; letter-spacing: 0; background: #00000066; }
+#detail .tag.click { cursor: pointer; }
+#detail .tag.click:hover { filter: brightness(1.25); box-shadow: 0 0 10px var(--c); }
+#detail .tag.ghost.click:hover { border-color: var(--accent); }
+.fbtn { margin-left: 8px; padding: 0 7px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; vertical-align: 1px; }
+.links small .person { cursor: pointer; border-bottom: 1px dotted #ffd66688; }
+.links small .person:hover { color: #fff; border-bottom-color: #fff; }
+@media (max-width: 1200px) { #filterbar, body.hasDetail #filterbar { max-width: calc(100% - 24px); top: 62px; } }

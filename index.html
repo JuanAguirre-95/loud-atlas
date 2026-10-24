@@ -6,9 +6,11 @@
 <title>Loud Atlas — Rock & Metal Timeline</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070607'/%3E%3Cpath d='M16 5l9 11-9 11-9-11z' fill='%23c1121f'/%3E%3C/svg%3E">
 <meta name="description" content="Loud Atlas: an interactive timeline of rock and metal. Bands, artists, releases, genres, influences and shared members from 1930 to today.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Cinzel:wght@600;700&family=Metal+Mania&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/barlow-condensed-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-condensed-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/cinzel-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/metal-mania-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -118,6 +120,7 @@
 </aside>
 <button id="open" hidden>Filters</button>
 
+<div id="filterbar" hidden></div>
 <div id="detail" hidden></div>
 <div id="tip" hidden></div>
 <div id="brushwrap">
@@ -136,7 +139,6 @@
 <script src="data.js"></script>
 <script src="data.extra.js"></script>
 <script src="data.mb.js" onerror="console.info('data.mb.js not found — run: node tools/mb.js enrich')"></script>
-<script src="data.wiki.js" onerror="console.info('data.wiki.js not found — run: node tools/wiki.js')"></script>
 <script src="app.js"></script>
 </body>
 </html>

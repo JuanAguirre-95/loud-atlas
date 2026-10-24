@@ -23,6 +23,7 @@ connect.
 | **Open canvas** | Drag to pan, scroll to zoom, Shift+scroll to zoom time only. Pinch works on touch screens. |
 | **Band details** | Click a band for a Wikipedia summary, an at-a-glance fact grid, key releases, influences, shared members and lineup. |
 | **Releases** | Show the curated **key releases**, or switch to **all albums** (full studio discography from MusicBrainz), and optionally add **live albums**. The marker shows the type: a solid bone diamond is a key release, a hollow diamond another studio album, an amber circle a live album. |
+| **Click-to-filter details** | In a band's details, click its genre or subgenre tag to show only that genre or subgenre. Each of "Influenced by", "Influenced" and "Shared members" has a **filter** button that shows only that lineage (roots, offspring or member-sharing bands), and clicking a musician's name shows every band they played in. Active filters appear as removable pills at the top of the map. |
 | **On this year** | A tab that lists every key release, formation and breakup in a chosen year. The year is highlighted as a column on the timeline, and a switch hides every act without a release that year. |
 | **Era filter** | Click a decade on the ruler, or use the decade chips, to filter to that era. |
 | **Time brush** | A strip along the bottom shows how many acts were active each year. Drag its window to pan, drag the edges to zoom time, or drag empty space to pick a range. "Filter to range" turns the selection into a year filter. |
@@ -63,6 +64,7 @@ index.html#era=5,6
 | `tab` | `filters` or `year` |
 | `q`, `scope` | Search text, and `all`, `name`, `album` or `member` |
 | `era` | Decade indices, comma-separated (`0` = 1930s, `9` = 2020s) |
+| `focus`, `sub` | With `band`: `focus=roots`, `offspring` or `shared`, or `sub=Bay Area` |
 | `releases`, `live` | `releases=all` shows all albums, and `live=1` adds live albums |
 | `zoom` | Zoom level when used with `band` |
 
@@ -70,8 +72,7 @@ index.html#era=5,6
 
 Open `index.html` in a browser. Nothing else is needed.
 
-The page loads three web fonts (Metal Mania, Cinzel and Barlow Condensed) from Google Fonts and falls back to system
-fonts when offline.
+Fonts are bundled in `fonts/`, so the page makes no third-party requests and works offline.
 
 ## The data
 
@@ -129,6 +130,13 @@ resume where they stopped if interrupted. A full run takes several minutes. Wiki
 MusicBrainz id, which avoids picking the wrong article for names like "Death", "Venom" or "Sleep". `tools/mb.js` and
 `tools/wiki.js` each have a small override table for the few acts that need a manual fix.
 
+## Performance
+
+`node tools/perf.js [dist | URL]` opens the page in headless Edge or Chrome and reports load time, bytes over the wire and
+per-frame draw time at overview and zoomed-in views. A few things keep the page light: bars are drawn flat when they are only
+a few pixels tall, gradients and the vignette are cached, the Wikipedia summaries and the "All albums" data load only when needed,
+and the fonts are subsetted and self-hosted.
+
 ## Build and deploy
 
 ```
@@ -156,6 +164,8 @@ tools/mb.js       MusicBrainz sync and "add a band"
 tools/wiki.js     Wikipedia summaries
 tools/albums.js   cleans MusicBrainz album lists into data.albums.js
 tools/build.js    builds dist/
+tools/perf.js     load time and frame time measurements (headless Edge/Chrome)
+fonts/, fonts.css self-hosted font subsets
 docs/             README screenshots
 ```
 
@@ -170,5 +180,5 @@ that should be on the map. For data changes, edit `data.js` (or `data.extra.js`)
 - **Summaries** in `data.wiki.js` are from [Wikipedia](https://www.wikipedia.org) and are licensed
   [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The app shows a link and attribution next to each summary.
   Wikipedia pages are located with [Wikidata](https://www.wikidata.org) (CC0).
-- **Fonts:** Metal Mania, Cinzel and Barlow Condensed from Google Fonts, under the SIL Open Font License.
+- **Fonts:** Metal Mania, Cinzel and Barlow Condensed (SIL Open Font License), self-hosted in `fonts/` as subsets. See `fonts/README.md`.
 - Band names, album titles and the music itself belong to their respective owners. This project only maps their history.
