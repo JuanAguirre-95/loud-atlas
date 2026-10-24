@@ -116,7 +116,7 @@ const filters = { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: N
                   kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false,
                   releases: 'key', live: false,
                   focus: null,      // { label, ids:Set } show only a lineage / shared-member group
-                  sub: null };      // { genre, name } show only one subgenre
+                  subOff: new Set() };   // 'genre|subgenre' keys switched off in the genre list
 const view = { x: 0, y: 0, kx: 1, ky: 1 };
 let world = { x0: 0, y0: 0, x1: 100, y1: 100 };
 let selYear = null;
@@ -128,7 +128,7 @@ let W = 0, H = 0, dpr = 1;
 function matches(b) {
   if (!filters.genres.has(b.genre) || !filters.kinds.has(b.kind)) return false;
   if (filters.focus && !filters.focus.ids.has(b.id)) return false;
-  if (filters.sub && (b.genre !== filters.sub.genre || b.sub !== filters.sub.name)) return false;
+  if (filters.subOff.size && filters.subOff.has(b.genre + '|' + b.sub)) return false;
   if (filters.country && !b.country.split('/').includes(filters.country)) return false;
   const end = b.ended ?? NOW;
   if (end < filters.from || b.formed > filters.to) return false;
@@ -962,13 +962,10 @@ function lineage(id, next) {                       // every band reachable throu
   return seen;
 }
 function filterGenre(id) {
-  filters.genres = new Set([id]); filters.sub = null;
+  filters.genres = new Set([id]); filters.subOff = new Set();
   buildGenres(); refilter(); fit();
 }
-function filterSub(genre, name) {
-  filters.genres = new Set([genre]); filters.sub = { genre, name };
-  buildGenres(); refilter(); fit();
-}
+function filterSub(genre, name) { soloSub(genre, name); }
 function focusFilter(kind) {
   const b = selected;
   if (!b) return;
@@ -978,7 +975,7 @@ function focusFilter(kind) {
   else { ids = new Set((sharedOf[b.id] || []).map(o => o.id)); label = 'Shares members with ' + b.name; }
   ids.add(b.id);
   filters.focus = { label, ids };
-  filters.genres = new Set(GENRES.map(g => g.id)); filters.sub = null;     // a lineage spans genres: do not hide any
+  filters.genres = new Set(GENRES.map(g => g.id)); filters.subOff = new Set();     // a lineage spans genres: do not hide any
   buildGenres(); refilter(); fit();
 }
 function filterMember(name) {
@@ -989,8 +986,14 @@ function filterMember(name) {
 function renderFilterBar() {
   const bar = $('filterbar'), pills = [];
   if (filters.focus) pills.push(['focus', filters.focus.label + ' · ' + filters.focus.ids.size]);
-  if (filters.genres.size === 1) pills.push(['genre', 'Genre: ' + genreById[[...filters.genres][0]].name]);
-  if (filters.sub) pills.push(['sub', 'Subgenre: ' + filters.sub.name]);
+  if (filters.genres.size === 1) {
+    const gid = [...filters.genres][0], subs = subsOf(gid), on = subs.filter(n => !filters.subOff.has(gid + '|' + n));
+    pills.push(['genre', 'Genre: ' + genreById[gid].name]);
+    if (on.length && on.length < subs.length) pills.push(['sub', on.length === 1 ? 'Subgenre: ' + on[0] : 'Subgenres: ' + on.length + ' of ' + subs.length]);
+  } else {
+    const hidden = [...filters.subOff].filter(k => filters.genres.has(k.split('|')[0])).length;
+    if (hidden) pills.push(['sub', hidden + ' subgenre' + (hidden > 1 ? 's' : '') + ' hidden']);
+  }
   if (filters.q.trim()) pills.push(['q', (filters.scope === 'member' ? 'Member: ' : 'Search: ') + filters.q.trim()]);
   bar.hidden = !pills.length;
   bar.innerHTML = pills.map(([k, t]) => `<span class="pill">${esc(t)}<button data-clear="${k}" aria-label="Remove this filter">✕</button></span>`).join('');
@@ -1000,8 +1003,8 @@ $('filterbar').addEventListener('click', e => {
   if (!c) return;
   const k = c.dataset.clear;
   if (k === 'focus') filters.focus = null;
-  if (k === 'sub') { filters.sub = null; filters.genres = new Set(GENRES.map(g => g.id)); buildGenres(); }
-  if (k === 'genre') { filters.sub = null; filters.genres = new Set(GENRES.map(g => g.id)); buildGenres(); }
+  if (k === 'sub') { filters.subOff = new Set(); buildGenres(); }
+  if (k === 'genre') { filters.subOff = new Set(); filters.genres = new Set(GENRES.map(g => g.id)); buildGenres(); }
   if (k === 'q') { filters.q = ''; $('search').value = ''; renderPeople(); }
   refilter(); fit();
 });
@@ -1056,6 +1059,7 @@ function showTab(name) {
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
   $('tab-filters').hidden = name !== 'filters';
   $('tab-year').hidden = name !== 'year';
+  $('tab-about').hidden = name !== 'about';
 }
 
 // ---------- tooltip ----------
@@ -1154,21 +1158,63 @@ $('zout').onclick = () => zoomAt(W / 2, H / 2, 1 / 1.4);
 window.addEventListener('resize', resize);
 
 // ---------- filter UI ----------
+// Subgenres of a genre, in lane order (every subgenre that has at least one act).
+function subsOf(gid) {
+  const present = [...new Set(BANDS.filter(b => b.genre === gid).map(b => b.sub))];
+  const order = SUB_ORDER[gid] || [];
+  return [...order.filter(n => present.includes(n)), ...present.filter(n => !order.includes(n))];
+}
+const expanded = new Set();                                      // genres whose subgenres are shown in the list
+const allSubsOff = gid => subsOf(gid).every(n => filters.subOff.has(gid + '|' + n));
+function toggleSub(gid, name) {
+  const key = gid + '|' + name;
+  if (!filters.genres.has(gid)) {                                // genre was off: turn it on with only this subgenre
+    filters.genres.add(gid);
+    subsOf(gid).forEach(n => filters.subOff.add(gid + '|' + n));
+    filters.subOff.delete(key);
+  } else filters.subOff.has(key) ? filters.subOff.delete(key) : filters.subOff.add(key);
+  if (allSubsOff(gid)) {                                         // nothing left: that is the same as switching the genre off
+    filters.genres.delete(gid);
+    subsOf(gid).forEach(n => filters.subOff.delete(gid + '|' + n));
+  }
+  buildGenres(); refilter();
+}
+function soloSub(gid, name) {
+  filters.genres = new Set([gid]);
+  filters.subOff = new Set(subsOf(gid).filter(n => n !== name).map(n => gid + '|' + n));
+  expanded.add(gid);
+  buildGenres(); refilter(); fit();
+}
 function buildGenres() {
   const box = $('genres'); box.innerHTML = '';
   GENRES.forEach(g => {
-    const n = BANDS.filter(b => b.genre === g.id).length;
+    const n = BANDS.filter(b => b.genre === g.id).length, subs = subsOf(g.id);
+    const off = subs.filter(x => filters.subOff.has(g.id + '|' + x)).length;
+    const on = filters.genres.has(g.id), open = expanded.has(g.id);
     const d = document.createElement('div');
-    d.className = 'chip' + (filters.genres.has(g.id) ? '' : ' off');
+    d.className = 'chip' + (!on ? ' off' : off ? ' partial' : '');
     d.style.setProperty('--c', col(g));
-    d.innerHTML = `<i></i><span>${g.name}</span><em>${n}</em>`;
-    d.title = 'Click to toggle · Alt+click to show only this genre';
+    d.innerHTML = '<i></i><span>' + g.name + '</span><em>' + n + '</em>' +
+      '<button class="car" aria-label="' + (open ? 'Hide' : 'Show') + ' subgenres of ' + g.name + '" aria-expanded="' + open + '">' + (open ? '▾' : '▸') + '</button>';
+    d.title = 'Click to show or hide · Alt+click to show only this genre · arrow to list its subgenres';
     d.onclick = e => {
-      if (e.altKey) { filters.genres = new Set([g.id]); }
+      if (e.target.closest('.car')) { open ? expanded.delete(g.id) : expanded.add(g.id); buildGenres(); return; }
+      if (e.altKey) { filters.genres = new Set([g.id]); filters.subOff = new Set(); }
       else filters.genres.has(g.id) ? filters.genres.delete(g.id) : filters.genres.add(g.id);
       buildGenres(); refilter();
     };
     box.appendChild(d);
+    if (!open) return;
+    subs.forEach(name => {
+      const key = g.id + '|' + name, cnt = BANDS.filter(b => b.genre === g.id && b.sub === name).length;
+      const sd = document.createElement('div');
+      sd.className = 'subchip' + (!on || filters.subOff.has(key) ? ' off' : '');
+      sd.style.setProperty('--c', col(g));
+      sd.innerHTML = '<i></i><span>' + name + '</span><em>' + cnt + '</em>';
+      sd.title = 'Click to show or hide · Alt+click to show only this subgenre';
+      sd.onclick = e => e.altKey ? soloSub(g.id, name) : toggleSub(g.id, name);
+      box.appendChild(sd);
+    });
   });
 }
 function refilter() { layout(); }
@@ -1217,7 +1263,7 @@ $('yearList').addEventListener('click', e => {
   const it = e.target.closest('[data-id]');
   if (it) select(bandById[it.dataset.id], +it.dataset.year || null);
 });
-$('gAll').onclick = () => { filters.genres = new Set(GENRES.map(g => g.id)); buildGenres(); refilter(); };
+$('gAll').onclick = () => { filters.genres = new Set(GENRES.map(g => g.id)); filters.subOff = new Set(); buildGenres(); refilter(); };
 $('gNone').onclick = () => { filters.genres.clear(); buildGenres(); refilter(); };
 $('from').addEventListener('input', e => { filters.from = +e.target.value || T0; refilter(); });
 $('to').addEventListener('input', e => { filters.to = +e.target.value || NOW; refilter(); });
@@ -1248,7 +1294,7 @@ $('optShared').onchange = e => { filters.shared = e.target.value; dirty = true; 
 $('optSplit').onchange = e => { filters.split = e.target.checked; layout(); fit(); };
 $('fit').onclick = () => fit();
 $('reset').onclick = () => {
-  Object.assign(filters, { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: NOW, country: '', kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false, focus: null, sub: null });
+  Object.assign(filters, { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: NOW, country: '', kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false, focus: null, subOff: new Set() });
   filters.releases = 'key'; filters.live = false; $('optReleases').value = 'key'; $('optLive').checked = false; $('optLive').disabled = true;
   $('scope').value = 'all'; $('yearOnly').checked = false; $('people').innerHTML = ''; buildEras(); selYear = null; $('yearIn').value = '';
   document.querySelectorAll('#kinds input').forEach(cb => cb.checked = true);
@@ -1268,6 +1314,13 @@ $('open').onclick = () => setPanel(true);
 const countries = [...new Set(BANDS.flatMap(b => b.country.split('/')))].sort();
 countries.forEach(c => $('country').add(new Option(c, c)));
 
+// ---------- about ----------
+(() => {
+  const releases = BANDS.reduce((n, b) => n + b.albums.length, 0);
+  const countries = new Set(BANDS.flatMap(b => b.country.split('/'))).size;
+  $('aboutStats').textContent = BANDS.length + ' bands and artists · ' + releases + ' key releases · ' + GENRES.length + ' genres · ' + countries + ' countries';
+})();
+
 // ---------- boot ----------
 resize(); if (W <= 700) setPanel(false);
 buildGenres(); buildEras(); layout(); fit(false);
@@ -1284,6 +1337,7 @@ if (document.fonts) {
   if (hp.get('era')) { hp.get('era').split(',').forEach(i => ERAS[+i] && filters.eras.add(+i)); buildEras(); }
   if (hp.get('year')) { selYear = +hp.get('year'); $('yearIn').value = selYear; }
   if (hp.get('tab')) showTab(hp.get('tab'));
+  if (hp.get('expand')) { hp.get('expand').split(',').forEach(g => expanded.add(g)); buildGenres(); }
   layout(); fit(false);
   if (hp.get('releases') === 'all') setReleases('all', hp.get('live') === '1');
   if (hp.get('band') && bandById[hp.get('band')] && visible.includes(bandById[hp.get('band')])) {

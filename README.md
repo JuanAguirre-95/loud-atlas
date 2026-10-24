@@ -28,8 +28,9 @@ connect.
 | **Era filter** | Click a decade on the ruler, or use the decade chips, to filter to that era. |
 | **Time brush** | A strip along the bottom shows how many acts were active each year. Drag its window to pan, drag the edges to zoom time, or drag empty space to pick a range. "Filter to range" turns the selection into a year filter. |
 | **Search** | Search by band name, album or **member**. Typing a musician's name lists the bands they played in. |
-| **Filters** | Genre (Alt+click a genre to show only that one), bands vs solo artists, country, year range. |
+| **Filters** | Genre, bands vs solo artists, country, year range. Each genre in the list has an **arrow** that opens its subgenres: click one to show or hide it, Alt+click to show only that one. A half-filled marker means some of a genre's subgenres are hidden. |
 | **Subgenre lanes** | Each genre lane splits into subgenre groups (for example Bay Area, Teutonic and Brazilian thrash). |
+| **About tab** | Explains the map, links to this repository and the issue tracker, and lists the data sources. |
 | **Minimap** | Click or drag to jump around the whole map. |
 
 ![On this year](docs/on-this-year.png)
@@ -65,6 +66,7 @@ index.html#era=5,6
 | `q`, `scope` | Search text, and `all`, `name`, `album` or `member` |
 | `era` | Decade indices, comma-separated (`0` = 1930s, `9` = 2020s) |
 | `focus`, `sub` | With `band`: `focus=roots`, `offspring` or `shared`, or `sub=Bay Area` |
+| `expand` | Genres to open in the list, e.g. `expand=thrash,death`. `tab=about` opens the About tab. |
 | `releases`, `live` | `releases=all` shows all albums, and `live=1` adds live albums |
 | `zoom` | Zoom level when used with `band` |
 

@@ -247,3 +247,34 @@ select:focus { outline: 1px solid var(--accent); box-shadow: 0 0 8px #c1121f88; 
 select option, select optgroup { background: #120b0c; color: var(--text); }
 select option:checked { background: #5a0d14; color: #fff; }
 #scope { width: 104px; padding: 6px 4px; }
+
+/* ---- genre list: expandable subgenres ---- */
+.chip.partial i { background: linear-gradient(135deg, var(--c) 50%, transparent 50%); box-shadow: inset 0 0 0 1.5px var(--c); }
+.chip .car { all: unset; cursor: pointer; margin-left: 2px; padding: 2px 6px; color: var(--muted); font-size: 12px; line-height: 1; border-radius: 3px; }
+.chip .car:hover, .chip .car:focus-visible { color: #fff; background: #3a1f22; }
+.subchip { display: flex; align-items: center; gap: 8px; padding: 3px 6px 3px 28px; font-size: 14px; cursor: pointer; border-radius: 2px; user-select: none; position: relative; }
+.subchip::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; border-left: 1px solid #3a1f22; }
+.subchip:hover { background: #2a1114; }
+.subchip i { width: 7px; height: 7px; background: var(--c); transform: rotate(45deg); flex: none; }
+.subchip span { flex: 1; }
+.subchip em { font-style: normal; color: var(--muted); font-size: 11px; }
+.subchip.off { opacity: .4; }
+.subchip.off i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--c); }
+@media (pointer: coarse) { .subchip { padding: 8px 6px 8px 28px; } .chip .car { padding: 8px 10px; } }
+
+/* ---- about tab ---- */
+.tabs button { letter-spacing: .06em; padding: 7px 4px; font-size: 11.5px; }
+.about { padding-top: 12px; }
+.about .lead { margin: 0 0 6px; font-size: 16px; line-height: 1.35; }
+.about a { color: #e0525c; }
+.about a:hover { color: #fff; }
+.about code { background: #050404; padding: 0 4px; border-radius: 2px; font-size: 13px; }
+.about .tips { margin: 0; padding-left: 18px; color: #cfc8ba; }
+.about .tips li { margin: 4px 0; }
+.about .tips i { color: var(--text); }
+.about a.repo { display: flex; align-items: center; gap: 12px; margin: 14px 0 10px; padding: 10px 12px; border: 1px solid var(--accent);
+  border-radius: 4px; background: linear-gradient(#3d080c, #1a0507); color: var(--text); text-decoration: none; font-weight: 600;
+  letter-spacing: .02em; box-shadow: 0 0 14px #c1121f44; }
+.about a.repo:hover { background: linear-gradient(#5a0d14, #260709); box-shadow: 0 0 18px #c1121f99; color: #fff; }
+.about a.repo small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; }
+.about a.repo svg { flex: none; }
