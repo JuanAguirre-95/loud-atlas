@@ -428,6 +428,7 @@ const RAW = [
   ["primus", "Primus", "grunge", "USA", 1984, null, "1991|Sailing the Seas of Cheese;1993|Pork Soda;1995|Tales from the Punchbowl", ["zappa", "rush", "funkadelic"]],
   ["livingcolour", "Living Colour", "industrial", "USA", 1984, null, "1988|Vivid;1990|Time's Up;1993|Stain", ["funkadelic", "hendrix", "sabbath"]],
 
+  ["dethklok", "Dethklok", "death", "USA", 2006, null, "2007|The Dethalbum;2009|Dethalbum II;2012|Dethalbum III;2013|The Doomstar Requiem", ["inflames", "atthegates", "metallica"]],
 ];
 
 const SOLO = new Set(['ozzy', 'nin', 'manson', 'burzum']);
@@ -478,7 +479,7 @@ const SUBS = {
   'Grindcore & UK Death': 'napalm repulsion carcass boltthrower',
   'American Death Metal': 'possessed death morbidangel obituary cannibal autopsy suffocation',
   'Swedish Death Metal': 'entombed dismember',
-  'Melodic Death': 'atthegates inflames darktranq amonamarth',
+  'Melodic Death': 'atthegates inflames darktranq amonamarth dethklok',
   'Technical & Blackened': 'nile behemoth krisiun',
   'First Wave': 'venom bathory celtic hellhammer sarcofago root',
   'Second Wave': 'mayhem darkthrone burzum emperor immortal gorgoroth satyricon dissection sigh mastershammer',

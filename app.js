@@ -876,6 +876,7 @@ function renderDetail() {
   const el = $('detail');
   document.body.classList.toggle('hasDetail', !!selected);
   if (!selected) { el.hidden = true; return; }
+  if (!window.WIKI) loadWiki();                              // summaries are fetched on first use, then this panel re-renders
   if (W <= 700 && !$('panel').classList.contains('closed')) setPanel(false);
   const b = selected, g = genreById[b.genre];
   const kids = children[b.id] || [], shared = sharedOf[b.id] || [];
@@ -892,7 +893,7 @@ function renderDetail() {
     <h4>Summary</h4>
     ${wiki ? `<p class="sum">${wiki.desc ? `<em>${esc(wiki.desc)}.</em> ` : ''}${esc(wiki.text)}</p>
       <div class="src">Summary from <a href="${esc(wiki.url)}" target="_blank" rel="noopener">Wikipedia</a> · CC BY-SA 4.0</div>`
-      : `<p class="sum">${esc(autoSummary(b))}</p><div class="src">Auto-generated from this map's data. Run <code>node tools/wiki.js</code> for Wikipedia summaries.</div>`}
+      : `<p class="sum">${esc(autoSummary(b))}</p><div class="src">${window.WIKI ? "Summary generated from this map's data." : 'Loading the Wikipedia summary…'}</div>`}
 
     <h4>At a glance</h4>
     <div class="facts">${facts(b).map(([l, v, sub]) => `<div><small>${l}</small><b>${esc(v)}</b>${sub ? `<em>${esc(sub)}</em>` : ''}</div>`).join('')}</div>
