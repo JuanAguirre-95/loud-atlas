@@ -1,5 +1,7 @@
 # Loud Atlas
 
+**[Live site: loud-atlas.pages.dev](https://loud-atlas.pages.dev)**
+
 **An interactive map of rock and metal history.** Pan and zoom across a timeline from the 1930s blues to today,
 and see how bands and solo artists, their key releases, genres and subgenres, influences and shared members
 connect.
