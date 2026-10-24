@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Build data.albums.js: cleaned "all albums" lists per act (studio albums, plus live albums flagged "L") for the app's
-// "All albums" mode. Entries look like "1983|Kill 'Em All" or "1993|Live Shit: Binge & Purge|L".
+// "All albums" mode. Entries look like "1983|Kill 'Em All|", "1993|Live Shit: Binge & Purge|L" or, when the exact day is known, "1986|Master of Puppets||03-03".
 //
 //   node tools/albums.js
 //
@@ -53,7 +53,7 @@ for (const b of BANDS) {
       const ok = !junk && !YEARTAIL.test(t) && a.year >= b.formed - 1 && a.year <= (b.ended ?? NOW) + 1;
       if (!keyed && !ok) { dropped++; continue; }
       const prev = list.get(n);
-      if (!prev || a.year < prev.year) list.set(n, { year: a.year, title: t, live });
+      if (!prev || a.year < prev.year) list.set(n, { year: a.year, title: t, live, date: a.date ? a.date.slice(5) : undefined });
     }
   }
   for (const [n, a] of key) {                          // curated key releases are always present and never "live"
@@ -64,7 +64,7 @@ for (const b of BANDS) {
 
   const arr = [...list.values()].sort((x, y) => x.year - y.year || x.title.localeCompare(y.title));
   kept += arr.length;
-  if (arr.length > b.albums.length) out[b.id] = arr.map(a => a.year + '|' + a.title + (a.live ? '|L' : '')).join(';');
+  if (arr.length > b.albums.length || arr.some(x => x.date)) out[b.id] = arr.map(a => a.year + '|' + a.title + (a.live || a.date ? '|' + (a.live ? 'L' : '') : '') + (a.date ? '|' + a.date : '')).join(';');
 }
 
 fs.writeFileSync(path.join(root, 'data.albums.js'),

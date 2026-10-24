@@ -9,7 +9,35 @@ const K_MIN = 0.03, K_MAX = 12;
 const GROUP_GAP = 14;
 const FB = "'Barlow Condensed', 'Arial Narrow', sans-serif";
 const FH = "'Cinzel', Georgia, serif";
-const BONE = '#e8e2d4', ASH = '#8a817a', BLOOD = '#c1121f', LIVE_COL = '#f2b134';
+let BONE = '#e8e2d4', ASH = '#8a817a';           // text colours of the active theme (set by applyTheme)
+const BLOOD = '#c1121f', LIVE_COL = '#f2b134';
+
+// Canvas palettes. The CSS has its own variables (style.css); keep the two in step.
+const THEMES = {
+  dark: {
+    bg: '#070607', laneA: '#0d0a0a', laneB: '#080707', laneEdge: '#000', groupSep: '#3a2224', eraAlt: 'rgba(255,255,255,.018)',
+    gridMajor: '#2a1a1c', gridMinor: '#161011', text: '#e8e2d4', muted: '#8a817a', head: '#d4565e',
+    barText: '#f4efe4', barTextShadow: '#000', barHi: 'rgba(255,255,255,.14)', fadeRGB: '7,6,7', hoverStroke: '#fff',
+    steel: [46, 32, 20], flatL: 38, albumKeyStroke: '#0a0707', albumOther: '#0a0707', albumOtherStroke: 'rgba(232,226,212,.6)',
+    albumTiny: 'rgba(232,226,212,.45)', albumLabelOther: 'rgba(184,174,164,.8)',
+    capBg: 'rgba(13,14,18,.9)', capText: '#ffd666', sharedRGB: '255,214,102', subCaption: '#6e5a58', pill: 'rgba(7,6,7,.88)', subLabel: '#b8aea4',
+    rulerBg: '#070607f2', eraRowA: '#14100f', eraRowB: '#0d0a0a', line: '#3a1f22', lineSoft: '#2a1517', tick: '#5a3a3c', tickMinor: '#3a2628',
+    vig: 'rgba(0,0,0,.55)', brushLine: 'rgba(232,226,212,.75)', brushWin: 'rgba(232,226,212,.12)',
+    miniFill: 'rgba(255,255,255,.08)', miniStroke: 'rgba(255,255,255,.85)', lmap: l => l,
+  },
+  light: {
+    bg: '#f1ece1', laneA: '#ebe3d2', laneB: '#f5efe3', laneEdge: '#d6c8ae', groupSep: '#c9b997', eraAlt: 'rgba(60,40,10,.035)',
+    gridMajor: '#d3c6ac', gridMinor: '#e2d7c2', text: '#1d1814', muted: '#675d54', head: '#a40d1a',
+    barText: '#1d1814', barTextShadow: 'transparent', barHi: 'rgba(255,255,255,.55)', fadeRGB: '241,236,225', hoverStroke: '#000',
+    steel: [66, 56, 47], flatL: 54, albumKeyStroke: '#fffaf0', albumOther: '#fffaf0', albumOtherStroke: 'rgba(40,30,20,.65)',
+    albumTiny: 'rgba(40,30,20,.5)', albumLabelOther: 'rgba(70,60,50,.85)',
+    capBg: 'rgba(255,252,245,.94)', capText: '#8a5a00', sharedRGB: '168,108,0', subCaption: '#8c7b66', pill: 'rgba(251,248,241,.9)', subLabel: '#5b5046',
+    rulerBg: '#f1ece1f2', eraRowA: '#e6dcc8', eraRowB: '#efe7d6', line: '#cdbfa4', lineSoft: '#ddd1ba', tick: '#b7a888', tickMinor: '#cfc2a6',
+    vig: 'rgba(70,50,20,.10)', brushLine: 'rgba(40,30,20,.7)', brushWin: 'rgba(40,30,20,.10)',
+    miniFill: 'rgba(0,0,0,.06)', miniStroke: 'rgba(0,0,0,.7)', lmap: l => Math.max(14, Math.round(l * .62)),
+  },
+};
+let T = THEMES.dark;
 
 // decades along the top of the ruler (click one to filter to it)
 const ERAS = [
@@ -87,7 +115,7 @@ function buildAll() {
     const keys = new Set(b.albums.map(a => keyNorm(a.title)));
     b.all = raw.split(';').map(x => {
       const p = x.split('|');
-      return { year: +p[0], title: p[1], live: p[2] === 'L', key: keys.has(keyNorm(p[1])) };
+      return { year: +p[0], title: p[1], live: p[2] === 'L', date: p[3] || undefined, key: keys.has(keyNorm(p[1])) };
     });
     b.albums.forEach(a => { if (!b.all.some(x => keyNorm(x.title) === keyNorm(a.title))) b.all.push(a); });
     b.all.sort((x, y) => x.year - y.year);
@@ -108,7 +136,8 @@ function rels(b) {
   return filters.live ? b.all : b.all.filter(a => a.key || !a.live);
 }
 
-const col = (g, l = 60, a = 1) => `hsla(${g.hue},${g.sat}%,${l}%,${a})`;
+const col = (g, l = 60, a = 1) => `hsla(${g.hue},${g.sat}%,${T.lmap(l)}%,${a})`;
+const colRaw = (g, l, a = 1) => `hsla(${g.hue},${g.sat}%,${l}%,${a})`;
 
 // ---------- state ----------
 const filters = { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: NOW, country: '',
@@ -191,6 +220,8 @@ function layout() {
   renderYear();
   renderFilterBar();
   $('count').textContent = `${visible.length} of ${BANDS.length} bands & artists`;
+  canvas.setAttribute('aria-label', `Interactive timeline showing ${visible.length} of ${BANDS.length} bands and artists. Press L for a text list of them.`);
+  announce(`${visible.length} of ${BANDS.length} acts shown`, 700);
   dirty = true;
 }
 
@@ -221,8 +252,9 @@ function fit(animate = true) {
 }
 
 let anim = null;
+const REDUCED = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 function goTo(t, animate = true) {
-  if (!animate) { Object.assign(view, t); dirty = true; return; }
+  if (!animate || REDUCED) { Object.assign(view, t); dirty = true; return; }
   const from = { ...view }, start = performance.now(), dur = 450;
   anim = () => {
     const p = clamp((performance.now() - start) / dur, 0, 1), e = 1 - Math.pow(1 - p, 3);
@@ -278,7 +310,7 @@ function axisStep() {
 
 function draw() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.fillStyle = '#070607';
+  ctx.fillStyle = T.bg;
   ctx.fillRect(0, 0, W, H);
 
   const focus = hovered || selected;
@@ -290,16 +322,16 @@ function draw() {
   lanes.forEach((l, i) => {
     const y0 = sy(l.y), y1 = sy(l.y + l.h);
     if (y1 < AXIS_H || y0 > H) return;
-    ctx.fillStyle = i % 2 ? '#0d0a0a' : '#080707';
+    ctx.fillStyle = i % 2 ? T.laneA : T.laneB;
     ctx.fillRect(0, y0, W, y1 - y0);
     const lg = ctx.createLinearGradient(0, 0, 220, 0);
     lg.addColorStop(0, col(l.g, 40, .16)); lg.addColorStop(1, col(l.g, 40, 0));
     ctx.fillStyle = lg; ctx.fillRect(0, y0, 220, y1 - y0);
     ctx.fillStyle = col(l.g, 50, .9);
     ctx.fillRect(0, y0, 4, y1 - y0);
-    ctx.fillStyle = '#000'; ctx.fillRect(0, y1 - 1, W, 1);
+    ctx.fillStyle = T.laneEdge; ctx.fillRect(0, y1 - 1, W, 1);
     if (filters.split && l.groups.length > 1) {
-      ctx.strokeStyle = '#3a2224'; ctx.lineWidth = 1; ctx.setLineDash([2, 5]);
+      ctx.strokeStyle = T.groupSep; ctx.lineWidth = 1; ctx.setLineDash([2, 5]);
       l.groups.slice(1).forEach(grp => {
         const y = Math.round(sy(grp.y - GROUP_GAP / 2)) + .5;
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
@@ -312,7 +344,7 @@ function draw() {
   ERAS.forEach((e, i) => {
     const x0 = sx((e.from - T0) * PX_YEAR), x1 = sx((e.to + 1 - T0) * PX_YEAR);
     if (x1 < 0 || x0 > W) return;
-    ctx.fillStyle = filters.eras.has(i) ? 'rgba(193,18,31,.10)' : i % 2 ? 'rgba(255,255,255,.018)' : 'rgba(0,0,0,0)';
+    ctx.fillStyle = filters.eras.has(i) ? 'rgba(193,18,31,.10)' : i % 2 ? T.eraAlt : 'rgba(0,0,0,0)';
     ctx.fillRect(x0, AXIS_H, x1 - x0, H - AXIS_H);
   });
   if (selYear != null) {
@@ -327,7 +359,7 @@ function draw() {
   ctx.lineWidth = 1;
   for (let yr = Math.ceil(yFrom / step) * step; yr <= yTo; yr += step) {
     const x = Math.round(sx((yr - T0) * PX_YEAR)) + .5;
-    ctx.strokeStyle = yr % 10 === 0 ? '#2a1a1c' : '#161011';
+    ctx.strokeStyle = yr % 10 === 0 ? T.gridMajor : T.gridMinor;
     ctx.beginPath(); ctx.moveTo(x, AXIS_H); ctx.lineTo(x, H); ctx.stroke();
   }
 
@@ -373,13 +405,15 @@ function draw() {
       const ay = sy(a.y + BAR_H / 2), by = sy(b.y + BAR_H / 2), my = (ay + by) / 2;
       if (Math.max(ax, bx) < 0 || Math.min(ax, bx) > W) continue;
       const dim = focus && !touches;
-      ctx.strokeStyle = `rgba(255,214,102,${dim ? .08 : touches ? .95 : .4})`;
+      ctx.strokeStyle = `rgba(${T.sharedRGB},${dim ? .08 : touches ? .95 : .4})`;
       ctx.lineWidth = touches ? 2 : 1;
       ctx.beginPath(); ctx.moveTo(ax, ay); ctx.bezierCurveTo(ax, my, bx, my, bx, by); ctx.stroke();
       if (touches) sharedLabels.push({ x: (ax + bx) / 2, y: my, t: e.who.join(', ') });
     }
     ctx.setLineDash([]);
   }
+
+  drawFocusEdges(visibleSet, sharedLabels);
 
   // bands
   const fs = clamp(14 * view.ky, 0, 22);
@@ -411,13 +445,13 @@ function draw() {
     ctx.shadowBlur = 0;
     if (filters.fade && b.ended == null) {
       const gr = ctx.createLinearGradient(x0, 0, x0 + w, 0);
-      gr.addColorStop(0, 'rgba(7,6,7,0)'); gr.addColorStop(.35, 'rgba(7,6,7,0)'); gr.addColorStop(1, 'rgba(7,6,7,.75)');
+      gr.addColorStop(0, 'rgba(' + T.fadeRGB + ',0)'); gr.addColorStop(.35, 'rgba(' + T.fadeRGB + ',0)'); gr.addColorStop(1, 'rgba(' + T.fadeRGB + ',.75)');
       ctx.fillStyle = gr; roundRect(x0, y0, w, bh, rad); ctx.fill();
     }
-    ctx.strokeStyle = isSel ? BONE : isHov ? '#fff' : col(g, 62, .85);
+    ctx.strokeStyle = isSel ? BONE : isHov ? T.hoverStroke : col(g, 62, .85);
     ctx.lineWidth = isSel ? 2 : 1;
     roundRect(x0 + .5, y0 + .5, w - 1, bh - 1, rad); ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,.14)'; ctx.fillRect(x0 + (solo ? bh / 2 : 2), y0 + 1, Math.max(0, w - (solo ? bh : 4)), 1);
+    ctx.fillStyle = T.barHi; ctx.fillRect(x0 + (solo ? bh / 2 : 2), y0 + 1, Math.max(0, w - (solo ? bh : 4)), 1);
     if (solo) { ctx.fillStyle = BONE; ctx.beginPath(); ctx.arc(x0 + bh / 2, y0 + bh / 2, Math.max(1.5, bh * .16), 0, 7); ctx.fill(); }
     }
 
@@ -425,8 +459,8 @@ function draw() {
       ctx.font = `600 ${fs}px ${FB}`;
       const tw = b.tw * fs / 14;
       const inside = w > tw + 12 + (solo ? bh * .8 : 0);
-      ctx.shadowColor = '#000'; ctx.shadowBlur = inside ? 3 : 0;
-      ctx.fillStyle = inside ? '#f4efe4' : BONE;
+      ctx.shadowColor = T.barTextShadow; ctx.shadowBlur = inside && T.barTextShadow !== 'transparent' ? 3 : 0;
+      ctx.fillStyle = inside ? T.barText : BONE;
       ctx.fillText(b.name, inside ? x0 + (solo ? bh * .85 : 7) : x0 + w + 6, y0 + bh / 2 + .5);
       ctx.shadowBlur = 0;
     }
@@ -441,21 +475,21 @@ function draw() {
         const isHA = hoverAlbum && hoverAlbum.a === a;
         const isYr = selYear != null && a.year === selYear;
         if (small && !isYr && !isHA) {                       // overview: a 2px dot per release, no paths or strokes
-          ctx.fillStyle = a.live ? LIVE_COL : a.key ? BONE : 'rgba(232,226,212,.45)';
+          ctx.fillStyle = a.live ? LIVE_COL : a.key ? BONE : T.albumTiny;
           ctx.fillRect(ax - 1, ay - 1, 2, 2);
           continue;
         }
         if (isYr) { ctx.shadowColor = BLOOD; ctx.shadowBlur = 14; }
         const rr = (a.key ? r : r * .72) * (isHA ? 1.4 : isYr ? 1.5 : 1);     // key releases are bigger than the rest
         // colour = type: key release solid bone, other studio album hollow, live album amber
-        ctx.fillStyle = isHA || isYr ? BLOOD : a.live ? LIVE_COL : a.key ? BONE : '#0a0707';
-        ctx.strokeStyle = isHA || isYr ? '#fff' : a.live ? 'rgba(20,10,0,.75)' : a.key ? '#0a0707' : 'rgba(232,226,212,.6)';
+        ctx.fillStyle = isHA || isYr ? BLOOD : a.live ? LIVE_COL : a.key ? BONE : T.albumOther;
+        ctx.strokeStyle = isHA || isYr ? T.hoverStroke : a.live ? 'rgba(20,10,0,.75)' : a.key ? T.albumKeyStroke : T.albumOtherStroke;
         ctx.lineWidth = a.key || a.live ? 1.2 : 1;
         if (a.live) { ctx.beginPath(); ctx.arc(ax, ay, rr, 0, 7); } else diamond(ax, ay, rr);   // live albums are round
         ctx.fill(); ctx.stroke();
         ctx.shadowBlur = 0;
         if ((a.key ? ppy > 90 && view.ky > .9 : ppy > 150 && view.ky > 1.1) || isYr)
-          albumLabels.push({ x: ax, y: y0 + bh + r + 3, t: a.title, key: a.key, c: isYr ? '#fff' : a.key ? col(g, 75) : 'rgba(184,174,164,.8)' });
+          albumLabels.push({ x: ax, y: y0 + bh + r + 3, t: a.title, key: a.key, c: isYr ? T.hoverStroke : a.key ? col(g, 75) : T.albumLabelOther });
       }
     }
     ctx.globalAlpha = 1;
@@ -483,14 +517,14 @@ function draw() {
   ctx.textBaseline = 'middle'; ctx.textAlign = 'center'; ctx.font = `11px ${FB}`;
   for (const l of sharedLabels) {
     const w = ctx.measureText(l.t).width;
-    ctx.fillStyle = 'rgba(13,14,18,.9)'; roundRect(l.x - w / 2 - 6, l.y - 9, w + 12, 18, 9); ctx.fill();
-    ctx.fillStyle = '#ffd666'; ctx.fillText(l.t, l.x, l.y + .5);
+    ctx.fillStyle = T.capBg; roundRect(l.x - w / 2 - 6, l.y - 9, w + 12, 18, 9); ctx.fill();
+    ctx.fillStyle = T.capText; ctx.fillText(l.t, l.x, l.y + .5);
   }
   ctx.textAlign = 'left';
 
   // subgenre captions, right-aligned at the top of each group
   if (filters.split) {
-    ctx.textAlign = 'right'; ctx.font = `italic 11px ${FB}`; ctx.fillStyle = '#6e5a58';
+    ctx.textAlign = 'right'; ctx.font = `italic 11px ${FB}`; ctx.fillStyle = T.subCaption;
     lanes.forEach(l => l.groups.forEach(grp => {
       const y = sy(grp.y);
       if (y < AXIS_H + 6 || y > H || sy(grp.y + grp.h) - y < 20) return;
@@ -516,30 +550,30 @@ function draw() {
     const tw = ctx.measureText(label).width;
     ctx.font = `500 11px ${FB}`;
     const sw = subLabel ? ctx.measureText(subLabel).width : 0;
-    ctx.fillStyle = 'rgba(7,6,7,.88)';
+    ctx.fillStyle = T.pill;
     roundRect(lx - 6, cy - 10, tw + sw + 12, 20, 10); ctx.fill();
     ctx.font = `700 11px ${FH}`;
     ctx.fillStyle = col(l.g, 65);
     ctx.fillText(label, lx, cy + .5);
-    if (subLabel) { ctx.font = `500 11px ${FB}`; ctx.fillStyle = '#b8aea4'; ctx.fillText(subLabel, lx + tw, cy + .5); }
+    if (subLabel) { ctx.font = `500 11px ${FB}`; ctx.fillStyle = T.subLabel; ctx.fillText(subLabel, lx + tw, cy + .5); }
   });
 
   // ruler: decade row on top, years below
-  ctx.fillStyle = '#070607f2';
+  ctx.fillStyle = T.rulerBg;
   ctx.fillRect(0, 0, W, AXIS_H);
   ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   ERAS.forEach((e, i) => {
     const x0 = sx((e.from - T0) * PX_YEAR), x1 = sx((e.to + 1 - T0) * PX_YEAR);
     if (x1 < 0 || x0 > W) return;
     const on = filters.eras.has(i);
-    ctx.fillStyle = on ? 'rgba(193,18,31,.55)' : i % 2 ? '#14100f' : '#0d0a0a';
+    ctx.fillStyle = on ? 'rgba(193,18,31,.55)' : i % 2 ? T.eraRowA : T.eraRowB;
     ctx.fillRect(x0, 0, x1 - x0, ERA_H);
-    ctx.fillStyle = '#3a1f22'; ctx.fillRect(Math.round(x0), 0, 1, ERA_H);
+    ctx.fillStyle = T.line; ctx.fillRect(Math.round(x0), 0, 1, ERA_H);
     const lx = Math.max(x0, 0) + 6;
     ctx.font = `700 11px ${FH}`;
     const lw = ctx.measureText(e.label).width;
     if (x1 - lx > lw + 4) {
-      ctx.fillStyle = on ? '#fff' : '#b4343c';
+      ctx.fillStyle = on ? '#fff' : T.head;
       ctx.fillText(e.label, lx, ERA_H / 2 + .5);
       if (x1 - lx > lw + 110) {
         ctx.font = `italic 12px ${FB}`; ctx.fillStyle = on ? '#f4d6d6' : ASH;
@@ -547,7 +581,7 @@ function draw() {
       }
     }
   });
-  ctx.fillStyle = '#2a1517'; ctx.fillRect(0, ERA_H, W, 1);
+  ctx.fillStyle = T.lineSoft; ctx.fillRect(0, ERA_H, W, 1);
   ctx.strokeStyle = BLOOD; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(0, AXIS_H - .5); ctx.lineTo(W, AXIS_H - .5); ctx.stroke();
   const yy = ERA_H + (AXIS_H - ERA_H) / 2 - 1;
@@ -558,7 +592,7 @@ function draw() {
   ctx.font = `600 12px ${FH}`;
   for (let yr = Math.ceil(yFrom / step) * step; yr <= yTo; yr += step) {
     const x = Math.round(sx((yr - T0) * PX_YEAR)) + .5;
-    ctx.strokeStyle = '#5a3a3c';
+    ctx.strokeStyle = T.tick;
     ctx.beginPath(); ctx.moveTo(x, AXIS_H - 8); ctx.lineTo(x, AXIS_H); ctx.stroke();
     ctx.fillStyle = yr % 10 === 0 ? BONE : ASH;
     ctx.fillText(yr, x + 4, yy);
@@ -569,7 +603,7 @@ function draw() {
     ctx.fillText(selYear, Math.max(x0 + 4, 4), yy);
   }
   if (ppy > 14) {
-    ctx.strokeStyle = '#3a2628';
+    ctx.strokeStyle = T.tickMinor;
     for (let yr = yFrom; yr <= yTo; yr++) {
       if (yr % step === 0) continue;
       const x = Math.round(sx((yr - T0) * PX_YEAR)) + .5;
@@ -647,7 +681,7 @@ function drawBrush() {
     bctx.fillRect(x0, base - h, Math.max(1, x1 - x0 - .5), h);
   });
   // releases per year (bone line)
-  bctx.strokeStyle = 'rgba(232,226,212,.75)'; bctx.lineWidth = 1; bctx.beginPath();
+  bctx.strokeStyle = T.brushLine; bctx.lineWidth = 1; bctx.beginPath();
   relHisto.forEach((n, i) => {
     const x = (bx(T0 + i) + bx(T0 + i + 1)) / 2, y = base - n / relMax * ch * .9;
     i ? bctx.lineTo(x, y) : bctx.moveTo(x, y);
@@ -657,10 +691,10 @@ function drawBrush() {
   bctx.font = '600 10px ' + FH; bctx.textBaseline = 'middle'; bctx.textAlign = 'left';
   for (let y = Math.ceil(T0 / 10) * 10; y <= NOW; y += 10) {
     const x = Math.round(bx(y)) + .5;
-    bctx.fillStyle = '#3a1f22'; bctx.fillRect(x, top, 1, ch + 3);
+    bctx.fillStyle = T.line; bctx.fillRect(x, top, 1, ch + 3);
     bctx.fillStyle = ASH; bctx.fillText(y, x + 3, BH - 7);
   }
-  bctx.fillStyle = '#5a3a3c'; bctx.fillRect(BP, base, BW - BP * 2, 1);
+  bctx.fillStyle = T.tick; bctx.fillRect(BP, base, BW - BP * 2, 1);
   // year filter currently applied (if any)
   if (filters.from > T0 || filters.to < NOW) {
     bctx.fillStyle = 'rgba(193,18,31,.18)';
@@ -669,12 +703,14 @@ function drawBrush() {
   // viewport window
   const { yl, yr } = brushRange();
   const xl = clamp(bx(yl), 0, BW), xr = clamp(bx(yr), 0, BW);
-  bctx.fillStyle = 'rgba(232,226,212,.12)'; bctx.fillRect(xl, top - 4, Math.max(xr - xl, 2), ch + 8);
+  bctx.fillStyle = T.brushWin; bctx.fillRect(xl, top - 4, Math.max(xr - xl, 2), ch + 8);
   bctx.strokeStyle = BONE; bctx.lineWidth = 1.2; bctx.strokeRect(xl + .5, top - 3.5, Math.max(xr - xl, 2) - 1, ch + 7);
   bctx.fillStyle = BONE;
   [xl, xr].forEach(x => { roundRectOn(bctx, x - 2.5, top + ch / 2 - 9, 5, 18, 2); bctx.fill(); });
   bctx.font = '600 11px ' + FH; bctx.textBaseline = 'middle'; bctx.textAlign = 'left'; bctx.fillStyle = BONE;
   bctx.fillText(Math.max(Math.round(yl), T0) + ' – ' + Math.min(Math.round(yr), NOW), BP, 8);
+  brush.setAttribute('aria-valuenow', Math.round((yl + yr) / 2));
+  brush.setAttribute('aria-valuetext', Math.max(Math.round(yl), T0) + ' to ' + Math.min(Math.round(yr), NOW));
 }
 function roundRectOn(c, x, y, w, h, r) {
   c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
@@ -713,6 +749,16 @@ brush.addEventListener('pointermove', e => {
   else if (bdrag.mode === 'r') setRange(bdrag.yl, Math.max(y, bdrag.yl + 1.5), { anchor: 'l' });
   else if (bdrag.moved) setRange(Math.min(bdrag.y0, y), Math.max(bdrag.y0, y));
 });
+brush.addEventListener('keydown', e => {
+  const { yl, yr } = brushRange(), span = yr - yl, c = (yl + yr) / 2;
+  if (e.key === 'ArrowLeft') setRange(yl - span * .1, yr - span * .1, { keepY: true });
+  else if (e.key === 'ArrowRight') setRange(yl + span * .1, yr + span * .1, { keepY: true });
+  else if (e.key === '+' || e.key === '=' || e.key === 'ArrowUp') setRange(c - span * .4, c + span * .4, { anchor: 'c' });
+  else if (e.key === '-' || e.key === 'ArrowDown') setRange(c - span * .625, c + span * .625, { anchor: 'c' });
+  else if (e.key === 'Home') fit();
+  else return;
+  e.preventDefault();
+});
 const endBrush = () => {
   if (bdrag && !bdrag.moved && bdrag.mode === 'new') {      // plain click outside the window: recentre on that year
     const span = bdrag.yr - bdrag.yl, c = bdrag.y0;
@@ -739,6 +785,13 @@ $('bAll').onclick = () => {
   refilter(); fit();
 };
 
+// ---------- accessibility ----------
+let liveTimer = 0;
+function announce(text, delay = 0) {
+  clearTimeout(liveTimer);
+  liveTimer = setTimeout(() => { const el = $('live'); el.textContent = ''; setTimeout(() => { el.textContent = text; }, 30); }, delay);
+}
+
 // ---------- minimap ----------
 const MW = 220, MH = 120, MPAD = 6;
 function miniScale() {
@@ -761,8 +814,8 @@ function drawMini() {
   }
   // viewport
   const vx0 = wxOf(0) * s + ox, vx1 = wxOf(W) * s + ox, vy0 = wyOf(AXIS_H) * s + oy, vy1 = wyOf(H) * s + oy;
-  mctx.fillStyle = 'rgba(255,255,255,.08)';
-  mctx.strokeStyle = 'rgba(255,255,255,.85)'; mctx.lineWidth = 1;
+  mctx.fillStyle = T.miniFill;
+  mctx.strokeStyle = T.miniStroke; mctx.lineWidth = 1;
   mctx.fillRect(vx0, vy0, vx1 - vx0, vy1 - vy0);
   mctx.strokeRect(vx0 + .5, vy0 + .5, vx1 - vx0 - 1, vy1 - vy0 - 1);
 }
@@ -789,12 +842,12 @@ function steelGradient(g, bh) {
   if (!gr) {
     if (steelCache.size > 300) steelCache.clear();
     gr = ctx.createLinearGradient(0, 0, 0, bh);
-    gr.addColorStop(0, col(g, 46)); gr.addColorStop(.5, col(g, 32)); gr.addColorStop(1, col(g, 20));
+    gr.addColorStop(0, colRaw(g, T.steel[0])); gr.addColorStop(.5, colRaw(g, T.steel[1])); gr.addColorStop(1, colRaw(g, T.steel[2]));
     steelCache.set(key, gr);
   }
   return gr;
 }
-const flatColor = g => flatCache[g.id] || (flatCache[g.id] = col(g, 38, .95));
+const flatColor = g => flatCache[g.id] || (flatCache[g.id] = colRaw(g, T.flatL, .95));
 let vigCanvas = null, vigKey = '';
 function drawVignette() {
   const key = W + 'x' + H + '@' + dpr, gh = H - AXIS_H;
@@ -805,10 +858,36 @@ function drawVignette() {
     const c = vigCanvas.getContext('2d');
     c.scale(dpr, dpr);
     const vg = c.createRadialGradient(W / 2, H / 2 - AXIS_H, Math.min(W, H) * .35, W / 2, H / 2 - AXIS_H, Math.max(W, H) * .8);
-    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.55)');
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, T.vig);
     c.fillStyle = vg; c.fillRect(0, 0, W, gh);
   }
   ctx.drawImage(vigCanvas, 0, AXIS_H, W, gh);
+}
+
+// emphasised links for a path or a comparison (always drawn, unlike the hover-only links)
+function drawFocusEdges(visibleSet, sharedLabels) {
+  const list = filters.focus && filters.focus.edgeList;
+  if (!list) return;
+  for (const [pid, cid, type, who] of list) {
+    const p = bandById[pid], c = bandById[cid];
+    if (!visibleSet.has(p) || !visibleSet.has(c)) continue;
+    if (type === 'infl') {
+      const ax = sx(clamp(c.x0, p.x0, p.x1 - 6)), ay = sy(p.y + BAR_H / 2), bx = sx(c.x0), by = sy(c.y + BAR_H / 2);
+      const gr = ctx.createLinearGradient(ax, ay, bx, by);
+      gr.addColorStop(0, col(genreById[p.genre], 65, .95)); gr.addColorStop(1, col(genreById[c.genre], 65, .95));
+      ctx.strokeStyle = gr; ctx.lineWidth = 3; ctx.setLineDash([]);
+      const dx = Math.max(30, Math.abs(bx - ax) * .5);
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.bezierCurveTo(ax + dx, ay, bx - dx, by, bx, by); ctx.stroke();
+      ctx.fillStyle = col(genreById[c.genre], 70); ctx.beginPath(); ctx.arc(bx, by, 4.5, 0, 7); ctx.fill();
+    } else {
+      const mx = Math.max(p.x0, c.x0);
+      const ax = sx(clamp(mx, p.x0, p.x1 - 4)), bx = sx(clamp(mx, c.x0, c.x1 - 4));
+      const ay = sy(p.y + BAR_H / 2), by = sy(c.y + BAR_H / 2), my = (ay + by) / 2;
+      ctx.strokeStyle = 'rgba(' + T.sharedRGB + ',.95)'; ctx.lineWidth = 2.6; ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.bezierCurveTo(ax, my, bx, my, bx, by); ctx.stroke(); ctx.setLineDash([]);
+      if (who) sharedLabels.push({ x: (ax + bx) / 2, y: my, t: who });
+    }
+  }
 }
 
 function roundRect(x, y, w, h, r) {
@@ -916,6 +995,8 @@ function renderDetail() {
     <h3>${esc(b.name)}</h3>
     <div class="tags"><span class="tag click" data-genre="${b.genre}" title="Show only ${esc(g.name)}">${esc(g.name)}</span>${b.sub && b.sub !== 'Other' ? `<span class="tag ghost click" data-genre="${b.genre}" data-sub="${esc(b.sub)}" title="Show only ${esc(b.sub)}">${esc(b.sub)}</span>` : ''}<span class="tag ghost">${b.kind === 'artist' ? 'Solo artist' : 'Band'}</span></div>
 
+    <div class="qa"><button data-qa="compare" title="Compare this act with others">⟷ Compare</button><button data-qa="connect" title="Find how this act connects to another">⇢ Connect</button></div>
+
     <h4>Summary</h4>
     ${wiki ? `<p class="sum">${wiki.desc ? `<em>${esc(wiki.desc)}.</em> ` : ''}${esc(wiki.text)}</p>
       <div class="src">Summary from <a href="${esc(wiki.url)}" target="_blank" rel="noopener">Wikipedia</a> · CC BY-SA 4.0</div>`
@@ -942,6 +1023,8 @@ function renderDetail() {
 }
 $('detail').addEventListener('click', e => {
   if (e.target.closest('.close')) { selected = null; renderDetail(); dirty = true; return; }
+  const qa = e.target.closest('[data-qa]');
+  if (qa && selected) { qa.dataset.qa === 'compare' ? addCompare(selected.id) : startPathFrom(selected); return; }
   const gt = e.target.closest('[data-genre]');
   if (gt) { gt.dataset.sub ? filterSub(gt.dataset.genre, gt.dataset.sub) : filterGenre(gt.dataset.genre); return; }
   const fb = e.target.closest('[data-focus]');
@@ -1002,7 +1085,7 @@ $('filterbar').addEventListener('click', e => {
   const c = e.target.closest('[data-clear]');
   if (!c) return;
   const k = c.dataset.clear;
-  if (k === 'focus') filters.focus = null;
+  if (k === 'focus') onFocusCleared();
   if (k === 'sub') { filters.subOff = new Set(); buildGenres(); }
   if (k === 'genre') { filters.subOff = new Set(); filters.genres = new Set(GENRES.map(g => g.id)); buildGenres(); }
   if (k === 'q') { filters.q = ''; $('search').value = ''; renderPeople(); }
@@ -1011,6 +1094,7 @@ $('filterbar').addEventListener('click', e => {
 
 function select(b, year) {
   selected = b; renderDetail(); dirty = true;
+  if (b) announce(`${b.name}. ${genreById[b.genre].name}, ${b.formed} to ${b.ended ?? 'present'}, ${b.country}. ${b.albums.length} key releases.`);
   if (b) focusBand(b, year);
 }
 
@@ -1055,11 +1139,22 @@ function setYear(y, openTab = false, recenter = false) {
   renderDetail();
   dirty = true;
 }
+const PANES = ['year', 'today', 'connect', 'compare'];
+let lastPane = 'year';
+// showTab('filters' | 'about' | 'year' | 'today' | 'connect' | 'compare'): the last four are panes of the Explore tab
 function showTab(name) {
-  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
-  $('tab-filters').hidden = name !== 'filters';
-  $('tab-year').hidden = name !== 'year';
-  $('tab-about').hidden = name !== 'about';
+  const pane = PANES.includes(name) ? name : null, tab = pane ? 'explore' : name;
+  document.querySelectorAll('.tabs button').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  $('tab-filters').hidden = tab !== 'filters';
+  $('tab-explore').hidden = tab !== 'explore';
+  $('tab-about').hidden = tab !== 'about';
+  if (pane) showPane(pane);
+}
+function showPane(p) {
+  lastPane = p;
+  PANES.forEach(x => { $('pane-' + x).hidden = x !== p; });
+  document.querySelectorAll('.seg button').forEach(b => { const on = b.dataset.pane === p; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  if (p === 'today') renderToday();
 }
 
 // ---------- tooltip ----------
@@ -1139,8 +1234,22 @@ canvas.addEventListener('wheel', e => {
   zoomAt(e.clientX, e.clientY, Math.exp(-d * (e.ctrlKey ? 0.01 : 0.0015)), e.shiftKey);
 }, { passive: false });
 
+function readingOrder() { return lanes.flatMap(l => l.groups.flatMap(g => g.bands)); }
+function stepBand(delta) {
+  const list = readingOrder();
+  if (!list.length) return;
+  const i = list.indexOf(selected);
+  select(list[i < 0 ? (delta > 0 ? 0 : list.length - 1) : (i + delta + list.length) % list.length]);
+}
 window.addEventListener('keydown', e => {
-  if (e.target.matches('input, select')) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (!$('listview').hidden) { if (e.key === 'Escape') closeList(); return; }
+  const t = e.target, typing = t.matches('input, select, textarea');
+  if (typing) { if (e.key === 'Escape') t.blur(); return; }
+  if (e.key === '/') { e.preventDefault(); setPanel(true); showTab('filters'); $('search').focus(); return; }
+  if (e.key === 'l' || e.key === 'L') { openList(); return; }
+  if (e.key === 't' || e.key === 'T') { $('themeBtn').click(); return; }
+  if (t !== canvas && t !== document.body && t.matches('button, a, [role="button"], [role="slider"], [tabindex]')) return;   // let controls keep their keys
   const s = 80;
   if (e.key === 'ArrowLeft') view.x += s;
   else if (e.key === 'ArrowRight') view.x -= s;
@@ -1149,8 +1258,12 @@ window.addEventListener('keydown', e => {
   else if (e.key === '+' || e.key === '=') zoomAt(W / 2, H / 2, 1.25);
   else if (e.key === '-') zoomAt(W / 2, H / 2, 1 / 1.25);
   else if (e.key === '0') fit();
+  else if (e.key === 'j' || e.key === 'J') { stepBand(1); return; }
+  else if (e.key === 'k' || e.key === 'K') { stepBand(-1); return; }
+  else if (e.key === 'Enter' && selected) { $('detail').focus(); return; }
   else if (e.key === 'Escape') { selected = null; renderDetail(); }
   else return;
+  e.preventDefault();
   anim = null; dirty = true;
 });
 $('zin').onclick = () => zoomAt(W / 2, H / 2, 1.4);
@@ -1197,6 +1310,8 @@ function buildGenres() {
     d.innerHTML = '<i></i><span>' + g.name + '</span><em>' + n + '</em>' +
       '<button class="car" aria-label="' + (open ? 'Hide' : 'Show') + ' subgenres of ' + g.name + '" aria-expanded="' + open + '">' + (open ? '▾' : '▸') + '</button>';
     d.title = 'Click to show or hide · Alt+click to show only this genre · arrow to list its subgenres';
+    d.tabIndex = 0; d.setAttribute('role', 'button'); d.setAttribute('aria-pressed', String(on));
+    d.addEventListener('keydown', e => { if (e.target === d && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); d.click(); } });
     d.onclick = e => {
       if (e.target.closest('.car')) { open ? expanded.delete(g.id) : expanded.add(g.id); buildGenres(); return; }
       if (e.altKey) { filters.genres = new Set([g.id]); filters.subOff = new Set(); }
@@ -1212,6 +1327,8 @@ function buildGenres() {
       sd.style.setProperty('--c', col(g));
       sd.innerHTML = '<i></i><span>' + name + '</span><em>' + cnt + '</em>';
       sd.title = 'Click to show or hide · Alt+click to show only this subgenre';
+      sd.tabIndex = 0; sd.setAttribute('role', 'button'); sd.setAttribute('aria-pressed', String(!(!on || filters.subOff.has(key))));
+      sd.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sd.click(); } });
       sd.onclick = e => e.altKey ? soloSub(g.id, name) : toggleSub(g.id, name);
       box.appendChild(sd);
     });
@@ -1253,7 +1370,8 @@ $('people').addEventListener('click', e => {
 $('scope').addEventListener('change', e => { filters.scope = e.target.value; renderPeople(); refilter(); });
 $('search').addEventListener('input', e => { filters.q = e.target.value; renderPeople(); refilter(); });
 
-document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => showTab(b.dataset.tab === 'explore' ? lastPane : b.dataset.tab));
+document.querySelectorAll('.seg button').forEach(b => b.onclick = () => showTab(b.dataset.pane));
 $('yearIn').addEventListener('change', e => setYear(e.target.value === '' ? null : +e.target.value, false, true));
 $('yPrev').onclick = () => setYear((selYear ?? NOW + 1) - 1, false, true);
 $('yNext').onclick = () => setYear((selYear ?? T0 - 1) + 1, false, true);
@@ -1314,6 +1432,228 @@ $('open').onclick = () => setPanel(true);
 const countries = [...new Set(BANDS.flatMap(b => b.country.split('/')))].sort();
 countries.forEach(c => $('country').add(new Option(c, c)));
 
+// ---------- explore: connect (pathfinder), compare, on this day ----------
+const nameToBand = new Map(BANDS.map(b => [b.name.toLowerCase(), b]));
+$('bandlist').innerHTML = [...BANDS].sort((a, b) => a.name.localeCompare(b.name)).map(b => '<option value="' + esc(b.name) + '"></option>').join('');
+function bandFromInput(v) {
+  v = v.trim().toLowerCase();
+  if (!v) return null;
+  return nameToBand.get(v) || (v.length >= 3 ? BANDS.find(b => b.name.toLowerCase().startsWith(v)) : null) || null;
+}
+
+// graph: influence edges (both ways) and shared-member edges
+const graph = new Map(BANDS.map(b => [b.id, []]));
+BANDS.forEach(b => b.from.forEach(p => {
+  graph.get(p).push({ to: b.id, type: 'infl', dir: 1 });         // p influenced b
+  graph.get(b.id).push({ to: p, type: 'infl', dir: -1 });        // b was influenced by p
+}));
+sharedList.forEach(e => {
+  const who = e.who.join(', ');
+  graph.get(e.a).push({ to: e.b, type: 'shared', who });
+  graph.get(e.b).push({ to: e.a, type: 'shared', who });
+});
+
+function findPath(a, b, opt) {
+  const dist = new Map([[a, 0]]), prev = new Map(), done = new Set(), queue = [[0, a]];
+  while (queue.length) {
+    queue.sort((x, y) => x[0] - y[0]);
+    const [d, u] = queue.shift();
+    if (done.has(u)) continue;
+    done.add(u);
+    if (u === b) break;
+    for (const e of graph.get(u)) {
+      if (e.type === 'infl' ? !opt.infl : !opt.shared) continue;
+      const nd = d + (e.type === 'infl' ? 1 : 1.01);              // on a tie, prefer influence over shared members
+      if (nd < (dist.get(e.to) ?? Infinity)) { dist.set(e.to, nd); prev.set(e.to, { from: u, edge: e }); queue.push([nd, e.to]); }
+    }
+  }
+  if (!dist.has(b)) return null;
+  const steps = [];
+  for (let cur = b; cur !== a;) { const p = prev.get(cur); steps.unshift({ id: cur, from: p.from, edge: p.edge }); cur = p.from; }
+  return [{ id: a }, ...steps];
+}
+
+function focusOn(label, ids, edgeList, kind) {
+  filters.focus = { label, ids: new Set(ids), edgeList, kind };
+  filters.genres = new Set(GENRES.map(g => g.id)); filters.subOff = new Set();
+  buildGenres(); refilter(); fit();
+}
+function onFocusCleared() {
+  const kind = filters.focus && filters.focus.kind;
+  filters.focus = null;
+  if (kind === 'compare') { compareIds = []; renderCompare(false); }
+  if (kind === 'path') $('pathResult').innerHTML = '';
+}
+
+function runPath() {
+  const a = bandFromInput($('pathA').value), b = bandFromInput($('pathB').value), out = $('pathResult');
+  if (!a || !b) { out.innerHTML = '<p class="muted">Pick two acts from the lists.</p>'; return; }
+  if (a === b) { out.innerHTML = '<p class="muted">Those are the same act.</p>'; return; }
+  const opt = { infl: $('pathInfl').checked, shared: $('pathShared').checked };
+  if (!opt.infl && !opt.shared) { out.innerHTML = '<p class="muted">Turn on influences, shared members or both.</p>'; return; }
+  const path = findPath(a.id, b.id, opt);
+  if (!path) { out.innerHTML = '<p class="muted"><b>No connection found</b> between ' + esc(a.name) + ' and ' + esc(b.name) + (opt.infl && opt.shared ? '.' : '. Try turning on both kinds of link.') + '</p>'; return; }
+  const edges = [], items = [];
+  path.forEach((st, i) => {
+    const band = bandById[st.id];
+    if (i) {
+      const e = st.edge, prevBand = bandById[st.from];
+      let cap;
+      if (e.type === 'infl') { cap = e.dir === 1 ? prevBand.name + ' influenced ' + band.name : prevBand.name + ' was influenced by ' + band.name; edges.push(e.dir === 1 ? [st.from, st.id, 'infl'] : [st.id, st.from, 'infl']); }
+      else { cap = 'share ' + e.who; edges.push([st.from, st.id, 'shared', e.who]); }
+      items.push('<li class="hop ' + e.type + '">' + (e.type === 'infl' ? '↓' : '⇣') + ' ' + esc(cap) + '</li>');
+    }
+    const g = genreById[band.genre];
+    items.push('<li class="stop" style="--c:' + col(g) + '"><a data-id="' + band.id + '"><b>' + esc(band.name) + '</b><small>' + esc(g.name) + ' · ' + band.formed + '</small></a></li>');
+  });
+  out.innerHTML = '<p class="pathsum"><b>' + (path.length - 1) + ' step' + (path.length > 2 ? 's' : '') + '</b> from ' + esc(a.name) + ' to ' + esc(b.name) + '</p><ol class="path">' + items.join('') + '</ol>';
+  focusOn('Path: ' + a.name + ' → ' + b.name, path.map(p => p.id), edges, 'path');
+}
+function startPathFrom(b) { $('pathA').value = b.name; $('pathB').focus(); showTab('connect'); }
+$('pathGo').onclick = runPath;
+['pathA', 'pathB'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') runPath(); }));
+$('pathSwap').onclick = () => { const t = $('pathA').value; $('pathA').value = $('pathB').value; $('pathB').value = t; runPath(); };
+$('pathClear').onclick = () => { $('pathA').value = $('pathB').value = ''; if (filters.focus && filters.focus.kind === 'path') { filters.focus = null; refilter(); fit(); } $('pathResult').innerHTML = ''; };
+$('pathAsel').onclick = () => { if (selected) $('pathA').value = selected.name; };
+$('pathBsel').onclick = () => { if (selected) $('pathB').value = selected.name; };
+$('pathResult').addEventListener('click', e => { const a = e.target.closest('a[data-id]'); if (a) select(bandById[a.dataset.id]); });
+
+// ---- compare ----
+let compareIds = [];
+function addCompare(id) {
+  if (!compareIds.includes(id)) {
+    if (compareIds.length >= 3) compareIds.shift();
+    compareIds.push(id);
+  }
+  showTab('compare'); renderCompare(true);
+}
+const dash = '<span class="muted">none</span>';
+const nameLinks = ids => ids.length ? ids.map(id => esc(bandById[id].name)).join(', ') : dash;
+function renderCompare(apply) {
+  const bands = compareIds.map(id => bandById[id]);
+  $('cmpChips').innerHTML = bands.map(b => '<span class="cchip" style="--c:' + col(genreById[b.genre]) + '"><b>' + esc(b.name) + '</b><button data-del="' + b.id + '" aria-label="Remove ' + esc(b.name) + ' from the comparison">✕</button></span>').join('');
+  const out = $('cmpOut');
+  if (bands.length < 2) {
+    out.innerHTML = '<p class="muted">Add at least two acts' + (bands.length ? ' (one added)' : '') + '.</p>';
+    if (apply && filters.focus && filters.focus.kind === 'compare') { filters.focus = null; refilter(); fit(); }
+    return;
+  }
+  // overlap of active years
+  const from = Math.max(...bands.map(b => b.formed)), to = Math.min(...bands.map(b => b.ended ?? NOW));
+  const overlap = to >= from ? 'Active together <b>' + from + '–' + to + '</b> (' + (to - from + 1) + ' years).' : 'Never active at the same time (a gap of <b>' + (from - to) + '</b> years).';
+  const common = bands.map(b => new Set(b.from)).reduce((x, y) => new Set([...x].filter(i => y.has(i))));
+  const pairs = [], direct = [], edges = [];
+  for (let i = 0; i < bands.length; i++) for (let j = i + 1; j < bands.length; j++) {
+    const a = bands[i], b = bands[j], key = a.id < b.id ? a.id + '|' + b.id : b.id + '|' + a.id, sp = sharedPairs.get(key);
+    if (sp) { pairs.push(esc(a.name) + ' and ' + esc(b.name) + ': ' + esc(sp.who.join(', '))); edges.push([a.id, b.id, 'shared', sp.who.join(', ')]); }
+    if (b.from.includes(a.id)) { direct.push(esc(a.name) + ' influenced ' + esc(b.name)); edges.push([a.id, b.id, 'infl']); }
+    if (a.from.includes(b.id)) { direct.push(esc(b.name) + ' influenced ' + esc(a.name)); edges.push([b.id, a.id, 'infl']); }
+  }
+  // timeline bars on a shared scale
+  const lo = Math.min(...bands.map(b => b.formed)), hi = Math.max(...bands.map(b => b.ended ?? NOW)) + 1, span = hi - lo;
+  const pct = y => ((y - lo) / span * 100).toFixed(2);
+  const bars = bands.map(b => {
+    const g = genreById[b.genre], end = (b.ended ?? NOW) + 1;
+    return '<div class="tlrow"><span class="tlname">' + esc(b.name) + '</span><span class="tl" style="--c:' + col(g) + '"><i style="left:' + pct(b.formed) + '%;width:' + (pct(end) - pct(b.formed)).toFixed(2) + '%"></i>' +
+      b.albums.map(a => '<u style="left:' + pct(a.year + .5) + '%" title="' + esc(a.title) + ' (' + a.year + ')"></u>').join('') + '</span></div>';
+  }).join('');
+  const cards = bands.map(b => {
+    const g = genreById[b.genre], rel = b.albums.map(a => a.year), kids = children[b.id] || [];
+    return '<section class="ccard" style="--c:' + col(g) + '"><h3><a data-id="' + b.id + '">' + esc(b.name) + '</a></h3><dl>' +
+      '<dt>Genre</dt><dd>' + esc(g.name) + (b.sub && b.sub !== 'Other' ? ' › ' + esc(b.sub) : '') + '</dd>' +
+      '<dt>Origin</dt><dd>' + esc(b.country) + '</dd>' +
+      '<dt>Active</dt><dd>' + b.formed + ' – ' + (b.ended ?? 'present') + ' (' + ((b.ended ?? NOW) - b.formed) + ' yrs)</dd>' +
+      '<dt>Key releases</dt><dd>' + rel.length + (rel.length ? ' · ' + Math.min(...rel) + '–' + Math.max(...rel) : '') + '</dd>' +
+      '<dt>Influenced by</dt><dd>' + nameLinks(b.from.slice(0, 5)) + (b.from.length > 5 ? ' +' + (b.from.length - 5) : '') + '</dd>' +
+      '<dt>Influenced</dt><dd>' + (kids.length ? kids.length + ' acts' : dash) + '</dd>' +
+      (b.members.length ? '<dt>Lineup</dt><dd>' + b.members.length + ' musicians listed</dd>' : '') +
+      '</dl></section>';
+  }).join('');
+  out.innerHTML = '<div class="tlbox"><div class="tlaxis"><span>' + lo + '</span><span>' + hi + '</span></div>' + bars + '</div>' +
+    '<ul class="facts2"><li>' + overlap + '</li>' +
+    '<li>Common influences: ' + nameLinks([...common]) + '</li>' +
+    (direct.length ? '<li>' + direct.join('<br>') + '</li>' : '') +
+    (pairs.length ? '<li>Shared members: ' + pairs.join('<br>') + '</li>' : '<li>No shared members on this map.</li>') + '</ul>' + cards;
+  if (apply) focusOn('Comparing ' + bands.map(b => b.name).join(' · '), compareIds, edges, 'compare');
+}
+$('cmpAdd').addEventListener('change', e => { const b = bandFromInput(e.target.value); if (b) { e.target.value = ''; addCompare(b.id); } });
+$('cmpAddSel').onclick = () => { if (selected) addCompare(selected.id); };
+$('cmpChips').addEventListener('click', e => { const d = e.target.closest('[data-del]'); if (d) { compareIds = compareIds.filter(i => i !== d.dataset.del); renderCompare(true); } });
+$('cmpOut').addEventListener('click', e => { const a = e.target.closest('a[data-id]'); if (a) select(bandById[a.dataset.id]); });
+
+// ---- on this day ----
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const pad2 = n => String(n).padStart(2, '0');
+let dayMD = (() => { const d = new Date(); return [d.getMonth() + 1, d.getDate()]; })();
+function stepDay(delta) {
+  const d = new Date(2024, dayMD[0] - 1, dayMD[1] + delta);        // 2024 is a leap year, so 29 February exists
+  dayMD = [d.getMonth() + 1, d.getDate()]; renderToday();
+}
+function renderToday() {
+  const [m, d] = dayMD, key = pad2(m) + '-' + pad2(d), stats = $('dayStats'), list = $('dayList');
+  $('dayMonth').value = m; $('dayDay').value = d;
+  if (!allLoaded) {
+    stats.textContent = 'Loading release dates…'; list.innerHTML = '';
+    loadAlbums(ok => ok ? renderToday() : (stats.textContent = 'Could not load release dates. Run: node tools/albums.js'));
+    return;
+  }
+  const items = [];
+  for (const b of BANDS) for (const a of (b.all || b.albums)) if (!a.live && a.date === key) items.push({ b, a });
+  items.sort((x, y) => x.a.year - y.a.year || x.b.name.localeCompare(y.b.name));
+  stats.textContent = MONTHS[m - 1] + ' ' + d + ' · ' + (items.length ? items.length + ' release' + (items.length > 1 ? 's' : '') : 'no dated releases on this map');
+  const thisYear = new Date().getFullYear();
+  list.innerHTML = items.map(({ b, a }) => '<div class="yi di' + (a.key ? '' : ' minor') + '" data-id="' + b.id + '" data-year="' + a.year + '" tabindex="0" role="button">' +
+    '<b>' + esc(a.title) + '</b><span>' + esc(b.name) + ' · ' + a.year + ' · ' + (thisYear - a.year) + ' years ago</span></div>').join('');
+}
+$('dPrev').onclick = () => stepDay(-1);
+$('dNext').onclick = () => stepDay(1);
+$('dToday').onclick = () => { const t = new Date(); dayMD = [t.getMonth() + 1, t.getDate()]; renderToday(); };
+$('dayMonth').onchange = e => { dayMD = [+e.target.value, dayMD[1]]; renderToday(); };
+$('dayDay').onchange = e => { dayMD = [dayMD[0], +e.target.value]; renderToday(); };
+$('dayList').addEventListener('click', e => { const it = e.target.closest('[data-id]'); if (it) { select(bandById[it.dataset.id], +it.dataset.year); setYear(+it.dataset.year); } });
+$('dayList').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-id]')) { e.preventDefault(); e.target.click(); } });
+
+// ---------- list view (text alternative to the canvas) ----------
+let listOpener = null;
+function renderList() {
+  const key = $('lvSort').value;
+  const rows = [...visible].sort((a, b) => key === 'formed' ? a.formed - b.formed || a.name.localeCompare(b.name)
+    : key === 'genre' ? genreById[a.genre].name.localeCompare(genreById[b.genre].name) || a.sub.localeCompare(b.sub) || a.name.localeCompare(b.name)
+    : key === 'country' ? a.country.localeCompare(b.country) || a.name.localeCompare(b.name)
+    : a.name.localeCompare(b.name));
+  $('lvCount').textContent = rows.length + ' of ' + BANDS.length + ' acts';
+  $('lvTable').tBodies[0].innerHTML = rows.map(b => '<tr><th scope="row"><button class="lvname" data-id="' + b.id + '">' + esc(b.name) + '</button></th>' +
+    '<td>' + (b.kind === 'artist' ? 'Solo artist' : 'Band') + '</td><td>' + esc(genreById[b.genre].name) + (b.sub && b.sub !== 'Other' ? ' › ' + esc(b.sub) : '') + '</td>' +
+    '<td>' + esc(b.country) + '</td><td>' + b.formed + '–' + (b.ended ?? 'present') + '</td><td>' + b.albums.length + '</td></tr>').join('');
+}
+function openList() {
+  if (!$('listview').hidden) return;
+  listOpener = document.activeElement;
+  renderList();
+  $('listview').hidden = false;
+  document.body.classList.add('lvopen');
+  $('lvClose').focus();
+}
+function closeList() {
+  $('listview').hidden = true;
+  document.body.classList.remove('lvopen');
+  if (listOpener && listOpener.focus) listOpener.focus();
+}
+$('listIcon').onclick = openList;
+$('skipLink').onclick = e => { e.preventDefault(); openList(); };
+$('lvClose').onclick = closeList;
+$('lvSort').onchange = renderList;
+$('lvTable').addEventListener('click', e => { const b = e.target.closest('button[data-id]'); if (b) { closeList(); select(bandById[b.dataset.id]); $('detail').focus(); } });
+$('listview').addEventListener('keydown', e => {                    // keep Tab inside the dialog
+  if (e.key !== 'Tab') return;
+  const f = [...$('listview').querySelectorAll('button, select')].filter(x => !x.disabled), first = f[0], last = f[f.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+// tab panels for assistive technology
+['tab-filters', 'tab-explore', 'tab-about'].forEach(id => $(id).setAttribute('role', 'tabpanel'));
+
 // ---------- about ----------
 (() => {
   const releases = BANDS.reduce((n, b) => n + b.albums.length, 0);
@@ -1321,7 +1661,30 @@ countries.forEach(c => $('country').add(new Option(c, c)));
   $('aboutStats').textContent = BANDS.length + ' bands and artists · ' + releases + ' key releases · ' + GENRES.length + ' genres · ' + countries + ' countries';
 })();
 
+// ---------- theme ----------
+function applyTheme(name, persist) {
+  const first = !document.documentElement.dataset.themeApplied;
+  document.documentElement.dataset.themeApplied = '1';
+  T = THEMES[name] || THEMES.dark;
+  BONE = T.text; ASH = T.muted;
+  document.documentElement.dataset.theme = name in THEMES ? name : 'dark';
+  steelCache.clear(); Object.keys(flatCache).forEach(k => delete flatCache[k]); vigKey = '';   // caches hold theme colours
+  const btn = $('themeBtn');
+  if (btn) {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    btn.textContent = dark ? '☀' : '☾';
+    btn.title = btn.ariaLabel = dark ? 'Switch to the light theme' : 'Switch to the dark theme';
+  }
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = T.bg;
+  if (persist) { try { localStorage.setItem('loud-atlas-theme', document.documentElement.dataset.theme); } catch (e) { /* private mode */ } }
+  dirty = true;
+  if (!first) announce((document.documentElement.dataset.theme === 'dark' ? 'Dark' : 'Light') + ' theme');
+}
+$('themeBtn').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+
 // ---------- boot ----------
+applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
 resize(); if (W <= 700) setPanel(false);
 buildGenres(); buildEras(); layout(); fit(false);
 if (document.fonts) {
@@ -1337,6 +1700,7 @@ if (document.fonts) {
   if (hp.get('era')) { hp.get('era').split(',').forEach(i => ERAS[+i] && filters.eras.add(+i)); buildEras(); }
   if (hp.get('year')) { selYear = +hp.get('year'); $('yearIn').value = selYear; }
   if (hp.get('tab')) showTab(hp.get('tab'));
+  if (hp.get('tab') && W <= 700) setPanel(true);                                // a link to a tab should show it on phones too
   if (hp.get('expand')) { hp.get('expand').split(',').forEach(g => expanded.add(g)); buildGenres(); }
   layout(); fit(false);
   if (hp.get('releases') === 'all') setReleases('all', hp.get('live') === '1');
@@ -1349,6 +1713,13 @@ if (document.fonts) {
     const k = +hp.get('zoom'), cy = +hp.get('cy') || 0;
     goTo({ kx: k, ky: k, x: 300 - ((+hp.get('from') || 1960) - T0) * PX_YEAR * k, y: AXIS_H - cy * k }, false);
   }
+  if (hp.get('a') && hp.get('b') && bandById[hp.get('a')] && bandById[hp.get('b')]) {
+    $('pathA').value = bandById[hp.get('a')].name; $('pathB').value = bandById[hp.get('b')].name; showTab('connect'); runPath();
+  }
+  if (hp.get('cmp')) { compareIds = hp.get('cmp').split(',').filter(i => bandById[i]).slice(0, 3); showTab('compare'); renderCompare(true); }
+  if (hp.get('list')) openList();                                                // #list=1 opens the list view
+  if (hp.get('md')) { const q = hp.get('md').split('-').map(Number); if (q.length === 2 && q[0] >= 1 && q[0] <= 12) dayMD = q; }
+  if (hp.get('tab') === 'today') renderToday();
   if (hp.get('focus') && selected) focusFilter(hp.get('focus'));               // #band=metallica&focus=roots|offspring|shared
   if (hp.get('sub') && bandById[hp.get('band')]) filterSub(bandById[hp.get('band')].genre, hp.get('sub'));
 })();

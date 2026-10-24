@@ -3,6 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070607">
+<script>
+  // choose the theme before first paint (saved choice, otherwise the system setting) so the page never flashes the wrong colours
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('loud-atlas-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    var h = /theme=(light|dark)/.exec(location.hash);   // #theme=light for links and testing
+    if (h) t = h[1];
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
 <title>Loud Atlas — Rock & Metal Timeline</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070607'/%3E%3Cpath d='M16 5l9 11-9 11-9-11z' fill='%23c1121f'/%3E%3C/svg%3E">
 <meta name="description" content="Loud Atlas: an interactive timeline of rock and metal. Bands, artists, releases, genres, influences and shared members from 1930 to today.">
@@ -14,22 +26,26 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="c"></canvas>
+<a class="skip" href="#listview" id="skipLink">Skip to the list of acts</a>
+<canvas id="c" role="img" tabindex="0" aria-label="Interactive timeline of rock and metal. Press L for a text list of the acts."></canvas>
+<div id="live" class="sr" aria-live="polite" aria-atomic="true"></div>
 
 <aside id="panel">
   <header>
     <h1>Loud Atlas</h1>
+    <button id="listIcon" class="iconbtn" title="Show the acts as a list (L)" aria-label="Show the acts as a list">☰</button>
+    <button id="themeBtn" class="iconbtn" title="Switch theme" aria-label="Switch theme">☀</button>
     <button id="collapse" title="Collapse panel" aria-label="Collapse panel">×</button>
   </header>
   <nav class="tabs" role="tablist">
-    <button data-tab="filters" class="on" role="tab">Filters</button>
-    <button data-tab="year" role="tab">On this year</button>
+    <button data-tab="filters" class="on" role="tab" aria-selected="true">Filters</button>
+    <button data-tab="explore" role="tab">Explore</button>
     <button data-tab="about" role="tab">About</button>
   </nav>
 
   <div class="body" id="tab-filters">
     <div class="searchrow">
-      <input id="search" type="search" placeholder="Search…" autocomplete="off">
+      <input id="search" type="search" placeholder="Search…" aria-label="Search" autocomplete="off">
       <select id="scope" aria-label="Search in">
         <option value="all">Everything</option>
         <option value="name">Band name</option>
@@ -106,17 +122,67 @@
     <p class="muted hint">Drag to pan · scroll to zoom · Shift+scroll zooms time only · click a band for details · click the ruler: top row toggles a decade, bottom row picks a year · arrows/+/−/0 on keyboard</p>
   </div>
 
-  <div class="body" id="tab-year" hidden>
-    <div class="yearpick">
-      <button id="yPrev" aria-label="Previous year">◀</button>
-      <input id="yearIn" type="number" min="1930" max="2026" placeholder="Year" aria-label="Year">
-      <button id="yNext" aria-label="Next year">▶</button>
-      <button id="yClear" title="Clear year" aria-label="Clear year">✕</button>
+  <div class="body" id="tab-explore" hidden>
+    <div class="seg" role="tablist" aria-label="Explore">
+      <button data-pane="year" class="on" role="tab" aria-selected="true">Year</button>
+      <button data-pane="today" role="tab" aria-selected="false">Today</button>
+      <button data-pane="connect" role="tab" aria-selected="false">Connect</button>
+      <button data-pane="compare" role="tab" aria-selected="false">Compare</button>
     </div>
-    <label><input type="checkbox" id="yearOnly"> Only show acts with a release this year</label>
-    <p id="yearStats" class="muted"></p>
-    <div id="yearList"></div>
-    <p class="muted hint">Lists the key releases on this map. Click an entry to jump to it. Click the ruler on the timeline to pick a year.</p>
+
+    <div class="pane" id="pane-year">
+      <div class="yearpick">
+        <button id="yPrev" aria-label="Previous year">◀</button>
+        <input id="yearIn" type="number" min="1930" max="2026" placeholder="Year" aria-label="Year">
+        <button id="yNext" aria-label="Next year">▶</button>
+        <button id="yClear" title="Clear year" aria-label="Clear year">✕</button>
+      </div>
+      <label><input type="checkbox" id="yearOnly"> Only show acts with a release this year</label>
+      <p id="yearStats" class="muted"></p>
+      <div id="yearList"></div>
+      <p class="muted hint">Lists the releases on this map. Click an entry to jump to it. Click the ruler on the timeline to pick a year.</p>
+    </div>
+
+    <div class="pane" id="pane-today" hidden>
+      <h2 class="ph">On this day in rock and metal</h2>
+      <div class="daypick">
+        <button id="dPrev" aria-label="Previous day">◀</button>
+        <select id="dayMonth" aria-label="Month"><option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+        <select id="dayDay" aria-label="Day"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option></select>
+        <button id="dNext" aria-label="Next day">▶</button>
+        <button id="dToday" title="Jump to today's date">Today</button>
+      </div>
+      <p id="dayStats" class="muted" aria-live="polite"></p>
+      <div id="dayList"></div>
+      <p class="muted hint">Albums released on this date in any year. Exact release dates come from MusicBrainz and are known for many, not all, of the releases on this map.</p>
+    </div>
+
+    <div class="pane" id="pane-connect" hidden>
+      <h2 class="ph">How are two acts connected?</h2>
+      <p class="muted">Finds the shortest chain of influences and shared members between them.</p>
+      <label class="fld">From
+        <span class="row"><input id="pathA" list="bandlist" placeholder="Band or artist…" autocomplete="off"><button class="mini-act" id="pathAsel" title="Use the selected band">◂ selected</button></span>
+      </label>
+      <label class="fld">To
+        <span class="row"><input id="pathB" list="bandlist" placeholder="Band or artist…" autocomplete="off"><button class="mini-act" id="pathBsel" title="Use the selected band">◂ selected</button></span>
+      </label>
+      <div class="opts">
+        <label><input type="checkbox" id="pathInfl" checked> Influences</label>
+        <label><input type="checkbox" id="pathShared" checked> Shared members</label>
+      </div>
+      <div class="actions"><button id="pathGo">Find path</button><button id="pathSwap">Swap</button><button id="pathClear">Clear</button></div>
+      <div id="pathResult" aria-live="polite"></div>
+    </div>
+
+    <div class="pane" id="pane-compare" hidden>
+      <h2 class="ph">Compare acts</h2>
+      <p class="muted">Pin two or three to compare them side by side.</p>
+      <label class="fld">Add an act
+        <span class="row"><input id="cmpAdd" list="bandlist" placeholder="Band or artist…" autocomplete="off"><button class="mini-act" id="cmpAddSel" title="Add the selected band">+ selected</button></span>
+      </label>
+      <div id="cmpChips"></div>
+      <div id="cmpOut" aria-live="polite"></div>
+    </div>
   </div>
 
   <div class="body about" id="tab-about" hidden>
@@ -132,12 +198,24 @@
       or send a pull request. The data is plain text in <code>data.js</code>.</p>
 
     <section>
+      <h2>Keyboard</h2>
+      <ul class="tips">
+        <li><kbd>Tab</kbd> to the map, then <kbd>J</kbd> / <kbd>K</kbd> for the next or previous act, <kbd>Enter</kbd> for its details.</li>
+        <li><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> pan, <kbd>+</kbd> <kbd>-</kbd> zoom, <kbd>0</kbd> fit, <kbd>Esc</kbd> clears.</li>
+        <li><kbd>/</kbd> search, <kbd>L</kbd> list view, <kbd>T</kbd> switch theme.</li>
+        <li>Focus the time strip and use the arrow keys, <kbd>+</kbd> and <kbd>-</kbd>.</li>
+      </ul>
+    </section>
+
+    <section>
       <h2>Using the map</h2>
       <ul class="tips">
         <li><b>Drag</b> to pan, <b>scroll</b> to zoom, <b>Shift+scroll</b> to zoom time only.</li>
         <li><b>Click a band</b> for its summary, releases, influences and lineup. Its tags and <i>filter</i> buttons narrow the map.</li>
         <li>The <b>time brush</b> at the bottom pans and zooms time. The <b>ruler</b> picks a decade (top row) or a year (bottom row).</li>
         <li>Open a genre's <b>arrow</b> in Filters to pick subgenres. Alt+click shows only one.</li>
+        <li><b>Explore</b> has four tools: browse a <i>year</i>, see what was released <i>today</i> in history, <i>connect</i> any two acts through influences and shared members, or <i>compare</i> up to three.</li>
+        <li>The <b>sun and moon button</b> switches between the dark and light themes. <b>L</b> shows everything as a text list.</li>
       </ul>
     </section>
 
@@ -161,11 +239,32 @@
 </aside>
 <button id="open" hidden>Filters</button>
 
-<div id="filterbar" hidden></div>
-<div id="detail" hidden></div>
+<datalist id="bandlist"></datalist>
+<div id="filterbar" role="group" aria-label="Active filters" hidden></div>
+<div id="listview" hidden role="dialog" aria-modal="true" aria-labelledby="lvTitle">
+  <div class="lvbox">
+    <header>
+      <h2 id="lvTitle">Acts as a list</h2>
+      <span id="lvCount" class="muted"></span>
+      <label class="lvsort">Sort by
+        <select id="lvSort"><option value="name">Name</option><option value="formed">Year formed</option><option value="genre">Genre</option><option value="country">Country</option></select>
+      </label>
+      <button id="lvClose" aria-label="Close the list">✕</button>
+    </header>
+    <p class="muted lvnote">Shows the acts that match your current filters. Choose a name to open its details on the map.</p>
+    <div class="lvscroll">
+      <table id="lvTable">
+        <caption class="sr">Acts matching the current filters</caption>
+        <thead><tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Genre</th><th scope="col">Origin</th><th scope="col">Active</th><th scope="col">Releases</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div id="detail" role="region" aria-label="Band details" tabindex="-1" hidden></div>
 <div id="tip" hidden></div>
 <div id="brushwrap">
-  <canvas id="brush" aria-label="Time brush: drag to pan or zoom the timeline"></canvas>
+  <canvas id="brush" role="slider" tabindex="0" aria-label="Time range. Arrow keys move it, plus and minus zoom, Home shows everything." aria-valuemin="1930" aria-valuemax="2026" aria-valuenow="1978" aria-valuetext="1930 to 2026"></canvas>
   <div class="bbtns">
     <button id="bFilter" title="Use the highlighted years as the year filter">Filter to range</button>
     <button id="bAll" title="Clear the year range and fit everything">Reset</button>

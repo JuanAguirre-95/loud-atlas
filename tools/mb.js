@@ -46,6 +46,8 @@ function loadData() {
 // ids whose best MusicBrainz match is a different act with the same name
 const BAD_MATCH = new Set(['kino']);
 
+// full YYYY-MM-DD only; a bare year or month means the day is unknown
+const dayOf = d => (d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : undefined);
 const year = d => (d ? +d.slice(0, 4) : null);
 
 // Pick the search hit that really is our band: right year (+/-2) and a group, else best score.
@@ -73,7 +75,7 @@ async function albumsOf(mbid) {
   }
   const studio = rgs
     .filter(g => !(g['secondary-types'] || []).length && year(g['first-release-date']))
-    .map(g => ({ year: year(g['first-release-date']), title: g.title }));
+    .map(g => ({ year: year(g['first-release-date']), title: g.title, date: dayOf(g['first-release-date']) }));
 
   const liveGroups = new Map();
   let lo = 0, total = Infinity, pages = 0;
@@ -88,7 +90,7 @@ async function albumsOf(mbid) {
     }
     lo += 100; pages++;
   }
-  const live = [...liveGroups.values()].map(g => ({ year: year(g['first-release-date']), title: g.title, live: true }));
+  const live = [...liveGroups.values()].map(g => ({ year: year(g['first-release-date']), title: g.title, date: dayOf(g['first-release-date']), live: true }));
 
   const seen = new Set();
   return [...studio, ...live]

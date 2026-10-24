@@ -139,3 +139,98 @@ NO MATCH   Master's Hammer
 NO MATCH   Vildhjärta
 FORMED     Plini: ours 2013, MB 1992
 LOW MATCH  Plini -> https://musicbrainz.org/artist/3f6c0aa1-a7a9-4ff2-9c50-e84d4b0de178
+ENDED      UFO: ours 2019, MB active
+ENDED      Bad Company: ours active, MB 2023
+FORMED     Status Quo: ours 1962, MB 1967
+LOW MATCH  Status Quo -> https://musicbrainz.org/artist/1884ed9c-6fe1-468d-a7f8-8d19c9c4e441
+FORMED     Europe: ours 1979, MB 1982
+ENDED      Mott the Hoople: ours 1976, MB 1974
+FORMED     Exciter: ours 1978, MB 1980
+FORMED     Riot: ours 1975, MB 2015
+LOW MATCH  Riot -> https://musicbrainz.org/artist/7d48f4c1-80b5-41f3-af5a-b0d5410b44f7
+FORMED     Iced Earth: ours 1985, MB 1988
+ENDED      Nuclear Assault: ours active, MB 2022
+FORMED     Flotsam and Jetsam: ours 1981, MB 1984
+FORMED     Sabbat: ours 1985, MB 1983
+ENDED      Brutal Truth: ours active, MB 2014
+FORMED     Grave: ours 1986, MB 1988
+FORMED     Children of Bodom: ours 1993, MB 1997
+LOW MATCH  Children of Bodom -> https://musicbrainz.org/artist/f57e14e4-b030-467c-b202-539453f504ec
+ENDED      All Shall Perish: ours 2011, MB active
+ENDED      Agalloch: ours 2016, MB active
+FORMED     Ihsahn: ours 2005, MB 1975
+LOW MATCH  Ihsahn -> https://musicbrainz.org/artist/d0471ad5-6591-477c-8790-efdce698d3b6
+FORMED     The Obsessed: ours 1976, MB 1979
+FORMED     Reverend Bizarre: ours 1992, MB 1995
+FORMED     Fu Manchu: ours 1985, MB 1990
+LOW MATCH  Fu Manchu -> https://musicbrainz.org/artist/f96de591-5dae-41da-855b-eb387d88d7d4
+FORMED     Moonspell: ours 1992, MB 1989
+FORMED     Lacuna Coil: ours 1994, MB 1997
+ENDED      Tristania: ours active, MB 2022
+ENDED      Van der Graaf Generator: ours active, MB 1978
+NO MATCH   Spock's Beard
+ENDED      Nevermore: ours 2011, MB active
+FORMED     Pain of Salvation: ours 1984, MB 1991
+LOW MATCH  Pain of Salvation -> https://musicbrainz.org/artist/f7c65346-9631-4220-9188-5e90baae58d5
+FORMED     Evergrey: ours 1995, MB 1993
+ENDED      Skinny Puppy: ours active, MB 2023
+NO MATCH   Static-X
+FORMED     Disturbed: ours 1994, MB 1996
+ENDED      Dead Boys: ours 1979, MB 2005
+ENDED      Germs: ours 1981, MB 2013
+ENDED      Youth of Today: ours active, MB 1990
+ENDED      Gorilla Biscuits: ours active, MB 1991
+NO MATCH   G.B.H.
+ENDED      Thursday: ours 2012, MB active
+ENDED      Magazine: ours 1981, MB active
+ENDED      The Slits: ours 1981, MB 2010
+FORMED     Suicide: ours 1970, MB 1975
+LOW MATCH  Suicide -> https://musicbrainz.org/artist/7a0f02e0-0ab8-4a62-9e14-c6925cfaed07
+FORMED     XTC: ours 1972, MB 1976
+LOW MATCH  XTC -> https://musicbrainz.org/artist/97c86b2c-2765-46a2-aef8-76a7e24c430f
+FORMED     Elvis Costello: ours 1976, MB 1954
+LOW MATCH  Elvis Costello -> https://musicbrainz.org/artist/8a338e06-d182-46f2-bd16-30a09bc840ba
+ENDED      The Police: ours 1986, MB 2008
+NO MATCH   The B-52's
+FORMED     Screaming Trees: ours 1985, MB 1983
+NO MATCH   Tad
+FORMED     Royal Blood: ours 2011, MB 2013
+FORMED     Sister Rosetta Tharpe: ours 1938, MB 1915
+LOW MATCH  Sister Rosetta Tharpe -> https://musicbrainz.org/artist/f5625c87-5a62-4b3b-a375-fe08a71acddc
+FORMED     Charley Patton: ours 1929, MB 1891
+LOW MATCH  Charley Patton -> https://musicbrainz.org/artist/c71b4f57-29da-4bf2-bccb-9dc81cd2d905
+FORMED     Son House: ours 1930, MB 1902
+LOW MATCH  Son House -> https://musicbrainz.org/artist/8c87dda0-be58-4e48-a3b5-2626f26364c7
+NO MATCH   T-Bone Walker
+FORMED     Elmore James: ours 1951, MB 1918
+LOW MATCH  Elmore James -> https://musicbrainz.org/artist/6fbd2cfb-5f9c-497c-8e06-3c6668367681
+FORMED     Albert King: ours 1953, MB 1923
+LOW MATCH  Albert King -> https://musicbrainz.org/artist/10f89195-3af1-46f5-aa36-504aa3309f5a
+FORMED     Buddy Guy: ours 1957, MB 1936
+LOW MATCH  Buddy Guy -> https://musicbrainz.org/artist/4336a134-d091-4e54-9967-c7c433db6d4e
+FORMED     Fats Domino: ours 1949, MB 1928
+LOW MATCH  Fats Domino -> https://musicbrainz.org/artist/e787de5d-49e2-4b1f-9bde-1fd3a671b971
+NO MATCH   Bill Haley & His Comets
+FORMED     Carl Perkins: ours 1954, MB 1932
+LOW MATCH  Carl Perkins -> https://musicbrainz.org/artist/068bd7ab-c38e-4fae-8ed2-cb0c153ed68f
+FORMED     Johnny Cash: ours 1954, MB 1932
+LOW MATCH  Johnny Cash -> https://musicbrainz.org/artist/d43d12a1-2dc9-4257-a2fd-0a3bb1081b86
+FORMED     Eddie Cochran: ours 1955, MB 1938
+LOW MATCH  Eddie Cochran -> https://musicbrainz.org/artist/17995d1c-5b3c-4ee9-98f5-105ee3b4ada1
+FORMED     Gene Vincent: ours 1956, MB 1935
+LOW MATCH  Gene Vincent -> https://musicbrainz.org/artist/f491f5ad-0946-40a6-bab9-da319c3f3995
+FORMED     Roy Orbison: ours 1956, MB 1936
+LOW MATCH  Roy Orbison -> https://musicbrainz.org/artist/0bbbc496-c7b5-4b3f-bb6d-bd312827d6e5
+FORMED     Link Wray: ours 1956, MB 1929
+LOW MATCH  Link Wray -> https://musicbrainz.org/artist/1c1c86a2-7850-47ac-8771-ae6359bae2b7
+FORMED     Duane Eddy: ours 1957, MB 1938
+LOW MATCH  Duane Eddy -> https://musicbrainz.org/artist/efc0ee36-ad69-45af-8602-991b254b7529
+FORMED     Neil Young: ours 1966, MB 1945
+LOW MATCH  Neil Young -> https://musicbrainz.org/artist/75167b8b-44e4-407b-9d35-effe87b223cf
+ENDED      Small Faces: ours 1969, MB 1978
+ENDED      Love: ours 1974, MB 2005
+ENDED      The Seeds: ours 1972, MB active
+FORMED     Herbie Hancock: ours 1961, MB 1940
+LOW MATCH  Herbie Hancock -> https://musicbrainz.org/artist/27613b78-1b9d-4ec3-9db5-fa0743465fdd
+FORMED     Curtis Mayfield: ours 1958, MB 1942
+LOW MATCH  Curtis Mayfield -> https://musicbrainz.org/artist/4dca4bb2-23ba-4103-97e6-5810311db33a

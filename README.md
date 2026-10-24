@@ -8,10 +8,10 @@ connect.
 
 ![Loud Atlas overview](docs/overview.png)
 
-- **342 bands and solo artists** in 19 genre lanes and 70 subgenres, from Delta blues and rock 'n' roll through
-  punk, post-punk, thrash, death, black and doom metal to post-rock and modern metalcore, with scenes from 26 countries
+- **629 bands and solo artists** in 19 genre lanes and 76 subgenres, from Delta blues and rock 'n' roll through
+  punk, post-punk, thrash, death, black and doom metal to post-rock and modern metalcore, with scenes from 30 countries
 - **Influence lines** showing who shaped whom, and **shared-member lines** (dashed) for musicians who moved between bands
-- **944 key releases** plotted at their original release year, with an option to show every studio and live album
+- **1,896 key releases** plotted at their original release year, with an option to show every studio and live album
 - No build step, no framework, no server: it is a static page drawn on an HTML canvas
 
 ![Band details](docs/band-details.png)
@@ -24,6 +24,11 @@ connect.
 | **Band details** | Click a band for a Wikipedia summary, an at-a-glance fact grid, key releases, influences, shared members and lineup. |
 | **Releases** | Show the curated **key releases**, or switch to **all albums** (full studio discography from MusicBrainz), and optionally add **live albums**. The marker shows the type: a solid bone diamond is a key release, a hollow diamond another studio album, an amber circle a live album. |
 | **Click-to-filter details** | In a band's details, click its genre or subgenre tag to show only that genre or subgenre. Each of "Influenced by", "Influenced" and "Shared members" has a **filter** button that shows only that lineage (roots, offspring or member-sharing bands), and clicking a musician's name shows every band they played in. Active filters appear as removable pills at the top of the map. |
+| **Connect** | Pick two acts and see the shortest chain of influences and shared members between them, for example Robert Johnson → Cream → Budgie → Metallica → Dethklok. The chain is drawn on the map and listed step by step. |
+| **Compare** | Pin two or three acts: a shared timeline, years active together, common influences, direct influence, shared members, and a card for each. |
+| **On this day** | Every album on the map released on a chosen day of the year, with how many years ago it came out. |
+| **Themes** | Dark and light, following your system setting until you choose. The choice is remembered. |
+| **Accessibility** | A text list of every act (press `L`, or use the skip link), keyboard navigation of the map and the time strip, screen-reader announcements, visible focus, and reduced-motion support. |
 | **On this year** | A tab that lists every key release, formation and breakup in a chosen year. The year is highlighted as a column on the timeline, and a switch hides every act without a release that year. |
 | **Era filter** | Click a decade on the ruler, or use the decade chips, to filter to that era. |
 | **Time brush** | A strip along the bottom shows how many acts were active each year. Drag its window to pan, drag the edges to zoom time, or drag empty space to pick a range. "Filter to range" turns the selection into a year filter. |
@@ -34,6 +39,22 @@ connect.
 | **Minimap** | Click or drag to jump around the whole map. |
 
 ![On this year](docs/on-this-year.png)
+
+![Connect two acts: Robert Johnson to Dethklok](docs/connect.png)
+
+![Compare three thrash bands, light theme](docs/compare-light.png)
+
+### Keyboard
+
+| Key | Action |
+|---|---|
+| `Tab` to the map, then `J` / `K` | Next or previous act, then `Enter` for its details |
+| Arrow keys, `+` / `-`, `0` | Pan, zoom, fit |
+| `/` | Search |
+| `L` | List view (a text table of the acts that match your filters) |
+| `T` | Switch theme |
+| `Esc` | Clear the selection or close the list |
+| Arrow keys, `+` / `-`, `Home` on the time strip | Move, zoom and reset the time range |
 
 ### Controls
 
@@ -64,6 +85,8 @@ index.html#era=5,6
 | `year` | Year to highlight |
 | `tab` | `filters` or `year` |
 | `q`, `scope` | Search text, and `all`, `name`, `album` or `member` |
+| `theme` | `light` or `dark` |
+| `a`, `b`, `cmp`, `md`, `list` | With the Explore tab: `a=robertjohnson&b=dethklok` (a path), `cmp=metallica,megadeth` (a comparison), `md=05-07` (a day), `list=1` (list view) |
 | `era` | Decade indices, comma-separated (`0` = 1930s, `9` = 2020s) |
 | `focus`, `sub` | With `band`: `focus=roots`, `offspring` or `shared`, or `sub=Bay Area` |
 | `expand` | Genres to open in the list, e.g. `expand=thrash,death`. `tab=about` opens the About tab. |
@@ -124,7 +147,8 @@ Requires Node 18 or newer (for the built-in `fetch`).
 ```
 node tools/mb.js enrich    # MusicBrainz: lineups and shared members -> data.mb.js
 node tools/wiki.js         # Wikipedia summaries -> data.wiki.js
-node tools/albums.js       # cleaned album lists -> data.albums.js (run after enrich)
+node tools/albums.js       # cleaned album lists (with exact release days) -> data.albums.js (run after enrich)
+sh tools/refresh.sh        # all of the above, then the build, in order
 ```
 
 Both scripts are throttled to respect MusicBrainz and Wikimedia rate limits, cache every response in `tools/.cache`, and
@@ -167,6 +191,7 @@ tools/wiki.js     Wikipedia summaries
 tools/albums.js   cleans MusicBrainz album lists into data.albums.js
 tools/build.js    builds dist/
 tools/perf.js     load time and frame time measurements (headless Edge/Chrome)
+tools/refresh.sh  refreshes every generated data file, then builds
 fonts/, fonts.css self-hosted font subsets
 docs/             README screenshots
 ```
