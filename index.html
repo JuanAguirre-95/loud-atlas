@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loud Atlas — Rock & Metal Timeline</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070607'/%3E%3Cpath d='M16 5l9 11-9 11-9-11z' fill='%23c1121f'/%3E%3C/svg%3E">
+<meta name="description" content="Loud Atlas: an interactive timeline of rock and metal. Bands, artists, releases, genres, influences and shared members from 1930 to today.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Cinzel:wght@600;700&family=Metal+Mania&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<aside id="panel">
+  <header>
+    <h1>Loud Atlas</h1>
+    <button id="collapse" title="Collapse panel" aria-label="Collapse panel">×</button>
+  </header>
+  <nav class="tabs" role="tablist">
+    <button data-tab="filters" class="on" role="tab">Filters</button>
+    <button data-tab="year" role="tab">On this year</button>
+  </nav>
+
+  <div class="body" id="tab-filters">
+    <div class="searchrow">
+      <input id="search" type="search" placeholder="Search…" autocomplete="off">
+      <select id="scope" aria-label="Search in">
+        <option value="all">Everything</option>
+        <option value="name">Band name</option>
+        <option value="album">Album</option>
+        <option value="member">Member</option>
+      </select>
+    </div>
+    <div id="people"></div>
+
+    <section>
+      <h2>Type</h2>
+      <div id="kinds">
+        <label><input type="checkbox" value="band" checked> Bands</label>
+        <label><input type="checkbox" value="artist" checked> Solo artists <span class="muted">(rounded bars)</span></label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Era <span class="mini"><button id="eraClear">clear</button></span></h2>
+      <div id="eras" class="eras"></div>
+      <div class="range">
+        <input id="from" type="number" min="1930" max="2026" value="1930" aria-label="From year">
+        <span>–</span>
+        <input id="to" type="number" min="1930" max="2026" value="2026" aria-label="To year">
+      </div>
+    </section>
+
+    <section>
+      <h2>Genres <span class="mini"><button id="gAll">all</button><button id="gNone">none</button></span></h2>
+      <div id="genres"></div>
+    </section>
+
+    <section>
+      <h2>Country</h2>
+      <select id="country"><option value="">All countries</option></select>
+    </section>
+
+    <section>
+      <h2>Display</h2>
+      <label><input type="checkbox" id="optAlbums" checked> Album releases</label>
+      <label><input type="checkbox" id="optStatus" checked> Active bands fade to today</label>
+      <label><input type="checkbox" id="optSplit" checked> Split lanes by subgenre</label>
+      <label>Influence lines
+        <select id="optRel">
+          <option value="selected">On hover / select</option>
+          <option value="all">Always (all)</option>
+          <option value="off">Hidden</option>
+        </select>
+      </label>
+      <label>Shared-member lines (dashed)
+        <select id="optShared">
+          <option value="selected">On hover / select</option>
+          <option value="all">Always (all)</option>
+          <option value="off">Hidden</option>
+        </select>
+      </label>
+    </section>
+
+    <div class="actions">
+      <button id="fit">Fit view</button>
+      <button id="reset">Reset filters</button>
+    </div>
+    <p id="count" class="muted"></p>
+    <p class="muted hint">Drag to pan · scroll to zoom · Shift+scroll zooms time only · click a band for details · click the ruler: top row toggles a decade, bottom row picks a year · arrows/+/−/0 on keyboard</p>
+  </div>
+
+  <div class="body" id="tab-year" hidden>
+    <div class="yearpick">
+      <button id="yPrev" aria-label="Previous year">◀</button>
+      <input id="yearIn" type="number" min="1930" max="2026" placeholder="Year" aria-label="Year">
+      <button id="yNext" aria-label="Next year">▶</button>
+      <button id="yClear" title="Clear year" aria-label="Clear year">✕</button>
+    </div>
+    <label><input type="checkbox" id="yearOnly"> Only show acts with a release this year</label>
+    <p id="yearStats" class="muted"></p>
+    <div id="yearList"></div>
+    <p class="muted hint">Lists the key releases on this map. Click an entry to jump to it. Click the ruler on the timeline to pick a year.</p>
+  </div>
+</aside>
+<button id="open" hidden>Filters</button>
+
+<div id="detail" hidden></div>
+<div id="tip" hidden></div>
+<div id="brushwrap">
+  <canvas id="brush" aria-label="Time brush: drag to pan or zoom the timeline"></canvas>
+  <div class="bbtns">
+    <button id="bFilter" title="Use the highlighted years as the year filter">Filter to range</button>
+    <button id="bAll" title="Clear the year range and fit everything">Reset</button>
+  </div>
+</div>
+<canvas id="mini" width="220" height="120" aria-label="Minimap"></canvas>
+<div id="zoom">
+  <button id="zin" aria-label="Zoom in">+</button>
+  <button id="zout" aria-label="Zoom out">−</button>
+</div>
+
+<script src="data.js"></script>
+<script src="data.extra.js"></script>
+<script src="data.mb.js" onerror="console.info('data.mb.js not found — run: node tools/mb.js enrich')"></script>
+<script src="data.wiki.js" onerror="console.info('data.wiki.js not found — run: node tools/wiki.js')"></script>
+<script src="app.js"></script>
+</body>
+</html>

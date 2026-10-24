@@ -1,0 +1,9 @@
+# generated / local only
+dist/
+tools/.cache/
+tools/*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
