@@ -600,11 +600,30 @@ const bx = yr => BP + (yr - T0) / SPAN * (BW - BP * 2);
 const yearAtB = x => T0 + (x - BP) / (BW - BP * 2) * SPAN;
 const brushRange = () => ({ yl: wxOf(viewLeft()) / PX_YEAR + T0, yr: wxOf(W) / PX_YEAR + T0 });
 
-function setRange(yl, yr) {
-  const left = viewLeft();
-  const kx = clamp((W - left) / (Math.max(yr - yl, 1.5) * PX_YEAR), K_MIN, K_MAX);
-  view.kx = kx;
-  view.x = left - (yl - T0) * PX_YEAR * kx;
+// Show the years yl..yr across the visible map area.
+//   anchor: which year stays put on screen when the zoom limit stops the range from getting any narrower:
+//           'l' left edge, 'r' right edge, 'c' centre.
+//   keepY:  leave the vertical scale alone (panning). Otherwise the vertical scale follows the zoom like the mouse wheel
+//           does: zooming in from the stretched overview lets bar heights catch up, so names become readable.
+function setRange(yl, yr, opt = {}) {
+  const left = viewLeft(), width = W - left;
+  const kx = clamp(width / (Math.max(yr - yl, 1.5) * PX_YEAR), K_MIN, K_MAX);
+  const anchor = opt.anchor || 'l';
+  const x = anchor === 'r' ? W - (yr - T0) * PX_YEAR * kx
+          : anchor === 'c' ? left + width / 2 - ((yl + yr) / 2 - T0) * PX_YEAR * kx
+          : left - (yl - T0) * PX_YEAR * kx;
+  let ky = view.ky;
+  if (!opt.keepY && Math.abs(kx - view.kx) > 1e-9) {
+    const f = kx / view.kx;
+    if (f > 1 && kx > ky * 1.1) ky = Math.min(ky * Math.pow(f, 1.5), kx);   // zooming in from a stretched view: heights catch up
+    else ky = ky * f;                                                        // otherwise scale uniformly
+    ky = clamp(ky, K_MIN, K_MAX);
+  }
+  if (ky !== view.ky) {                                                      // keep the row at the middle of the screen in place
+    const cy = (AXIS_H + H) / 2, wyc = wyOf(cy);
+    view.y = cy - wyc * ky;
+  }
+  view.kx = kx; view.ky = ky; view.x = x;
   anim = null; dirty = true;
 }
 
@@ -664,14 +683,18 @@ function roundRectOn(c, x, y, w, h, r) {
 let bdrag = null;
 function brushMode(x) {
   const { yl, yr } = brushRange(), xl = bx(yl), xr = bx(yr), tol = 8;
-  if (Math.abs(x - xl) < tol) return 'l';
-  if (Math.abs(x - xr) < tol) return 'r';
-  return x > xl && x < xr ? 'move' : 'new';
+  const dl = Math.abs(x - xl), dr = Math.abs(x - xr);
+  if (Math.min(dl, dr) < tol) return dl <= dr ? 'l' : 'r';                   // nearest handle, also for very narrow windows
+  const inside = x > xl && x < xr;
+  const covers = (Math.min(xr, BW - BP) - Math.max(xl, BP)) / (BW - BP * 2);
+  if (inside && covers > 0.85) return 'new';                                 // whole timeline in view: dragging selects a range
+  return inside ? 'move' : 'new';
 }
 brush.addEventListener('pointerdown', e => {
   brush.setPointerCapture(e.pointerId);
   const x = e.clientX - brush.getBoundingClientRect().left, rg = brushRange();
   bdrag = { mode: brushMode(x), y0: yearAtB(x), yl: rg.yl, yr: rg.yr, moved: false };
+  if (bdrag.mode === 'move') brush.style.cursor = 'grabbing';
 });
 brush.addEventListener('pointermove', e => {
   const x = e.clientX - brush.getBoundingClientRect().left;
@@ -682,15 +705,18 @@ brush.addEventListener('pointermove', e => {
   }
   const y = yearAtB(x), d = y - bdrag.y0;
   if (Math.abs(d) > 0.05) bdrag.moved = true;
-  if (bdrag.mode === 'move') setRange(bdrag.yl + d, bdrag.yr + d);
-  else if (bdrag.mode === 'l') setRange(Math.min(y, bdrag.yr - 1.5), bdrag.yr);
-  else if (bdrag.mode === 'r') setRange(bdrag.yl, Math.max(y, bdrag.yl + 1.5));
+  if (bdrag.mode === 'move') {                                               // pan; keep the window inside the data
+    const dd = clamp(d, T0 - 2 - bdrag.yl, NOW + 3 - bdrag.yr);
+    setRange(bdrag.yl + dd, bdrag.yr + dd, { keepY: true });
+  }
+  else if (bdrag.mode === 'l') setRange(Math.min(y, bdrag.yr - 1.5), bdrag.yr, { anchor: 'r' });
+  else if (bdrag.mode === 'r') setRange(bdrag.yl, Math.max(y, bdrag.yl + 1.5), { anchor: 'l' });
   else if (bdrag.moved) setRange(Math.min(bdrag.y0, y), Math.max(bdrag.y0, y));
 });
 const endBrush = () => {
   if (bdrag && !bdrag.moved && bdrag.mode === 'new') {      // plain click outside the window: recentre on that year
     const span = bdrag.yr - bdrag.yl, c = bdrag.y0;
-    setRange(c - span / 2, c + span / 2);
+    setRange(c - span / 2, c + span / 2, { keepY: true, anchor: 'c' });
   }
   bdrag = null;
 };
@@ -700,7 +726,7 @@ brush.addEventListener('dblclick', () => fit());
 brush.addEventListener('wheel', e => {          // wheel over the strip zooms time only, around the window centre
   e.preventDefault();
   const { yl, yr } = brushRange(), c = (yl + yr) / 2, span = (yr - yl) * Math.exp(e.deltaY * 0.0015);
-  setRange(c - span / 2, c + span / 2);
+  setRange(c - span / 2, c + span / 2, { anchor: 'c' });
 }, { passive: false });
 $('bFilter').onclick = () => {
   const { yl, yr } = brushRange();
@@ -1277,7 +1303,7 @@ requestAnimationFrame(frame);
 
 // Dev hook for tools/perf.js (open the page with #perf in the URL)
 if (/perf/.test(location.hash)) {
-  window.__atlas = { draw, layout, fit, setReleases, zoomAt, view, filters, bandById, bootMs: performance.now(),
+  window.__atlas = { draw, layout, fit, setReleases, zoomAt, view, filters, bandById, bootMs: performance.now(), setRange, brushRange, brushMode, bx, yearAtB,
                      get visibleCount() { return visible.length; } };
 }
 })();
