@@ -239,3 +239,11 @@ body.hasDetail #filterbar { max-width: calc(100% - 1060px); }
 .links small .person { cursor: pointer; border-bottom: 1px dotted #ffd66688; }
 .links small .person:hover { color: #fff; border-bottom-color: #fff; }
 @media (max-width: 1200px) { #filterbar, body.hasDetail #filterbar { max-width: calc(100% - 24px); top: 62px; } }
+
+/* ---- dropdowns: dark everywhere, including the opened list ---- */
+:root { color-scheme: dark; }
+select { width: 100%; background: #050404; color: var(--text); border: 1px solid #3a1f22; border-radius: 3px; padding: 6px 8px; font-size: 15px; }
+select:focus { outline: 1px solid var(--accent); box-shadow: 0 0 8px #c1121f88; }
+select option, select optgroup { background: #120b0c; color: var(--text); }
+select option:checked { background: #5a0d14; color: #fff; }
+#scope { width: 104px; padding: 6px 4px; }
