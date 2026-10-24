@@ -49,6 +49,10 @@ async function json(p) { for (let i = 0; i < 60; i++) { try { return await (awai
   await send('Emulation.setDeviceMetricsOverride', { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
   await send('Page.navigate', { url: target });
   for (let i = 0; i < 120; i++) { if (await evalJs('!!window.__atlas')) break; await sleep(250); }
+  if (!(await evalJs('!!window.__atlas'))) {
+    const info = await evalJs('JSON.stringify({ href: location.href, state: document.readyState, hook: /perf/.test(location.hash) })');
+    throw new Error('page did not expose the perf hook (is it a build that includes it?): ' + info);
+  }
   await sleep(1500);                                         // let fonts / lazy scripts settle
 
   const load = await evalJs(`(() => {
