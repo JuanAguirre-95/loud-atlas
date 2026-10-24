@@ -1,0 +1,9 @@
+{
+  // Cloudflare Workers (static assets). `node tools/build.js` creates ./dist; `npx wrangler deploy` uploads it.
+  // "name" must match the project name in the Cloudflare dashboard.
+  "name": "loud-atlas",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./dist"
+  }
+}
