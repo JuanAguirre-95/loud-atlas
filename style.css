@@ -22,7 +22,7 @@ button:hover { border-color: #3a4050; background: #2b3040; }
 #panel { position: fixed; top: 12px; left: 12px; bottom: 12px; width: 264px; background: var(--panel);
   backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column;
   z-index: 5; transition: transform .2s; }
-#panel.closed { transform: translateX(-290px); }
+#panel.closed { transform: translateX(calc(-100% - 24px)); visibility: hidden; transition: transform .2s, visibility 0s .2s; }
 #panel header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 4px; }
 #panel h1 { margin: 0; font-size: 15px; letter-spacing: .28em; color: var(--accent); }
 #collapse { padding: 0 8px; font-size: 18px; line-height: 1.2; }
@@ -194,3 +194,33 @@ body.hasDetail #brushwrap { right: 364px; }
 body.hasDetail #zoom { right: 364px; }
 body.hasDetail #mini { right: 408px; }
 @media (max-width: 700px) { #brushwrap { display: none; } #mini { bottom: 12px; } }
+
+/* ---- touch / small screens ---- */
+button, select, input { touch-action: manipulation; }
+@media (max-width: 700px) {
+  #panel input, #panel select, .yearpick input { font-size: 16px; }
+  #panel button, .tabs button { min-height: 40px; }
+  .eras .era { min-height: 38px; }
+  #detail { max-height: 52%; }
+  #zoom { top: 60px; }
+}
+@media (pointer: coarse) {
+  #zoom button { width: 44px; height: 44px; }
+  .chip { padding: 8px 6px; }
+  label { margin: 10px 0; }
+}
+
+/* ---- release lists: key vs other, live badge ---- */
+#detail .rel li.minor span, #detail .rel li.minor b { color: var(--muted); }
+#detail .rel li.minor:hover span, #detail .rel li.minor:hover b { color: var(--text); }
+em { font-style: normal; }
+li em, .yi em { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #b4343c; margin-left: 4px; }
+.yi.minor b { font-weight: 500; color: #cfc8ba; }
+
+/* ---- release marker legend ---- */
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 2px 0 4px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 9px; height: 9px; }
+.legend .k { background: #e8e2d4; transform: rotate(45deg); }
+.legend .s { border: 1.5px solid #e8e2d4aa; background: #0a0707; transform: rotate(45deg); }
+.legend .l { background: #f2b134; border-radius: 50%; width: 10px; height: 10px; }

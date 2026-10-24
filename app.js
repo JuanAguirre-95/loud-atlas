@@ -2,13 +2,14 @@
 'use strict';
 
 const NOW = 2026, T0 = 1930;
-const PX_YEAR = 48, ROW_H = 40, BAR_H = 18, LANE_PAD = 14, AXIS_H = 50, ERA_H = 20;
+const COARSE = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
+const PX_YEAR = 48, ROW_H = 40, BAR_H = 18, LANE_PAD = 14, ERA_H = COARSE ? 30 : 20, AXIS_H = ERA_H + 30;
 const K_MIN = 0.03, K_MAX = 12;
 
 const GROUP_GAP = 14;
 const FB = "'Barlow Condensed', 'Arial Narrow', sans-serif";
 const FH = "'Cinzel', Georgia, serif";
-const BONE = '#e8e2d4', ASH = '#8a817a', BLOOD = '#c1121f';
+const BONE = '#e8e2d4', ASH = '#8a817a', BLOOD = '#c1121f', LIVE_COL = '#f2b134';
 
 // decades along the top of the ruler (click one to filter to it)
 const ERAS = [
@@ -74,12 +75,46 @@ for (const [a, b, who] of [...(window.LINKS || []), ...(window.MB_LINKS || [])])
 BANDS.forEach(b => b.peopleLC = []);
 peopleMap.forEach((p, k) => p.bands.forEach(id => bandById[id].peopleLC.push(k)));
 
+// Releases. "Key" releases are the curated originals in data.js. "All" adds MusicBrainz studio albums, and optionally live
+// albums, from data.albums.js, which is only downloaded when the user switches the mode.
+BANDS.forEach(b => b.albums.forEach(a => { a.key = true; }));
+const keyNorm = t => t.toLowerCase().replace(/[\u2018\u2019'`\u00b4]/g, '').replace(/&/g, 'and').replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, ' ').trim();
+let allLoaded = false;
+function buildAll() {
+  for (const b of BANDS) {
+    const raw = (window.ALBUMS || {})[b.id];
+    if (!raw) { b.all = b.albums; continue; }
+    const keys = new Set(b.albums.map(a => keyNorm(a.title)));
+    b.all = raw.split(';').map(x => {
+      const p = x.split('|');
+      return { year: +p[0], title: p[1], live: p[2] === 'L', key: keys.has(keyNorm(p[1])) };
+    });
+    b.albums.forEach(a => { if (!b.all.some(x => keyNorm(x.title) === keyNorm(a.title))) b.all.push(a); });
+    b.all.sort((x, y) => x.year - y.year);
+  }
+}
+function loadAlbums(cb) {
+  if (allLoaded) return cb(true);
+  const done = ok => { if (ok) { buildAll(); allLoaded = true; } cb(ok); };
+  if (window.ALBUMS) return done(true);
+  const el = document.createElement('script');
+  el.src = 'data.albums.js';
+  el.onload = () => done(true);
+  el.onerror = () => done(false);
+  document.head.appendChild(el);
+}
+function rels(b) {
+  if (filters.releases !== 'all' || !b.all) return b.albums;
+  return filters.live ? b.all : b.all.filter(a => a.key || !a.live);
+}
+
 const col = (g, l = 60, a = 1) => `hsla(${g.hue},${g.sat}%,${l}%,${a})`;
 
 // ---------- state ----------
 const filters = { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: NOW, country: '',
                   albums: true, fade: true, rel: 'selected', shared: 'selected', split: true,
-                  kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false };
+                  kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false,
+                  releases: 'key', live: false };
 const view = { x: 0, y: 0, kx: 1, ky: 1 };
 let world = { x0: 0, y0: 0, x1: 100, y1: 100 };
 let selYear = null;
@@ -94,11 +129,11 @@ function matches(b) {
   const end = b.ended ?? NOW;
   if (end < filters.from || b.formed > filters.to) return false;
   if (filters.eras.size && ![...filters.eras].some(i => end >= ERAS[i].from && b.formed <= ERAS[i].to)) return false;
-  if (filters.yearOnly && selYear != null && !b.albums.some(a => a.year === selYear)) return false;
+  if (filters.yearOnly && selYear != null && !rels(b).some(a => a.year === selYear)) return false;
   const q = filters.q.trim().toLowerCase();
   if (q) {
     const inName = b.name.toLowerCase().includes(q);
-    const inAlbum = b.albums.some(a => a.title.toLowerCase().includes(q));
+    const inAlbum = rels(b).some(a => a.title.toLowerCase().includes(q));
     const inMember = b.peopleLC.some(n => n.includes(q));
     const ok = filters.scope === 'name' ? inName : filters.scope === 'album' ? inAlbum
              : filters.scope === 'member' ? inMember : (inName || inAlbum || inMember);
@@ -144,7 +179,7 @@ function layout() {
   histo = new Array(NOW - T0 + 1).fill(0); relHisto = new Array(NOW - T0 + 1).fill(0);
   for (const b of visible) {
     for (let y = Math.max(b.formed, T0); y <= Math.min(b.ended ?? NOW, NOW); y++) histo[y - T0]++;
-    for (const a of b.albums) if (a.year >= T0 && a.year <= NOW) relHisto[a.year - T0]++;
+    for (const a of rels(b)) if (a.year >= T0 && a.year <= NOW) relHisto[a.year - T0]++;
   }
   histoMax = Math.max(1, ...histo); relMax = Math.max(1, ...relHisto);
   if (selected && !visible.includes(selected)) selected = null;
@@ -384,39 +419,47 @@ function draw() {
       ctx.shadowBlur = 0;
     }
 
-    if (filters.albums && b.albums.length) {
+    const shown = filters.albums ? rels(b) : [];
+    if (shown.length) {
       const r = Math.max(2.5, 4.5 * Math.min(view.kx, view.ky) ** .5);
-      for (const a of b.albums) {
+      for (const a of shown) {
         if (a.year < b.formed) continue;
-        const ax = sx((a.year + .5 - T0) * PX_YEAR), ay = y0 + bh / 2;
+        const ax = sx((a.year + .5 - T0) * PX_YEAR), ay = y0 + bh;      // markers sit on the bar's bottom edge, clear of the name
         if (ax < -10 || ax > W + 10) continue;
         const isHA = hoverAlbum && hoverAlbum.a === a;
         const isYr = selYear != null && a.year === selYear;
         if (isYr) { ctx.shadowColor = BLOOD; ctx.shadowBlur = 14; }
-        ctx.fillStyle = isHA || isYr ? BLOOD : '#0a0707';
-        ctx.strokeStyle = isHA || isYr ? '#fff' : BONE;
-        ctx.lineWidth = 1.3;
-        diamond(ax, ay, isHA ? r * 1.4 : isYr ? r * 1.5 : r); ctx.fill(); ctx.stroke();
+        const rr = (a.key ? r : r * .72) * (isHA ? 1.4 : isYr ? 1.5 : 1);     // key releases are bigger than the rest
+        // colour = type: key release solid bone, other studio album hollow, live album amber
+        ctx.fillStyle = isHA || isYr ? BLOOD : a.live ? LIVE_COL : a.key ? BONE : '#0a0707';
+        ctx.strokeStyle = isHA || isYr ? '#fff' : a.live ? 'rgba(20,10,0,.75)' : a.key ? '#0a0707' : 'rgba(232,226,212,.6)';
+        ctx.lineWidth = a.key || a.live ? 1.2 : 1;
+        if (a.live) { ctx.beginPath(); ctx.arc(ax, ay, rr, 0, 7); } else diamond(ax, ay, rr);   // live albums are round
+        ctx.fill(); ctx.stroke();
         ctx.shadowBlur = 0;
-        if ((ppy > 90 && view.ky > .9) || isYr) albumLabels.push({ x: ax, y: y0 + bh + 3, t: a.title, c: isYr ? '#fff' : col(g, 75) });
+        if ((a.key ? ppy > 90 && view.ky > .9 : ppy > 150 && view.ky > 1.1) || isYr)
+          albumLabels.push({ x: ax, y: y0 + bh + r + 3, t: a.title, key: a.key, c: isYr ? '#fff' : a.key ? col(g, 75) : 'rgba(184,174,164,.8)' });
       }
     }
     ctx.globalAlpha = 1;
   }
 
-  // album titles (skip overlaps within the same row)
+  // album titles: key releases are placed first, the rest only where there is room
   if (albumLabels.length) {
     const f2 = clamp(9.5 * view.ky, 8, 13);
     ctx.font = `${f2}px ${FB}`;
     ctx.textBaseline = 'top';
-    const lastEnd = {};
-    for (const l of albumLabels) {
-      const w = ctx.measureText(l.t).width, key = Math.round(l.y);
-      if ((lastEnd[key] ?? -1e9) > l.x - 4) continue;
-      lastEnd[key] = l.x + w + 6;
+    const rows = {};
+    const place = l => {
+      const w = ctx.measureText(l.t).width, k = Math.round(l.y), x0 = l.x - 3, x1 = x0 + w + 5;
+      const row = rows[k] || (rows[k] = []);
+      if (row.some(r => x0 < r[1] && x1 > r[0])) return;
+      row.push([x0, x1]);
       ctx.fillStyle = l.c;
-      ctx.fillText(l.t, l.x - 3, l.y);
-    }
+      ctx.fillText(l.t, x0, l.y);
+    };
+    albumLabels.filter(l => l.key).forEach(place);
+    albumLabels.filter(l => !l.key).forEach(place);
   }
 
   // shared-member captions
@@ -716,19 +759,22 @@ function frame() {
 function hitTest(px, py) {
   if (py < AXIS_H) return {};
   const wx = wxOf(px), wy = wyOf(py);
-  const bh = BAR_H;
-  let album = null, band = null;
+  const slop = (COARSE ? 14 : 3) / view.ky;                 // screen px converted to world units
+  const aslop = COARSE ? 18 : 8;
+  const gate = Math.max(slop, aslop / view.ky);             // markers hang below the bar, so look a little further
+  let album = null, band = null, best = Infinity, bestAlbum = Infinity;
   for (const b of visible) {
-    if (wy < b.y - 2 || wy > b.y + bh + 2) continue;
+    const cy = b.y + BAR_H / 2, dy = Math.abs(wy - cy), my = b.y + BAR_H;   // my = marker line (bar's bottom edge)
+    if (dy > BAR_H / 2 + gate) continue;
     if (filters.albums) {
-      for (const a of b.albums) {
-        const ax = sx((a.year + .5 - T0) * PX_YEAR);
-        if (a.year >= b.formed && Math.abs(ax - px) < 8 && Math.abs(sy(b.y + bh / 2) - py) < 10) { album = { a, b }; break; }
+      for (const a of rels(b)) {
+        if (a.year < b.formed) continue;
+        const dx = Math.abs(sx((a.year + .5 - T0) * PX_YEAR) - px), d = Math.hypot(dx, (my - wy) * view.ky);
+        if (dx < aslop && d < bestAlbum && Math.abs(sy(my) - py) < aslop) { bestAlbum = d; album = { a, b }; }
       }
     }
     const right = Math.max(b.x1, b.x0 + b.tw + 14);
-    if (wx >= b.x0 && wx <= right) band = b;
-    if (album || band) break;
+    if (dy <= BAR_H / 2 + slop && wx >= b.x0 - slop && wx <= right && dy < best) { best = dy; band = b; }
   }
   return { band: album ? album.b : band, album };
 }
@@ -753,22 +799,30 @@ function autoSummary(b) {
 
 function facts(b) {
   const g = genreById[b.genre], kids = children[b.id] || [];
-  const years = (b.ended ?? NOW) - b.formed, rel = b.albums.map(a => a.year);
+  const years = (b.ended ?? NOW) - b.formed, rel = rels(b).map(a => a.year);
   const peers = BANDS.filter(o => o !== b && o.formed === b.formed).length;
   return [
     ['Active', `${b.formed} – ${b.ended ?? 'present'}`, `${years} years`],
     ['Origin', b.country, ''],
     ['Genre', g.name, b.sub && b.sub !== 'Other' ? b.sub : ''],
-    ['Key releases', String(rel.length), rel.length ? `${Math.min(...rel)}–${Math.max(...rel)}` : ''],
+    [filters.releases === 'all' ? 'Releases' : 'Key releases', String(rel.length), rel.length ? `${Math.min(...rel)}–${Math.max(...rel)}` : ''],
     ['Influence', `${b.from.length} in · ${kids.length} out`, ''],
     ['Era', `${Math.floor(b.formed / 10) * 10}s`, peers ? `${peers} other act${peers > 1 ? 's' : ''} formed in ${b.formed}` : ''],
   ];
 }
 
+function releaseList(b) {
+  const list = rels(b), all = filters.releases === 'all';
+  const more = all || !b.all ? 0 : b.all.filter(a => !a.live).length - list.length;
+  return `<h4>${all ? 'Releases' : 'Key releases'} <span class="muted">(click a year)</span></h4>
+    <ul class="rel">${list.map(a => `<li data-year="${a.year}" class="${a.year === selYear ? 'cur' : ''}${a.key ? '' : ' minor'}"><b>${a.year}</b><span>${esc(a.title)}${a.live ? ' <em>live</em>' : ''}</span></li>`).join('')}</ul>
+    ${more > 0 ? `<div class="muted">+ ${more} more studio album${more > 1 ? 's' : ''}: set <b>Releases</b> to All albums in the filters.</div>` : ''}`;
+}
 function renderDetail() {
   const el = $('detail');
   document.body.classList.toggle('hasDetail', !!selected);
   if (!selected) { el.hidden = true; return; }
+  if (W <= 700 && !$('panel').classList.contains('closed')) setPanel(false);
   const b = selected, g = genreById[b.genre];
   const kids = children[b.id] || [], shared = sharedOf[b.id] || [];
   const wiki = (window.WIKI || {})[b.id];
@@ -789,8 +843,7 @@ function renderDetail() {
     <h4>At a glance</h4>
     <div class="facts">${facts(b).map(([l, v, sub]) => `<div><small>${l}</small><b>${esc(v)}</b>${sub ? `<em>${esc(sub)}</em>` : ''}</div>`).join('')}</div>
 
-    <h4>Key releases <span class="muted">(click a year)</span></h4>
-    <ul class="rel">${b.albums.map(a => `<li data-year="${a.year}" class="${a.year === selYear ? 'cur' : ''}"><b>${a.year}</b><span>${esc(a.title)}</span></li>`).join('')}</ul>
+    ${releaseList(b)}
 
     ${b.from.length ? `<h4>Influenced by</h4><div class="links">${linkList(b.from)}</div>` : ''}
     ${kids.length ? `<h4>Influenced</h4><div class="links">${linkList(kids)}</div>` : ''}
@@ -827,19 +880,19 @@ function renderYear() {
   }
   const rel = [], formed = [], ended = [];
   for (const b of visible) {
-    b.albums.filter(a => a.year === selYear).forEach(a => rel.push({ b, a }));
+    rels(b).filter(a => a.year === selYear).forEach(a => rel.push({ b, a }));
     if (b.formed === selYear) formed.push(b);
     if (b.ended === selYear) ended.push(b);
   }
   const order = GENRES.map(g => g.id);
   rel.sort((x, y) => order.indexOf(x.b.genre) - order.indexOf(y.b.genre) || x.b.name.localeCompare(y.b.name));
-  const total = BANDS.reduce((n, b) => n + b.albums.filter(a => a.year === selYear).length, 0);
+  const total = BANDS.reduce((n, b) => n + rels(b).filter(a => a.year === selYear).length, 0);
   stats.textContent = `${rel.length} release${rel.length === 1 ? '' : 's'} · ${formed.length} formed · ${ended.length} ended` +
     (total > rel.length ? ` (${total - rel.length} hidden by filters)` : '');
   let html = '', last = null;
   for (const { b, a } of rel) {
     if (b.genre !== last) { const g = genreById[b.genre]; html += `<h5 style="--c:${col(g)}"><i></i>${esc(g.name)}</h5>`; last = b.genre; }
-    html += `<div class="yi" data-id="${b.id}" data-year="${selYear}"><b>${esc(a.title)}</b><span>${esc(b.name)}</span></div>`;
+    html += `<div class="yi${a.key ? '' : ' minor'}" data-id="${b.id}" data-year="${selYear}"><b>${esc(a.title)}${a.live ? ' <em>live</em>' : ''}</b><span>${esc(b.name)}</span></div>`;
   }
   const people = (title, arr) => arr.length
     ? `<h5 class="plain">${title}</h5>` + arr.map(b => `<div class="yi" data-id="${b.id}" data-year="${selYear}"><b>${esc(b.name)}</b><span>${esc(genreById[b.genre].name)}</span></div>`).join('') : '';
@@ -870,7 +923,7 @@ function showTip(e, band, album) {
   if (!band) { tip.hidden = true; return; }
   const g = genreById[band.genre];
   tip.innerHTML = album
-    ? `<b>${album.a.title}</b><small>${band.name} · ${album.a.year}</small>`
+    ? `<b>${esc(album.a.title)}</b><small>${esc(band.name)} · ${album.a.year} · ${album.a.live ? 'live album' : album.a.key ? 'key release' : 'studio album'}</small>`
     : `<b>${band.name}</b><small>${band.kind === 'artist' ? 'Solo artist · ' : ''}${g.name} · ${band.formed}–${band.ended ?? 'present'} · ${band.country}</small>`;
   tip.hidden = false;
   const r = tip.getBoundingClientRect();
@@ -1032,6 +1085,22 @@ document.querySelectorAll('#kinds input').forEach(cb => cb.onchange = () => {
   cb.checked ? filters.kinds.add(cb.value) : filters.kinds.delete(cb.value); refilter();
 });
 $('optAlbums').onchange = e => { filters.albums = e.target.checked; dirty = true; };
+function setReleases(mode, live) {
+  const apply = () => {
+    filters.releases = mode; if (live != null) filters.live = live;
+    $('optReleases').value = mode; $('optLive').checked = filters.live; $('optLive').disabled = mode !== 'all';
+    layout();
+  };
+  if (mode === 'all' && !allLoaded) {
+    $('optReleases').disabled = true;
+    loadAlbums(ok => {
+      $('optReleases').disabled = false;
+      if (ok) apply(); else { $('optReleases').value = 'key'; alert('Could not load data.albums.js. Run: node tools/albums.js'); }
+    });
+  } else apply();
+}
+$('optReleases').onchange = e => setReleases(e.target.value);
+$('optLive').onchange = e => { filters.live = e.target.checked; layout(); };
 $('optStatus').onchange = e => { filters.fade = e.target.checked; dirty = true; };
 $('optRel').onchange = e => { filters.rel = e.target.value; dirty = true; };
 $('optShared').onchange = e => { filters.shared = e.target.value; dirty = true; };
@@ -1039,19 +1108,28 @@ $('optSplit').onchange = e => { filters.split = e.target.checked; layout(); fit(
 $('fit').onclick = () => fit();
 $('reset').onclick = () => {
   Object.assign(filters, { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: NOW, country: '', kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false });
+  filters.releases = 'key'; filters.live = false; $('optReleases').value = 'key'; $('optLive').checked = false; $('optLive').disabled = true;
   $('scope').value = 'all'; $('yearOnly').checked = false; $('people').innerHTML = ''; buildEras(); selYear = null; $('yearIn').value = '';
   document.querySelectorAll('#kinds input').forEach(cb => cb.checked = true);
   $('search').value = ''; $('from').value = T0; $('to').value = NOW; $('country').value = '';
   buildGenres(); refilter(); fit();
 };
-$('collapse').onclick = () => { $('panel').classList.add('closed'); document.body.classList.add('pclosed'); $('open').hidden = false; dirty = true; };
-$('open').onclick = () => { $('panel').classList.remove('closed'); document.body.classList.remove('pclosed'); $('open').hidden = true; dirty = true; };
+function setPanel(open) {
+  if (open && W <= 700 && selected) { selected = null; renderDetail(); }
+  $('panel').classList.toggle('closed', !open);
+  document.body.classList.toggle('pclosed', !open);
+  $('open').hidden = open;
+  dirty = true;
+}
+$('collapse').onclick = () => setPanel(false);
+$('open').onclick = () => setPanel(true);
 
 const countries = [...new Set(BANDS.flatMap(b => b.country.split('/')))].sort();
 countries.forEach(c => $('country').add(new Option(c, c)));
 
 // ---------- boot ----------
-resize(); buildGenres(); buildEras(); layout(); fit(false);
+resize(); if (W <= 700) setPanel(false);
+buildGenres(); buildEras(); layout(); fit(false);
 if (document.fonts) Promise.all(['600 14px "Barlow Condensed"', '600 12px Cinzel'].map(f => document.fonts.load(f))).then(() => { layout(); }).catch(() => {});
 (() => {
   const hp = new URLSearchParams(location.hash.slice(1));
@@ -1061,6 +1139,7 @@ if (document.fonts) Promise.all(['600 14px "Barlow Condensed"', '600 12px Cinzel
   if (hp.get('year')) { selYear = +hp.get('year'); $('yearIn').value = selYear; }
   if (hp.get('tab')) showTab(hp.get('tab'));
   layout(); fit(false);
+  if (hp.get('releases') === 'all') setReleases('all', hp.get('live') === '1');
   if (hp.get('band') && bandById[hp.get('band')] && visible.includes(bandById[hp.get('band')])) {
     selected = bandById[hp.get('band')]; renderDetail();
     const k = +hp.get('zoom') || 1.4, b = selected, cy = b.y + BAR_H / 2;

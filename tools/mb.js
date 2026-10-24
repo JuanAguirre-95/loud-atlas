@@ -60,19 +60,39 @@ function pickArtist(results, band) {
   return loose ? { artist: loose, confidence: 'low' } : null;
 }
 
+// Studio albums: every release group of type Album with no secondary type (one cheap paged request per act).
+// Live albums: MusicBrainz also tags unofficial concert recordings as "live", so for live albums we only accept release
+// groups that have at least one OFFICIAL release (status=official). That drops bootlegs. Capped at 3 pages per act.
 async function albumsOf(mbid) {
-  const out = []; let offset = 0;
+  const rgs = []; let offset = 0;
   for (;;) {
     const r = await mb('release-group', { artist: mbid, type: 'album', limit: 100, offset });
-    out.push(...r['release-groups']);
+    rgs.push(...r['release-groups']);
     offset += 100;
     if (offset >= r['release-group-count']) break;
   }
-  const seen = new Set();
-  return out
+  const studio = rgs
     .filter(g => !(g['secondary-types'] || []).length && year(g['first-release-date']))
-    .map(g => ({ year: year(g['first-release-date']), title: g.title }))
-    .sort((a, b) => a.year - b.year)
+    .map(g => ({ year: year(g['first-release-date']), title: g.title }));
+
+  const liveGroups = new Map();
+  let lo = 0, total = Infinity, pages = 0;
+  while (lo < total && pages < 3) {
+    const r = await mb('release', { artist: mbid, status: 'official', type: 'live', inc: 'release-groups', limit: 100, offset: lo });
+    total = r['release-count'] || 0;
+    for (const rel of r.releases || []) {
+      const g = rel['release-group'];
+      const t = (g && g['secondary-types']) || [];
+      if (g && g['primary-type'] === 'Album' && t.length === 1 && t[0] === 'Live' && year(g['first-release-date']) && !liveGroups.has(g.id))
+        liveGroups.set(g.id, g);
+    }
+    lo += 100; pages++;
+  }
+  const live = [...liveGroups.values()].map(g => ({ year: year(g['first-release-date']), title: g.title, live: true }));
+
+  const seen = new Set();
+  return [...studio, ...live]
+    .sort((a, b) => a.year - b.year || a.title.localeCompare(b.title))
     .filter(a => { const k = a.title.toLowerCase(); return seen.has(k) ? false : seen.add(k); });
 }
 
@@ -159,7 +179,7 @@ async function add(names) {
     if (taken.has(id)) { console.log(`• ${name}: already present`); continue; }
     const tag = await mb(`artist/${a.id}`, { inc: 'tags' });
     const genre = guessGenre(tag.tags);
-    const albums = await albumsOf(a.id);
+    const albums = (await albumsOf(a.id)).filter(x => !x.live);
     existing.push({
       id, name: a.name, kind: a.type === 'Person' ? 'artist' : 'band', genre, sub: null, country: a.area?.name || a.country || '?',
       formed: year(a['life-span']?.begin) || 0, ended: a['life-span']?.ended ? year(a['life-span']?.end) : null,

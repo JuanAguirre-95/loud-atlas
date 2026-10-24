@@ -66,7 +66,17 @@
 
     <section>
       <h2>Display</h2>
-      <label><input type="checkbox" id="optAlbums" checked> Album releases</label>
+      <label><input type="checkbox" id="optAlbums" checked> Show releases on the timeline</label>
+      <label>Releases shown
+        <select id="optReleases">
+          <option value="key">Key releases (curated)</option>
+          <option value="all">All albums (MusicBrainz)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="optLive" disabled> Include live albums <span class="muted">(needs All albums)</span></label>
+      <div class="legend" aria-label="Release marker colours">
+        <span><i class="k"></i>key release</span><span><i class="s"></i>studio album</span><span><i class="l"></i>live album</span>
+      </div>
       <label><input type="checkbox" id="optStatus" checked> Active bands fade to today</label>
       <label><input type="checkbox" id="optSplit" checked> Split lanes by subgenre</label>
       <label>Influence lines

@@ -18,7 +18,7 @@ const copy = f => {
   if (!fs.existsSync(path.join(root, f))) { console.log('skip (missing):', f); return; }
   fs.copyFileSync(path.join(root, f), path.join(dist, f));
 };
-['index.html', 'style.css', 'app.js', 'data.js', 'data.extra.js', 'data.wiki.js'].forEach(copy);
+['index.html', 'style.css', 'app.js', 'data.js', 'data.extra.js', 'data.wiki.js', 'data.albums.js'].forEach(copy);
 
 // data.mb.js: keep mbid, confidence, members; drop albums
 const w = {};

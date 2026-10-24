@@ -11,7 +11,7 @@ connect.
 - **342 bands and solo artists** in 19 genre lanes and 70 subgenres, from Delta blues and rock 'n' roll through
   punk, post-punk, thrash, death, black and doom metal to post-rock and modern metalcore, with scenes from 26 countries
 - **Influence lines** showing who shaped whom, and **shared-member lines** (dashed) for musicians who moved between bands
-- **944 key releases** plotted on the timeline at their original release year
+- **944 key releases** plotted at their original release year, with an option to show every studio and live album
 - No build step, no framework, no server: it is a static page drawn on an HTML canvas
 
 ![Band details](docs/band-details.png)
@@ -22,6 +22,7 @@ connect.
 |---|---|
 | **Open canvas** | Drag to pan, scroll to zoom, Shift+scroll to zoom time only. Pinch works on touch screens. |
 | **Band details** | Click a band for a Wikipedia summary, an at-a-glance fact grid, key releases, influences, shared members and lineup. |
+| **Releases** | Show the curated **key releases**, or switch to **all albums** (full studio discography from MusicBrainz), and optionally add **live albums**. The marker shows the type: a solid bone diamond is a key release, a hollow diamond another studio album, an amber circle a live album. |
 | **On this year** | A tab that lists every key release, formation and breakup in a chosen year. The year is highlighted as a column on the timeline, and a switch hides every act without a release that year. |
 | **Era filter** | Click a decade on the ruler, or use the decade chips, to filter to that era. |
 | **Time brush** | A strip along the bottom shows how many acts were active each year. Drag its window to pan, drag the edges to zoom time, or drag empty space to pick a range. "Filter to range" turns the selection into a year filter. |
@@ -62,6 +63,7 @@ index.html#era=5,6
 | `tab` | `filters` or `year` |
 | `q`, `scope` | Search text, and `all`, `name`, `album` or `member` |
 | `era` | Decade indices, comma-separated (`0` = 1930s, `9` = 2020s) |
+| `releases`, `live` | `releases=all` shows all albums, and `live=1` adds live albums |
 | `zoom` | Zoom level when used with `band` |
 
 ## Run it
@@ -81,12 +83,15 @@ The data lives in plain JavaScript files that the page loads directly:
 | `data.extra.js` | Bands you add on top | `node tools/mb.js add "Band Name"` |
 | `data.mb.js` | Lineups and extra shared-member links | `node tools/mb.js enrich` (MusicBrainz) |
 | `data.wiki.js` | Short summaries | `node tools/wiki.js` (Wikipedia) |
+| `data.albums.js` | Full album lists for the "All albums" mode, loaded only when you switch to it | `node tools/albums.js` (from MusicBrainz) |
 
 ### Accuracy
 
 The dates, release years and influence links in `data.js` were **written from memory and have not been fully verified**.
 Influence lines are editorial judgement calls, not facts. `tools/report.txt` lists the places where MusicBrainz
-disagrees (mostly reunions, where the map shows the original run). Corrections are very welcome. See
+disagrees (mostly reunions, where the map shows the original run). The "All albums" mode comes straight from MusicBrainz after simple cleaning (it drops demos, compilations, remasters and
+unofficial recordings), so it can still include regional editions for 1960s acts such as The Rolling Stones, whose UK and
+US albums differ. Live albums are limited to releases with an official release on MusicBrainz. Corrections are very welcome. See
 [Contributing](#contributing).
 
 ### Adding or editing a band
@@ -116,6 +121,7 @@ Requires Node 18 or newer (for the built-in `fetch`).
 ```
 node tools/mb.js enrich    # MusicBrainz: lineups and shared members -> data.mb.js
 node tools/wiki.js         # Wikipedia summaries -> data.wiki.js
+node tools/albums.js       # cleaned album lists -> data.albums.js (run after enrich)
 ```
 
 Both scripts are throttled to respect MusicBrainz and Wikimedia rate limits, cache every response in `tools/.cache`, and
@@ -145,8 +151,10 @@ data.js           curated dataset
 data.extra.js     your additions
 data.mb.js        generated from MusicBrainz
 data.wiki.js      generated from Wikipedia
+data.albums.js    generated album lists (lazy-loaded)
 tools/mb.js       MusicBrainz sync and "add a band"
 tools/wiki.js     Wikipedia summaries
+tools/albums.js   cleans MusicBrainz album lists into data.albums.js
 tools/build.js    builds dist/
 docs/             README screenshots
 ```
