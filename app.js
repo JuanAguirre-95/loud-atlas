@@ -1816,8 +1816,8 @@ function graphBuild() {
   const nodes = visible.filter(b => gv.opts.loose || deg.has(b.id)).map(b => {
     let p = gv.pos.get(b.id);
     if (!p) {
-      const an = genreAnchor[b.genre], r = Math.random() * 180, t = Math.random() * 6.283;
-      p = { x: an.x + Math.cos(t) * r, y: an.y + Math.sin(t) * r, vx: 0, vy: 0 };
+      const pre = A.pos && A.pos[b.id], an = genreAnchor[b.genre], r = Math.random() * 180, t = Math.random() * 6.283;
+      p = pre ? { x: pre[0], y: pre[1], vx: 0, vy: 0, pre: true } : { x: an.x + Math.cos(t) * r, y: an.y + Math.sin(t) * r, vx: 0, vy: 0 };
       gv.pos.set(b.id, p);
     }
     return { b, p, deg: deg.get(b.id) || 0, r: 3 + Math.sqrt(deg.get(b.id) || 0) * 1.6 };
@@ -1829,7 +1829,7 @@ function graphBuild() {
   gv.edges.forEach(e => { (nb.get(e.a) || nb.set(e.a, new Set()).get(e.a)).add(e.b); (nb.get(e.b) || nb.set(e.b, new Set()).get(e.b)).add(e.a); });
   gv.nb = nb;
   $('gStats').textContent = nodes.length + ' acts · ' + gv.edges.length + ' connections' + (nodes.length < visible.length ? ' (' + (visible.length - nodes.length) + ' unconnected hidden)' : '');
-  graphHeat(0.9);
+  graphHeat(nodes.every(n => n.p.pre) ? 0.04 : 0.9);       // the build already settled the layout; only new or moved acts need work
 }
 
 function graphHeat(a) { gv.alpha = Math.max(gv.alpha, a); if (gv.open && !gv.raf) gv.raf = requestAnimationFrame(graphTick); }
@@ -1840,15 +1840,18 @@ function graphTick() {
   const N = gv.nodes, steps = gv.alpha > 0.5 ? 2 : 1;
   for (let s = 0; s < steps && gv.alpha > 0.012; s++) {
     const a = gv.alpha;
-    for (let i = 0; i < N.length; i++) {                      // repulsion between every pair that is close enough to matter
-      const ni = N[i].p;
-      for (let j = i + 1; j < N.length; j++) {
-        const nj = N[j].p;
+    const cells = new Map();                                  // repulsion only matters nearby, so look at neighbouring 300px cells
+    for (const n of N) { const k = Math.floor(n.p.x / 300) + ',' + Math.floor(n.p.y / 300); (cells.get(k) || cells.set(k, []).get(k)).push(n); }
+    for (const n of N) {
+      const ni = n.p, cx = Math.floor(ni.x / 300), cy = Math.floor(ni.y / 300);
+      for (let ox = -1; ox <= 1; ox++) for (let oy = -1; oy <= 1; oy++) for (const m of cells.get((cx + ox) + ',' + (cy + oy)) || []) {
+        if (m === n || m.b.id < n.b.id) continue;
+        const nj = m.p;
         let dx = ni.x - nj.x, dy = ni.y - nj.y, d2 = dx * dx + dy * dy;
         if (d2 > 90000) continue;
         if (d2 < 1) { dx = Math.random() - .5; dy = Math.random() - .5; d2 = 1; }
-        const f = (900 / d2) * a, d = Math.sqrt(d2);
-        ni.vx += dx / d * f * 14; ni.vy += dy / d * f * 14; nj.vx -= dx / d * f * 14; nj.vy -= dy / d * f * 14;
+        const f = (900 / d2) * a * 14, d = Math.sqrt(d2);
+        ni.vx += dx / d * f; ni.vy += dy / d * f; nj.vx -= dx / d * f; nj.vy -= dy / d * f;
       }
     }
     for (const e of gv.edges) {                                // springs along connections
@@ -1874,7 +1877,7 @@ function graphTick() {
 const gToScreen = (x, y) => [x * gv.view.k + gv.view.x, y * gv.view.k + gv.view.y];
 function graphFit() {
   if (!gv.nodes.length) return;
-  const xs = gv.nodes.map(n => n.p.x).sort((p, q) => p - q), ys = gv.nodes.map(n => n.p.y).sort((p, q) => p - q), lo = Math.floor(xs.length * .02), hi = Math.ceil(xs.length * .98) - 1;
+  const xs = gv.nodes.map(n => n.p.x).sort((p, q) => p - q), ys = gv.nodes.map(n => n.p.y).sort((p, q) => p - q), lo = Math.floor(xs.length * .05), hi = Math.ceil(xs.length * .95) - 1;
   const x0 = xs[lo], x1 = xs[hi], y0 = ys[lo], y1 = ys[hi];       // ignore the few outliers so the crowd fills the screen
   const padL = W > 700 ? 290 : 10, padR = W > 700 && selected ? 350 : 10;
   const k = Math.min((gv.W - padL - padR - 40) / Math.max(x1 - x0, 80), (gv.H - 110) / Math.max(y1 - y0, 80), 3);

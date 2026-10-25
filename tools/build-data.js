@@ -114,6 +114,10 @@ for (const [name, ids] of byPerson) for (let i = 0; i < ids.length; i++) for (le
 // songs (only when popularity data exists)
 if (pop) for (const [id, p] of Object.entries(pop)) if (p.songs && p.songs.length) core.songs[id] = p.songs;
 
+// graph view: positions settled at build time so the page opens with the graph already laid out
+const { layout } = require('./lib/graph-layout');
+const pos = layout(acts, genres.map(g => g.id), acts.flatMap(a => (a.from || []).map(p => [p, a.id])), [...pair.values()].map(e => [e.a, e.b]));
+
 // ---------- write ----------
 const stamp = new Date().toISOString().slice(0, 10);
 const w = (file, varName, obj) => {
@@ -125,7 +129,7 @@ sizes['bundle.core.js'] = w('bundle.core.js', 'ATLAS', {
   generated: stamp, topN: TOP_N, meanRating: +MEAN.toFixed(2), criteria: { acclaimed: true, popular: !!pop },
   genres, subOrder,
   acts: acts.map(a => { const o = { ...a }; delete o.vsrc; delete o.review; return o; }),
-  members, shared: [...pair.values()], rel: core.rel,
+  members, shared: [...pair.values()], rel: core.rel, pos,
 });
 sizes['bundle.releases.js'] = w('bundle.releases.js', 'ATLAS_RELEASES', core.all);
 sizes['bundle.summaries.js'] = w('bundle.summaries.js', 'ATLAS_SUMMARIES', summaries);
