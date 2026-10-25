@@ -51,40 +51,27 @@ const $ = id => document.getElementById(id);
 const canvas = $('c'), ctx = canvas.getContext('2d');
 const mini = $('mini'), mctx = mini.getContext('2d');
 const brush = $('brush'), bctx = brush.getContext('2d');
+// ---------- data: the generated bundle (data/bundle.core.js, built by tools/build-data.js from the JSON files in data/) ----------
+const A = window.ATLAS;
+if (!A) throw new Error('data/bundle.core.js is missing. Run: node tools/build-data.js');
+const GENRES = A.genres, SUB_ORDER = A.subOrder;
 const genreById = Object.fromEntries(GENRES.map(g => [g.id, g]));
-
-// ---------- merge data sources: curated (data.js) + added (data.extra.js) + MusicBrainz (data.mb.js) ----------
-(window.EXTRA || []).forEach(b => { b.sub ||= 'Other'; b.from ||= []; BANDS.push(b); });
+const BANDS = A.acts.map(a => ({ ...a, sub: a.sub || 'Other', from: a.from || [], country: a.country || '', members: (A.members[a.id] || []).map(([name, from, to]) => ({ name, from, to })), albums: [], rel: [] }));
 const bandById = Object.fromEntries(BANDS.map(b => [b.id, b]));
-BANDS.forEach(b => {
-  const mb = (window.MB || {})[b.id];
-  b.members = [];
-  if (mb && mb.confidence === 'high') {
-    b.members = mb.members;        // MusicBrainz albums are deliberately ignored: only curated original releases are shown
-    b.mbid = mb.mbid;
-  }
-});
 const children = {};
 BANDS.forEach(b => b.from = b.from.filter(id => bandById[id]));
 BANDS.forEach(b => b.from.forEach(p => (children[p] ||= []).push(b.id)));
 
-// shared members: pair -> set of names (curated first, then MusicBrainz), capped to keep labels readable
-const sharedPairs = new Map();
-for (const [a, b, who] of [...(window.LINKS || []), ...(window.MB_LINKS || [])]) {
-  if (!bandById[a] || !bandById[b] || a === b) continue;
-  const key = a < b ? a + '|' + b : b + '|' + a;
-  const e = sharedPairs.get(key) || { a, b, who: [] };
-  if (!e.who.includes(who) && e.who.length < 3) e.who.push(who);
-  sharedPairs.set(key, e);
-}
-const sharedList = [...sharedPairs.values()];
+// shared members: pair -> names (curated first, then MusicBrainz lineups), capped to keep labels readable
+const sharedList = A.shared.filter(e => bandById[e.a] && bandById[e.b]);
+const sharedPairs = new Map(sharedList.map(e => [e.a < e.b ? e.a + '|' + e.b : e.b + '|' + e.a, e]));
 const sharedOf = {};
 sharedList.forEach(e => {
   (sharedOf[e.a] ||= []).push({ id: e.b, who: e.who.join(', ') });
   (sharedOf[e.b] ||= []).push({ id: e.a, who: e.who.join(', ') });
 });
 
-// people -> bands, from MusicBrainz lineups, curated shared-member notes and solo artists
+// people -> bands, from MusicBrainz lineups, shared-member notes and solo artists
 const peopleMap = new Map();
 const addPerson = (name, id) => {
   name = name.trim();
@@ -93,49 +80,60 @@ const addPerson = (name, id) => {
   if (!peopleMap.has(k)) peopleMap.set(k, { name, bands: new Set() });
   peopleMap.get(k).bands.add(id);
 };
-const cleanNames = who => who.replace(/\([^)]*\)/g, '').split(/,/).map(t => t.trim()).filter(Boolean);
 BANDS.forEach(b => {
   b.members.forEach(m => addPerson(m.name, b.id));
   if (b.kind === 'artist') addPerson(b.name, b.id);
 });
-for (const [a, b, who] of [...(window.LINKS || []), ...(window.MB_LINKS || [])])
-  if (bandById[a] && bandById[b]) cleanNames(who).forEach(n => { addPerson(n, a); addPerson(n, b); });
+sharedList.forEach(e => e.who.forEach(n => { addPerson(n, e.a); addPerson(n, e.b); }));
 BANDS.forEach(b => b.peopleLC = []);
 peopleMap.forEach((p, k) => p.bands.forEach(id => bandById[id].peopleLC.push(k)));
 
-// Releases. "Key" releases are the curated originals in data.js. "All" adds MusicBrainz studio albums, and optionally live
-// albums, from data.albums.js, which is only downloaded when the user switches the mode.
-BANDS.forEach(b => b.albums.forEach(a => { a.key = true; }));
+// Releases. Each act carries its "key" albums under two criteria (rel rows: title, year, MM-DD, acclaimed rank, popular rank,
+// rating, votes, listens). The criterion in use decides which of them are the key releases. "All albums" adds every cleaned
+// studio album and, optionally, live albums from data/bundle.releases.js, which is only downloaded when the user asks for it.
+BANDS.forEach(b => {
+  b.rel = (A.rel[b.id] || []).map(([title, year, d, ar, pr, rating, votes, listens]) => ({ title, year, date: d ? d.slice(5) : undefined, ar, pr, rating, votes, listens }));
+});
 const keyNorm = t => t.toLowerCase().replace(/[\u2018\u2019'`\u00b4]/g, '').replace(/&/g, 'and').replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, ' ').trim();
+const rankKey = () => (filters.criterion === 'popular' ? 'pr' : 'ar');
 let allLoaded = false;
+function applyCriterion() {
+  const k = rankKey();
+  for (const b of BANDS) {
+    let list = b.rel.filter(a => a[k] > 0);
+    b.fallback = false;
+    if (!list.length && k === 'pr') { list = b.rel.filter(a => a.ar > 0); b.fallback = list.length > 0; }   // no listening data for this act
+    b.albums = list.sort((x, y) => x.year - y.year || (x[k] - y[k])).map(a => { a.key = true; return a; });
+  }
+  if (allLoaded) buildAll();
+}
 function buildAll() {
   for (const b of BANDS) {
-    const raw = (window.ALBUMS || {})[b.id];
+    const raw = (window.ATLAS_RELEASES || {})[b.id];
     if (!raw) { b.all = b.albums; continue; }
     const keys = new Set(b.albums.map(a => keyNorm(a.title)));
-    b.all = raw.split(';').map(x => {
-      const p = x.split('|');
-      return { year: +p[0], title: p[1], live: p[2] === 'L', date: p[3] || undefined, key: keys.has(keyNorm(p[1])) };
-    });
+    b.all = raw.map(([title, year, md, live]) => ({ year, title, live: !!live, date: md || undefined, key: keys.has(keyNorm(title)) }));
     b.albums.forEach(a => { if (!b.all.some(x => keyNorm(x.title) === keyNorm(a.title))) b.all.push(a); });
     b.all.sort((x, y) => x.year - y.year);
   }
 }
+function loadScript(src, cb) {
+  const el = document.createElement('script');
+  el.src = src;
+  el.onload = () => cb(true);
+  el.onerror = () => cb(false);
+  document.head.appendChild(el);
+}
 function loadAlbums(cb) {
   if (allLoaded) return cb(true);
-  const done = ok => { if (ok) { buildAll(); allLoaded = true; } cb(ok); };
-  if (window.ALBUMS) return done(true);
-  const el = document.createElement('script');
-  el.src = 'data.albums.js';
-  el.onload = () => done(true);
-  el.onerror = () => done(false);
-  document.head.appendChild(el);
+  const done = ok => { if (ok) { allLoaded = true; buildAll(); } cb(ok); };
+  if (window.ATLAS_RELEASES) return done(true);
+  loadScript('data/bundle.releases.js', done);
 }
 function rels(b) {
   if (filters.releases !== 'all' || !b.all) return b.albums;
   return filters.live ? b.all : b.all.filter(a => a.key || !a.live);
 }
-
 const col = (g, l = 60, a = 1) => `hsla(${g.hue},${g.sat}%,${T.lmap(l)}%,${a})`;
 const colRaw = (g, l, a = 1) => `hsla(${g.hue},${g.sat}%,${l}%,${a})`;
 
@@ -143,9 +141,10 @@ const colRaw = (g, l, a = 1) => `hsla(${g.hue},${g.sat}%,${l}%,${a})`;
 const filters = { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: NOW, country: '',
                   albums: true, fade: true, rel: 'selected', shared: 'selected', split: true,
                   kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false,
-                  releases: 'key', live: false,
+                  releases: 'key', live: false, criterion: 'acclaimed',
                   focus: null,      // { label, ids:Set } show only a lineage / shared-member group
                   subOff: new Set() };   // 'genre|subgenre' keys switched off in the genre list
+applyCriterion();
 const view = { x: 0, y: 0, kx: 1, ky: 1 };
 let world = { x0: 0, y0: 0, x1: 100, y1: 100 };
 let selYear = null;
@@ -175,6 +174,7 @@ function matches(b) {
   return true;
 }
 
+let onLayout = null, onDetail = null;       // set by the graph view
 function layout() {
   ctx.font = `600 14px ${FB}`;
   visible = BANDS.filter(matches);
@@ -222,7 +222,9 @@ function layout() {
   $('count').textContent = `${visible.length} of ${BANDS.length} bands & artists`;
   canvas.setAttribute('aria-label', `Interactive timeline showing ${visible.length} of ${BANDS.length} bands and artists. Press L for a text list of them.`);
   announce(`${visible.length} of ${BANDS.length} acts shown`, 700);
+  renderSummaries();
   dirty = true;
+  if (onLayout) onLayout();
 }
 
 function bounds() {
@@ -264,11 +266,20 @@ function goTo(t, animate = true) {
   };
 }
 
+// How far to zoom for one act: its whole career bar fits in about 90% of the free width, but never so far out that album labels
+// are unreadable (1.2) or so far in that the bar is a wall (3). Jumping to a particular year zooms in far enough to read the titles.
 function focusBand(b, year) {
-  const k = Math.max(view.kx, 1.4);
-  const cx = year != null ? (year + .5 - T0) * PX_YEAR : b.x0 + (b.x1 - b.x0) / 2, cy = b.y + BAR_H / 2;
-  const left = W > 700 ? 280 : 0, right = W > 700 && selected ? 320 : 0;
-  goTo({ kx: k, ky: k, x: left + (W - left - right) / 2 - cx * k, y: AXIS_H + (H - AXIS_H) / 2 - cy * k });
+  const left = W > 700 && !$('panel').classList.contains('closed') ? 300 : 0, right = W > 700 && selected ? 350 : 0;
+  const avail = Math.max(W - left - right, 200);
+  let k = clamp(avail * .9 / Math.max(b.x1 - b.x0, 1), 1.2, 3);
+  if (year != null) k = Math.max(k, 2.2);
+  const cy = b.y + BAR_H / 2, mid = left + (W - left - right) / 2;
+  // a career longer than the free width starts at the left edge, so the name and the early albums stay in view; a year is centred
+  let nx;
+  if (year != null) nx = mid - (year + .5 - T0) * PX_YEAR * k;
+  else if ((b.x1 - b.x0) * k > avail * .95) nx = left + 50 - b.x0 * k;
+  else nx = mid - (b.x0 + (b.x1 - b.x0) / 2) * k;
+  goTo({ kx: k, ky: k, x: nx, y: AXIS_H + (H - AXIS_H) / 2 - cy * k });
 }
 
 function zoomAt(px, py, f, onlyX = false) {
@@ -964,28 +975,59 @@ function facts(b) {
 function releaseList(b) {
   const list = rels(b), all = filters.releases === 'all';
   const more = all || !b.all ? 0 : b.all.filter(a => !a.live).length - list.length;
-  return `<h4>${all ? 'Releases' : 'Key releases'} <span class="muted">(click a year)</span></h4>
-    <ul class="rel">${list.map(a => `<li data-year="${a.year}" class="${a.year === selYear ? 'cur' : ''}${a.key ? '' : ' minor'}"><b>${a.year}</b><span>${esc(a.title)}${a.live ? ' <em>live</em>' : ''}</span></li>`).join('')}</ul>
+  const crit = filters.criterion === 'popular' ? (b.fallback ? 'most acclaimed (no listening data)' : 'most listened') : 'most acclaimed';
+  const stat = a => a.rating != null && a.votes ? ' <small class="rate" title="MusicBrainz community rating from ' + a.votes + ' votes">★ ' + a.rating.toFixed(1) + '</small>' : a.listens ? ' <small class="rate" title="ListenBrainz listens">' + a.listens.toLocaleString('en') + ' plays</small>' : '';
+  return `<h4>${all ? 'Releases' : 'Key releases'} <span class="muted">${all ? '' : '· ' + crit + ' · '}(click a year)</span></h4>
+    <ul class="rel">${list.map(a => `<li data-year="${a.year}" class="${a.year === selYear ? 'cur' : ''}${a.key ? '' : ' minor'}"><b>${a.year}</b><span>${esc(a.title)}${a.live ? ' <em>live</em>' : ''}${stat(a)}</span></li>`).join('')}</ul>
     ${more > 0 ? `<div class="muted">+ ${more} more studio album${more > 1 ? 's' : ''}: set <b>Releases</b> to All albums in the filters.</div>` : ''}`;
+}
+const SITE = { website: 'Website', x: 'X', facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', bandcamp: 'Bandcamp', soundcloud: 'SoundCloud', tiktok: 'TikTok', bluesky: 'Bluesky', mastodon: 'Mastodon', patreon: 'Patreon', myspace: 'Myspace', vk: 'VK', weibo: 'Weibo', twitch: 'Twitch', threads: 'Threads', wikidata: 'Wikidata', discogs: 'Discogs', allmusic: 'AllMusic', musicbrainz: 'MusicBrainz' };
+const safeUrl = u => /^https?:\/\//i.test(u) ? esc(u) : '#';
+const lazyLoaded = {};
+function lazyBundle(varName, file) {            // download a data bundle on first use, then redraw the details panel
+  if (window[varName] || lazyLoaded[varName]) return;
+  lazyLoaded[varName] = true;
+  loadScript(file, ok => { if (ok && selected) renderDetail(); });
+}
+function songList(b) {
+  if (!A.criteria.popular) return '';
+  lazyBundle('ATLAS_SONGS', 'data/bundle.songs.js');
+  const s = (window.ATLAS_SONGS || {})[b.id];
+  if (!window.ATLAS_SONGS) return '<h4>Top songs</h4><div class="muted">Loading…</div>';
+  if (!s || !s.length) return '';
+  return '<h4>Top songs <span class="muted">· most listened</span></h4><ol class="songs">' +
+    s.map(([t, n, alb]) => '<li><span>' + esc(t) + (alb ? ' <em>' + esc(alb) + '</em>' : '') + '</span><small class="rate" title="ListenBrainz listens">' + n.toLocaleString('en') + '</small></li>').join('') +
+    '</ol><div class="src">Listen counts from <a href="https://listenbrainz.org" target="_blank" rel="noopener">ListenBrainz</a> (open data, CC0). Reflects its users, not all listeners.</div>';
+}
+function linkList(b, wiki) {
+  lazyBundle('ATLAS_LINKS', 'data/bundle.links.js');
+  const l = (window.ATLAS_LINKS || {})[b.id] || {};
+  const chip = ({ site, url }) => '<a href="' + safeUrl(url) + '" target="_blank" rel="noopener noreferrer">' + (SITE[site] || esc(site)) + ' ↗</a>';
+  const own = [...(l.official || []), ...(l.social || [])];
+  const info = (l.info || []).filter(x => x.site !== 'musicbrainz');
+  return (own.length ? '<h4>Official <span class="muted">(MusicBrainz)</span></h4><div class="ext">' + own.map(chip).join('') + '</div>' : '') +
+    '<div class="ext">' + (wiki ? '<a href="' + safeUrl(wiki.url) + '" target="_blank" rel="noopener">Wikipedia ↗</a>' : '') +
+    (b.mbid ? '<a href="https://musicbrainz.org/artist/' + b.mbid + '" target="_blank" rel="noopener">MusicBrainz ↗</a>' : '') + info.filter(x => x.site !== 'wikidata').map(chip).join('') + '</div>';
 }
 let wikiRequested = false;
 function loadWiki() {
-  if (window.WIKI || wikiRequested) return;
+  if (window.ATLAS_SUMMARIES || wikiRequested) return;
   wikiRequested = true;
   const el = document.createElement('script');
-  el.src = 'data.wiki.js';
+  el.src = 'data/bundle.summaries.js';
   el.onload = () => renderDetail();
   document.head.appendChild(el);
 }
 function renderDetail() {
   const el = $('detail');
   document.body.classList.toggle('hasDetail', !!selected);
+  if (onDetail) onDetail();
   if (!selected) { el.hidden = true; return; }
-  if (!window.WIKI) loadWiki();                              // summaries are fetched on first use, then this panel re-renders
+  if (!window.ATLAS_SUMMARIES) loadWiki();                              // summaries are fetched on first use, then this panel re-renders
   if (W <= 700 && !$('panel').classList.contains('closed')) setPanel(false);
   const b = selected, g = genreById[b.genre];
   const kids = children[b.id] || [], shared = sharedOf[b.id] || [];
-  const wiki = (window.WIKI || {})[b.id];
+  const wiki = (window.ATLAS_SUMMARIES || {})[b.id];
   const q = filters.q.trim().toLowerCase();
   const memberQ = q && (filters.scope === 'all' || filters.scope === 'member');
   el.style.setProperty('--c', col(g));
@@ -1000,7 +1042,7 @@ function renderDetail() {
     <h4>Summary</h4>
     ${wiki ? `<p class="sum">${wiki.desc ? `<em>${esc(wiki.desc)}.</em> ` : ''}${esc(wiki.text)}</p>
       <div class="src">Summary from <a href="${esc(wiki.url)}" target="_blank" rel="noopener">Wikipedia</a> · CC BY-SA 4.0</div>`
-      : `<p class="sum">${esc(autoSummary(b))}</p><div class="src">${window.WIKI ? "Summary generated from this map's data." : 'Loading the Wikipedia summary…'}</div>`}
+      : `<p class="sum">${esc(autoSummary(b))}</p><div class="src">${window.ATLAS_SUMMARIES ? "Summary generated from this map's data." : 'Loading the Wikipedia summary…'}</div>`}
 
     <h4>At a glance</h4>
     <div class="facts">${facts(b).map(([l, v, sub]) => `<div><small>${l}</small><b>${esc(v)}</b>${sub ? `<em>${esc(sub)}</em>` : ''}</div>`).join('')}</div>
@@ -1019,7 +1061,8 @@ function renderDetail() {
         `<li class="${memberQ && m.name.toLowerCase().includes(q) ? 'hit' : ''}"><b>${m.from ?? ''}${m.from || m.to ? '–' : ''}${m.to ?? ''}</b><span>${esc(m.name)}</span></li>`).join('')}</ul>
       ${b.members.length > 16 ? `<div class="muted">+ ${b.members.length - 16} more</div>` : ''}` : ''}
 
-    <div class="ext">${wiki ? `<a href="${esc(wiki.url)}" target="_blank" rel="noopener">Wikipedia ↗</a>` : ''}${b.mbid ? `<a href="https://musicbrainz.org/artist/${b.mbid}" target="_blank" rel="noopener">MusicBrainz ↗</a>` : ''}</div>`;
+    ${songList(b)}
+    ${linkList(b, wiki)}`;
 }
 $('detail').addEventListener('click', e => {
   if (e.target.closest('.close')) { selected = null; renderDetail(); dirty = true; return; }
@@ -1146,6 +1189,7 @@ function showTab(name) {
   const pane = PANES.includes(name) ? name : null, tab = pane ? 'explore' : name;
   document.querySelectorAll('.tabs button').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
   $('tab-filters').hidden = tab !== 'filters';
+  $('tab-view').hidden = tab !== 'view';
   $('tab-explore').hidden = tab !== 'explore';
   $('tab-about').hidden = tab !== 'about';
   if (pane) showPane(pane);
@@ -1244,10 +1288,12 @@ function stepBand(delta) {
 window.addEventListener('keydown', e => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (!$('listview').hidden) { if (e.key === 'Escape') closeList(); return; }
+  if (gv.open && e.key === 'Escape' && !e.target.matches('input, select, textarea')) { graphClose(); return; }
   const t = e.target, typing = t.matches('input, select, textarea');
   if (typing) { if (e.key === 'Escape') t.blur(); return; }
   if (e.key === '/') { e.preventDefault(); setPanel(true); showTab('filters'); $('search').focus(); return; }
   if (e.key === 'l' || e.key === 'L') { openList(); return; }
+  if (e.key === 'g' || e.key === 'G') { gv.open ? graphClose() : graphOpen(); return; }
   if (e.key === 't' || e.key === 'T') { $('themeBtn').click(); return; }
   if (t !== canvas && t !== document.body && t.matches('button, a, [role="button"], [role="slider"], [tabindex]')) return;   // let controls keep their keys
   const s = 80;
@@ -1368,7 +1414,94 @@ $('people').addEventListener('click', e => {
   renderPeople(); refilter();
 });
 $('scope').addEventListener('change', e => { filters.scope = e.target.value; renderPeople(); refilter(); });
-$('search').addEventListener('input', e => { filters.q = e.target.value; renderPeople(); refilter(); });
+let searchFit = 0;
+$('search').addEventListener('input', e => {
+  filters.q = e.target.value; renderPeople(); refilter();
+  clearTimeout(searchFit);
+  searchFit = setTimeout(() => { if (filters.q.trim()) fit(); }, 350);       // frame the matches instead of leaving the view on empty space
+  showSugg();
+});
+
+// ---------- search suggestions: acts, members and albums that match what is being typed ----------
+let sugg = [], suggAt = -1;
+function buildSugg(q) {
+  q = q.trim().toLowerCase();
+  if (q.length < 2) return [];
+  const sc = filters.scope, out = [];
+  if (sc === 'all' || sc === 'name') {
+    BANDS.filter(b => b.name.toLowerCase().includes(q))
+      .sort((x, y) => (y.name.toLowerCase().startsWith(q) - x.name.toLowerCase().startsWith(q)) || x.name.length - y.name.length)
+      .slice(0, 6).forEach(b => out.push({ t: 'act', b }));
+  }
+  if (sc === 'all' || sc === 'member') {
+    [...peopleMap.values()].filter(p => p.name.toLowerCase().includes(q) && !(p.bands.size === 1 && out.some(o => o.t === 'act' && p.bands.has(o.b.id))))
+      .sort((x, y) => y.bands.size - x.bands.size || x.name.localeCompare(y.name)).slice(0, 3).forEach(p => out.push({ t: 'person', p }));
+  }
+  if (sc === 'all' || sc === 'album') {
+    let n = 0;
+    for (const b of BANDS) { for (const al of (b.all || b.albums)) if (al.title.toLowerCase().includes(q) && n < 4) { out.push({ t: 'album', b, al }); n++; } if (n >= 4) break; }
+  }
+  return out;
+}
+function showSugg() {
+  sugg = buildSugg($('search').value);
+  suggAt = -1;
+  const box = $('sugg');
+  box.hidden = !sugg.length;
+  $('search').setAttribute('aria-expanded', String(sugg.length > 0));
+  box.innerHTML = sugg.map((s, i) => {
+    if (s.t === 'act') return '<div role="option" id="sg' + i + '" data-i="' + i + '"><b>' + esc(s.b.name) + '</b><small>' + esc(genreById[s.b.genre].name) + ' · ' + s.b.formed + '–' + (s.b.ended ?? 'present') + '</small></div>';
+    if (s.t === 'person') return '<div role="option" id="sg' + i + '" data-i="' + i + '"><b>' + esc(s.p.name) + '</b><small>member · ' + [...s.p.bands].slice(0, 3).map(id => esc(bandById[id].name)).join(', ') + (s.p.bands.size > 3 ? '…' : '') + '</small></div>';
+    return '<div role="option" id="sg' + i + '" data-i="' + i + '"><b>' + esc(s.al.title) + '</b><small>album · ' + esc(s.b.name) + ' · ' + s.al.year + '</small></div>';
+  }).join('');
+}
+function closeSugg() { $('sugg').hidden = true; $('search').setAttribute('aria-expanded', 'false'); suggAt = -1; }
+function markSugg(i) {
+  suggAt = (i + sugg.length) % sugg.length;
+  [...$('sugg').children].forEach((c, j) => c.classList.toggle('on', j === suggAt));
+  $('search').setAttribute('aria-activedescendant', 'sg' + suggAt);
+  $('sugg').children[suggAt].scrollIntoView({ block: 'nearest' });
+}
+// Open an act from the search: drop the text filter, undo any other filter that would hide it, then zoom to it.
+function revealBand(b, year) {
+  clearTimeout(searchFit);
+  filters.q = ''; $('search').value = ''; $('people').innerHTML = '';
+  if (!matches(b)) { resetFilters(); }
+  refilter();
+  if (W <= 700) setPanel(false);
+  select(b, year);
+}
+function pickSugg(i) {
+  const s = sugg[i];
+  if (!s) return;
+  closeSugg();
+  if (s.t === 'person') { filters.q = s.p.name; filters.scope = 'member'; $('search').value = s.p.name; $('scope').value = 'member'; renderPeople(); refilter(); fit(); return; }
+  revealBand(s.b, s.t === 'album' ? s.al.year : undefined);
+}
+$('sugg').addEventListener('mousedown', e => { const o = e.target.closest('[data-i]'); if (o) { e.preventDefault(); pickSugg(+o.dataset.i); } });
+$('search').addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    if ($('sugg').hidden) showSugg();
+    if (sugg.length) { e.preventDefault(); markSugg(suggAt + (e.key === 'ArrowDown' ? 1 : -1)); }
+  } else if (e.key === 'Enter' && sugg.length) { e.preventDefault(); pickSugg(suggAt >= 0 ? suggAt : 0); }
+  else if (e.key === 'Escape' && !$('sugg').hidden) { e.preventDefault(); e.stopPropagation(); closeSugg(); }
+});
+$('search').addEventListener('blur', () => setTimeout(closeSugg, 120));
+$('search').addEventListener('focus', () => { if ($('search').value.trim().length > 1) showSugg(); });
+
+// ---------- filter section summaries and the graph shortcut ----------
+function renderSummaries() {
+  const t = filters.kinds.size === 2 ? 'all' : filters.kinds.size === 0 ? 'none' : filters.kinds.has('band') ? 'bands' : 'solo artists';
+  $('sumType').textContent = t;
+  const era = filters.eras.size ? [...filters.eras].sort((x, y) => x - y).map(i => ERAS[i].label).join(', ') : (filters.from > T0 || filters.to < NOW ? filters.from + '–' + filters.to : 'all years');
+  $('sumEra').textContent = era;
+  const on = filters.genres.size;
+  $('sumGenres').textContent = on === GENRES.length ? 'all ' + on : on + ' of ' + GENRES.length;
+  $('sumCountry').textContent = filters.country || 'all';
+}
+document.querySelectorAll('#tab-filters summary button').forEach(b => b.addEventListener('click', e => e.stopPropagation()));   // buttons inside a summary should not fold the section
+document.querySelectorAll('#tab-filters summary button').forEach(b => b.addEventListener('keydown', e => e.stopPropagation()));
+$('viewGraph').onclick = () => graphOpen();
 
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => showTab(b.dataset.tab === 'explore' ? lastPane : b.dataset.tab));
 document.querySelectorAll('.seg button').forEach(b => b.onclick = () => showTab(b.dataset.pane));
@@ -1400,25 +1533,37 @@ function setReleases(mode, live) {
     $('optReleases').disabled = true;
     loadAlbums(ok => {
       $('optReleases').disabled = false;
-      if (ok) apply(); else { $('optReleases').value = 'key'; alert('Could not load data.albums.js. Run: node tools/albums.js'); }
+      if (ok) apply(); else { $('optReleases').value = 'key'; alert('Could not load data/bundle.releases.js. Run: node tools/build-data.js'); }
     });
   } else apply();
 }
 $('optReleases').onchange = e => setReleases(e.target.value);
+function setCriterion(c) {
+  if (c === 'popular' && !A.criteria.popular) c = 'acclaimed';
+  filters.criterion = c; $('optCriterion').value = c;
+  applyCriterion();
+  $('critNote').textContent = c === 'popular'
+    ? 'Top ' + A.topN + ' albums per act by ListenBrainz listen count. Acts without listening data fall back to acclaimed.'
+    : 'Top ' + A.topN + ' albums per act by MusicBrainz community rating, weighted by number of votes. Acts with fewer than two rated albums also show their debut.';
+  if (selected) renderDetail();
+  layout();
+}
+$('optCriterion').onchange = e => setCriterion(e.target.value);
+$('optCriterion').querySelector('[value=popular]').disabled = !A.criteria.popular;
 $('optLive').onchange = e => { filters.live = e.target.checked; layout(); };
 $('optStatus').onchange = e => { filters.fade = e.target.checked; dirty = true; };
 $('optRel').onchange = e => { filters.rel = e.target.value; dirty = true; };
 $('optShared').onchange = e => { filters.shared = e.target.value; dirty = true; };
 $('optSplit').onchange = e => { filters.split = e.target.checked; layout(); fit(); };
 $('fit').onclick = () => fit();
-$('reset').onclick = () => {
+function resetFilters() {
   Object.assign(filters, { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: NOW, country: '', kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false, focus: null, subOff: new Set() });
-  filters.releases = 'key'; filters.live = false; $('optReleases').value = 'key'; $('optLive').checked = false; $('optLive').disabled = true;
   $('scope').value = 'all'; $('yearOnly').checked = false; $('people').innerHTML = ''; buildEras(); selYear = null; $('yearIn').value = '';
   document.querySelectorAll('#kinds input').forEach(cb => cb.checked = true);
   $('search').value = ''; $('from').value = T0; $('to').value = NOW; $('country').value = '';
-  buildGenres(); refilter(); fit();
-};
+  buildGenres();
+}
+$('reset').onclick = () => { resetFilters(); refilter(); fit(); closeSugg(); };
 function setPanel(open) {
   if (open && W <= 700 && selected) { selected = null; renderDetail(); }
   $('panel').classList.toggle('closed', !open);
@@ -1594,7 +1739,7 @@ function renderToday() {
   $('dayMonth').value = m; $('dayDay').value = d;
   if (!allLoaded) {
     stats.textContent = 'Loading release dates…'; list.innerHTML = '';
-    loadAlbums(ok => ok ? renderToday() : (stats.textContent = 'Could not load release dates. Run: node tools/albums.js'));
+    loadAlbums(ok => ok ? renderToday() : (stats.textContent = 'Could not load release dates. Run: node tools/build-data.js'));
     return;
   }
   const items = [];
@@ -1651,8 +1796,251 @@ $('listview').addEventListener('keydown', e => {                    // keep Tab 
   else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
 });
 
+// ---------- graph view: the acts that match the filters as a network, coloured by genre ----------
+const gv = {
+  open: false, nodes: [], edges: [], byId: new Map(), pos: new Map(), alpha: 0, raf: 0,
+  view: { x: 0, y: 0, k: 1 }, hover: null, drag: null, pan: null, moved: false, dirty: false, W: 0, H: 0,
+  opts: { influence: true, shared: true, loose: false, labels: true },
+};
+const gcv = $('gcanvas'), gctx = gcv.getContext('2d');
+const genreAnchor = {};
+GENRES.forEach((g, i) => { const a = (i / GENRES.length) * Math.PI * 2 - Math.PI / 2; genreAnchor[g.id] = { x: Math.cos(a) * 760, y: Math.sin(a) * 470 }; });
+
+function graphBuild() {
+  const set = new Set(visible.map(b => b.id));
+  const edges = [];
+  if (gv.opts.influence) visible.forEach(b => b.from.forEach(p => { if (set.has(p)) edges.push({ a: p, b: b.id, t: 'i' }); }));
+  if (gv.opts.shared) sharedList.forEach(e => { if (set.has(e.a) && set.has(e.b)) edges.push({ a: e.a, b: e.b, t: 's', who: e.who.join(', ') }); });
+  const deg = new Map();
+  edges.forEach(e => { deg.set(e.a, (deg.get(e.a) || 0) + 1); deg.set(e.b, (deg.get(e.b) || 0) + 1); });
+  const nodes = visible.filter(b => gv.opts.loose || deg.has(b.id)).map(b => {
+    let p = gv.pos.get(b.id);
+    if (!p) {
+      const an = genreAnchor[b.genre], r = Math.random() * 180, t = Math.random() * 6.283;
+      p = { x: an.x + Math.cos(t) * r, y: an.y + Math.sin(t) * r, vx: 0, vy: 0 };
+      gv.pos.set(b.id, p);
+    }
+    return { b, p, deg: deg.get(b.id) || 0, r: 3 + Math.sqrt(deg.get(b.id) || 0) * 1.6 };
+  });
+  gv.byId = new Map(nodes.map(n => [n.b.id, n]));
+  gv.edges = edges.filter(e => gv.byId.has(e.a) && gv.byId.has(e.b)).map(e => ({ ...e, na: gv.byId.get(e.a), nb: gv.byId.get(e.b) }));
+  gv.nodes = nodes;
+  const nb = new Map();
+  gv.edges.forEach(e => { (nb.get(e.a) || nb.set(e.a, new Set()).get(e.a)).add(e.b); (nb.get(e.b) || nb.set(e.b, new Set()).get(e.b)).add(e.a); });
+  gv.nb = nb;
+  $('gStats').textContent = nodes.length + ' acts · ' + gv.edges.length + ' connections' + (nodes.length < visible.length ? ' (' + (visible.length - nodes.length) + ' unconnected hidden)' : '');
+  graphHeat(0.9);
+}
+
+function graphHeat(a) { gv.alpha = Math.max(gv.alpha, a); if (gv.open && !gv.raf) gv.raf = requestAnimationFrame(graphTick); }
+
+function graphTick() {
+  gv.raf = 0;
+  if (!gv.open) return;
+  const N = gv.nodes, steps = gv.alpha > 0.5 ? 2 : 1;
+  for (let s = 0; s < steps && gv.alpha > 0.012; s++) {
+    const a = gv.alpha;
+    for (let i = 0; i < N.length; i++) {                      // repulsion between every pair that is close enough to matter
+      const ni = N[i].p;
+      for (let j = i + 1; j < N.length; j++) {
+        const nj = N[j].p;
+        let dx = ni.x - nj.x, dy = ni.y - nj.y, d2 = dx * dx + dy * dy;
+        if (d2 > 90000) continue;
+        if (d2 < 1) { dx = Math.random() - .5; dy = Math.random() - .5; d2 = 1; }
+        const f = (900 / d2) * a, d = Math.sqrt(d2);
+        ni.vx += dx / d * f * 14; ni.vy += dy / d * f * 14; nj.vx -= dx / d * f * 14; nj.vy -= dy / d * f * 14;
+      }
+    }
+    for (const e of gv.edges) {                                // springs along connections
+      const p = e.na.p, q = e.nb.p, dx = q.x - p.x, dy = q.y - p.y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+      const f = (d - (e.t === 'i' ? 40 : 80)) * (e.t === 'i' ? 0.006 : 0.002) * a;
+      p.vx += dx / d * f; p.vy += dy / d * f; q.vx -= dx / d * f; q.vy -= dy / d * f;
+    }
+    for (const n of N) {                                       // pull towards the genre's corner of the map, plus a little gravity
+      const an = genreAnchor[n.b.genre], p = n.p;
+      p.vx += (an.x - p.x) * 0.011 * a - p.x * 0.0002 * a;
+      p.vy += (an.y - p.y) * 0.011 * a - p.y * 0.0002 * a;
+      if (gv.drag && gv.drag.n === n) { p.vx = p.vy = 0; continue; }
+      p.vx *= 0.82; p.vy *= 0.82;
+      p.x += p.vx; p.y += p.vy;
+    }
+    gv.alpha *= 0.985;
+  }
+  gv.dirty = true;
+  graphDraw();
+  if (gv.alpha > 0.012 || gv.drag) gv.raf = requestAnimationFrame(graphTick);
+}
+
+const gToScreen = (x, y) => [x * gv.view.k + gv.view.x, y * gv.view.k + gv.view.y];
+function graphFit() {
+  if (!gv.nodes.length) return;
+  const xs = gv.nodes.map(n => n.p.x).sort((p, q) => p - q), ys = gv.nodes.map(n => n.p.y).sort((p, q) => p - q), lo = Math.floor(xs.length * .02), hi = Math.ceil(xs.length * .98) - 1;
+  const x0 = xs[lo], x1 = xs[hi], y0 = ys[lo], y1 = ys[hi];       // ignore the few outliers so the crowd fills the screen
+  const padL = W > 700 ? 290 : 10, padR = W > 700 && selected ? 350 : 10;
+  const k = Math.min((gv.W - padL - padR - 40) / Math.max(x1 - x0, 80), (gv.H - 110) / Math.max(y1 - y0, 80), 3);
+  gv.view.k = k;
+  gv.view.x = padL + (gv.W - padL - padR) / 2 - (x0 + x1) / 2 * k;
+  gv.view.y = 50 + (gv.H - 50) / 2 - (y0 + y1) / 2 * k;
+  gv.dirty = true;
+}
+
+function graphResize() {
+  const r = gcv.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
+  gv.W = r.width; gv.H = r.height;
+  gcv.width = Math.round(r.width * d); gcv.height = Math.round(r.height * d);
+  gctx.setTransform(d, 0, 0, d, 0, 0);
+  gv.dirty = true;
+}
+
+function graphDraw() {
+  if (!gv.open) return;
+  const c = gctx, k = gv.view.k, focus = gv.hover || selected;
+  const fid = focus ? focus.id : null, near = fid && gv.nb.get(fid);
+  c.clearRect(0, 0, gv.W, gv.H);
+  c.lineCap = 'round';
+  // connections
+  for (const e of gv.edges) {
+    const hit = fid && (e.a === fid || e.b === fid);
+    const [x1, y1] = gToScreen(e.na.p.x, e.na.p.y), [x2, y2] = gToScreen(e.nb.p.x, e.nb.p.y);
+    c.globalAlpha = fid ? (hit ? .95 : .04) : e.t === 'i' ? .26 : .14;
+    c.lineWidth = hit ? 2 : 1;
+    if (e.t === 's') { c.setLineDash([4, 3]); c.strokeStyle = T.sharedLine || '#f2b134'; }
+    else { c.setLineDash([]); c.strokeStyle = col(genreById[e.na.b.genre], 62); }
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    if (hit && e.t === 'i') {                                   // arrowhead towards the act that was influenced
+      const ang = Math.atan2(y2 - y1, x2 - x1), r = e.nb.r * k + 3;
+      c.setLineDash([]); c.fillStyle = c.strokeStyle; c.beginPath();
+      c.moveTo(x2 - Math.cos(ang) * r, y2 - Math.sin(ang) * r);
+      c.lineTo(x2 - Math.cos(ang - .4) * (r + 8), y2 - Math.sin(ang - .4) * (r + 8));
+      c.lineTo(x2 - Math.cos(ang + .4) * (r + 8), y2 - Math.sin(ang + .4) * (r + 8));
+      c.fill();
+    }
+  }
+  c.setLineDash([]);
+  // nodes
+  for (const n of gv.nodes) {
+    const [x, y] = gToScreen(n.p.x, n.p.y);
+    if (x < -20 || y < -20 || x > gv.W + 20 || y > gv.H + 20) { n.sx = null; continue; }
+    n.sx = x; n.sy = y;
+    const lit = !fid || n.b.id === fid || (near && near.has(n.b.id));
+    c.globalAlpha = lit ? 1 : .16;
+    const rad = n.r * Math.sqrt(k);
+    c.fillStyle = col(genreById[n.b.genre], 58);
+    c.beginPath(); c.arc(x, y, rad, 0, 6.283); c.fill();
+    if (n.b === selected || n.b === gv.hover) { c.strokeStyle = T.hoverStroke; c.lineWidth = 2; c.stroke(); }
+    else if (n.b.kind === 'artist') { c.strokeStyle = T.bg; c.lineWidth = 1.2; c.stroke(); }
+  }
+  // labels: the highlighted neighbourhood, then the best connected acts, more of them as you zoom in
+  if (gv.opts.labels) {
+    c.font = '600 12px ' + FB; c.textBaseline = 'middle';
+    const placed = [], limit = k < .8 ? 14 : k < 1.4 ? 40 : k < 2.4 ? 120 : 9999;
+    const list = fid ? gv.nodes.filter(n => n.b.id === fid || (near && near.has(n.b.id))) : [...gv.nodes].sort((a, b) => b.deg - a.deg).slice(0, limit);
+    for (const n of list) {
+      if (n.sx == null) continue;
+      const w = c.measureText(n.b.name).width, x = n.sx + n.r * Math.sqrt(k) + 4, y = n.sy;
+      if (placed.some(p => x < p[2] && x + w > p[0] && y - 6 < p[3] && y + 6 > p[1])) continue;
+      placed.push([x, y - 6, x + w, y + 6]);
+      c.globalAlpha = 1;
+      c.lineWidth = 3; c.strokeStyle = T.bg; c.strokeText(n.b.name, x, y);
+      c.fillStyle = T.text; c.fillText(n.b.name, x, y);
+    }
+  }
+  c.globalAlpha = 1;
+  gv.dirty = false;
+}
+
+function graphNodeAt(px, py) {
+  let best = null, bd = 1e9;
+  for (const n of gv.nodes) {
+    if (n.sx == null) continue;
+    const d = Math.hypot(n.sx - px, n.sy - py), rad = Math.max(n.r * Math.sqrt(gv.view.k), 5) + 3;
+    if (d < rad && d < bd) { best = n; bd = d; }
+  }
+  return best;
+}
+
+function graphOpen() {
+  if (gv.open) return;
+  gv.open = true;
+  document.body.classList.add('graphopen');
+  $('graphview').hidden = false;
+  $('graphIcon').setAttribute('aria-pressed', 'true');
+  graphResize();
+  graphBuild();
+  graphFit();
+  graphDraw();
+}
+function graphClose() {
+  if (!gv.open) return;
+  gv.open = false;
+  cancelAnimationFrame(gv.raf); gv.raf = 0;
+  document.body.classList.remove('graphopen');
+  $('graphview').hidden = true;
+  $('graphIcon').setAttribute('aria-pressed', 'false');
+  dirty = true;
+}
+function graphRefresh() { if (gv.open) { graphBuild(); graphDraw(); } }
+
+$('graphIcon').onclick = () => (gv.open ? graphClose() : graphOpen());
+$('gClose').onclick = graphClose;
+$('gFit').onclick = () => { graphFit(); graphDraw(); };
+$('gShake').onclick = () => { gv.pos.clear(); graphBuild(); graphHeat(1); setTimeout(() => { graphFit(); graphDraw(); }, 900); };
+[['gInfl', 'influence'], ['gShared', 'shared'], ['gLoose', 'loose'], ['gLabels', 'labels']].forEach(([id, key]) => {
+  $(id).onchange = e => { gv.opts[key] = e.target.checked; key === 'labels' ? graphDraw() : (graphBuild(), graphDraw()); };
+});
+window.addEventListener('resize', () => { if (gv.open) { graphResize(); graphDraw(); } });
+
+gcv.addEventListener('pointerdown', e => {
+  const r = gcv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  gcv.setPointerCapture(e.pointerId);
+  gv.moved = false;
+  const n = graphNodeAt(px, py);
+  if (n) gv.drag = { n, ox: px, oy: py };
+  else gv.pan = { x: px, y: py, vx: gv.view.x, vy: gv.view.y };
+});
+gcv.addEventListener('pointermove', e => {
+  const r = gcv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  if (gv.drag) {
+    if (Math.hypot(px - gv.drag.ox, py - gv.drag.oy) > 4) gv.moved = true;
+    if (gv.moved) { gv.drag.n.p.x = (px - gv.view.x) / gv.view.k; gv.drag.n.p.y = (py - gv.view.y) / gv.view.k; graphHeat(.35); }
+  } else if (gv.pan) {
+    if (Math.hypot(px - gv.pan.x, py - gv.pan.y) > 3) gv.moved = true;
+    gv.view.x = gv.pan.vx + px - gv.pan.x; gv.view.y = gv.pan.vy + py - gv.pan.y; graphDraw();
+  } else {
+    const n = graphNodeAt(px, py), h = n ? n.b : null;
+    if (h !== gv.hover) { gv.hover = h; gcv.style.cursor = h ? 'pointer' : 'grab'; graphDraw(); }
+    const tip = $('tip');
+    if (h) {
+      tip.hidden = false;
+      tip.innerHTML = `<b>${esc(h.name)}</b><small>${esc(genreById[h.genre].name)} · ${h.formed}–${h.ended ?? 'present'} · ${n.deg} connection${n.deg === 1 ? '' : 's'}</small>`;
+      tip.style.left = Math.min(e.clientX + 14, innerWidth - 240) + 'px'; tip.style.top = (e.clientY + 14) + 'px';
+    } else tip.hidden = true;
+  }
+});
+gcv.addEventListener('pointerup', e => {
+  const d = gv.drag;
+  gv.drag = null; gv.pan = null;
+  if (d && !gv.moved) { selected = d.n.b; renderDetail(); announce(d.n.b.name); graphDraw(); }
+  else if (!d && !gv.moved && selected) { selected = null; renderDetail(); graphDraw(); }
+});
+gcv.addEventListener('pointerleave', () => { if (gv.hover) { gv.hover = null; graphDraw(); } $('tip').hidden = true; });
+gcv.addEventListener('dblclick', e => {                         // double click: leave the graph and show the act on the timeline
+  const r = gcv.getBoundingClientRect(), n = graphNodeAt(e.clientX - r.left, e.clientY - r.top);
+  if (n) { graphClose(); select(n.b); }
+});
+gcv.addEventListener('wheel', e => {
+  e.preventDefault();
+  const r = gcv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  const f = Math.exp(-e.deltaY * 0.0015), nk = clamp(gv.view.k * f, .15, 8), s = nk / gv.view.k;
+  gv.view.x = px - (px - gv.view.x) * s; gv.view.y = py - (py - gv.view.y) * s; gv.view.k = nk;
+  graphDraw();
+}, { passive: false });
+
+onLayout = graphRefresh;
+onDetail = () => { if (gv.open) graphDraw(); };
+
 // tab panels for assistive technology
-['tab-filters', 'tab-explore', 'tab-about'].forEach(id => $(id).setAttribute('role', 'tabpanel'));
+['tab-filters', 'tab-view', 'tab-explore', 'tab-about'].forEach(id => $(id).setAttribute('role', 'tabpanel'));
 
 // ---------- about ----------
 (() => {
@@ -1703,6 +2091,7 @@ if (document.fonts) {
   if (hp.get('tab') && W <= 700) setPanel(true);                                // a link to a tab should show it on phones too
   if (hp.get('expand')) { hp.get('expand').split(',').forEach(g => expanded.add(g)); buildGenres(); }
   layout(); fit(false);
+  setCriterion(hp.get('criterion') === 'popular' ? 'popular' : 'acclaimed');
   if (hp.get('releases') === 'all') setReleases('all', hp.get('live') === '1');
   if (hp.get('band') && bandById[hp.get('band')] && visible.includes(bandById[hp.get('band')])) {
     selected = bandById[hp.get('band')]; renderDetail();
@@ -1729,6 +2118,7 @@ requestAnimationFrame(frame);
 // Dev hook for tools/perf.js (open the page with #perf in the URL)
 if (/perf/.test(location.hash)) {
   window.__atlas = { draw, layout, fit, setReleases, zoomAt, view, filters, bandById, bootMs: performance.now(), setRange, brushRange, brushMode, bx, yearAtB,
-                     get visibleCount() { return visible.length; } };
+                     setCriterion, graphOpen, graphClose, revealBand, focusBand, get selected() { return selected; }, get visibleCount() { return visible.length; },
+                     graph: { get open() { return gv.open; }, get nodes() { return gv.nodes.length; }, get edges() { return gv.edges.length; }, pick(id) { const n = gv.byId.get(id); if (!n) return null; const [x, y] = gToScreen(n.p.x, n.p.y); const r = gcv.getBoundingClientRect(); return { x: x + r.left, y: y + r.top }; } } };
 }
 })();

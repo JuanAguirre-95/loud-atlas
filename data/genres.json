@@ -1,0 +1,234 @@
+{
+ "genres": [
+  {
+   "id": "roots",
+   "name": "Blues & Rock 'n' Roll",
+   "hue": 28,
+   "sat": 42
+  },
+  {
+   "id": "funk",
+   "name": "Funk, Soul & Fusion",
+   "hue": 60,
+   "sat": 55
+  },
+  {
+   "id": "classic",
+   "name": "Classic & Psych Rock",
+   "hue": 38,
+   "sat": 75
+  },
+  {
+   "id": "hard",
+   "name": "Hard Rock",
+   "hue": 18,
+   "sat": 80
+  },
+  {
+   "id": "glam",
+   "name": "Glam & Hair Metal",
+   "hue": 325,
+   "sat": 75
+  },
+  {
+   "id": "punk",
+   "name": "Punk & Hardcore",
+   "hue": 85,
+   "sat": 65
+  },
+  {
+   "id": "postpunk",
+   "name": "Post-Punk & New Wave",
+   "hue": 170,
+   "sat": 35
+  },
+  {
+   "id": "heavy",
+   "name": "Heavy Metal / NWOBHM",
+   "hue": 205,
+   "sat": 75
+  },
+  {
+   "id": "thrash",
+   "name": "Thrash Metal",
+   "hue": 0,
+   "sat": 80
+  },
+  {
+   "id": "death",
+   "name": "Death & Grind",
+   "hue": 275,
+   "sat": 65
+  },
+  {
+   "id": "black",
+   "name": "Black Metal",
+   "hue": 215,
+   "sat": 14
+  },
+  {
+   "id": "doom",
+   "name": "Doom & Stoner",
+   "hue": 150,
+   "sat": 55
+  },
+  {
+   "id": "power",
+   "name": "Power Metal",
+   "hue": 52,
+   "sat": 85
+  },
+  {
+   "id": "prog",
+   "name": "Progressive",
+   "hue": 245,
+   "sat": 75
+  },
+  {
+   "id": "postrock",
+   "name": "Post-Rock & Shoegaze",
+   "hue": 228,
+   "sat": 45
+  },
+  {
+   "id": "gothic",
+   "name": "Gothic & Symphonic",
+   "hue": 295,
+   "sat": 55
+  },
+  {
+   "id": "grunge",
+   "name": "Grunge & Alt Rock",
+   "hue": 120,
+   "sat": 45
+  },
+  {
+   "id": "industrial",
+   "name": "Industrial & Nu Metal",
+   "hue": 180,
+   "sat": 70
+  },
+  {
+   "id": "modern",
+   "name": "Metalcore & Modern",
+   "hue": 345,
+   "sat": 75
+  }
+ ],
+ "subOrder": {
+  "postrock": [
+   "Post-Rock",
+   "Shoegaze & Dream Pop"
+  ],
+  "funk": [
+   "Funk & Soul",
+   "Jazz Fusion"
+  ],
+  "postpunk": [
+   "Post-Punk",
+   "Goth Rock",
+   "New Wave"
+  ],
+  "roots": [
+   "Delta & Chicago Blues",
+   "Rock 'n' Roll"
+  ],
+  "classic": [
+   "British Invasion",
+   "British Blues Boom",
+   "Folk Rock",
+   "Garage & Surf",
+   "Psychedelic & Blues Rock",
+   "Roots & Southern Rock",
+   "Proto-punk"
+  ],
+  "hard": [
+   "Proto-metal",
+   "Classic Hard Rock"
+  ],
+  "glam": [
+   "Glam Rock",
+   "Hair Metal"
+  ],
+  "punk": [
+   "Punk",
+   "Hardcore",
+   "Crossover",
+   "Post-hardcore & Emo",
+   "Pop Punk"
+  ],
+  "heavy": [
+   "Traditional & Continental",
+   "NWOBHM",
+   "US Heavy & Epic"
+  ],
+  "thrash": [
+   "Bay Area",
+   "US Thrash",
+   "Teutonic",
+   "European & Canadian",
+   "Brazilian",
+   "Groove",
+   "Revival"
+  ],
+  "death": [
+   "Grindcore & UK Death",
+   "American Death Metal",
+   "Swedish Death Metal",
+   "Melodic Death",
+   "Eastern European Death",
+   "Technical & Blackened"
+  ],
+  "black": [
+   "First Wave",
+   "Second Wave",
+   "Symphonic Black",
+   "Modern Black"
+  ],
+  "doom": [
+   "Traditional Doom",
+   "Death-Doom",
+   "Stoner & Sludge",
+   "Stoner Rock",
+   "Post-metal",
+   "Drone"
+  ],
+  "power": [
+   "German Power",
+   "US Power",
+   "Finnish & Melodic Speed",
+   "Epic & Symphonic",
+   "Modern Power"
+  ],
+  "prog": [
+   "Classic Prog",
+   "Krautrock & Space",
+   "Progressive Metal",
+   "Modern Prog & Art Metal",
+   "Djent & Tech"
+  ],
+  "gothic": [
+   "Gothic Metal",
+   "Symphonic"
+  ],
+  "grunge": [
+   "Indie & College Rock",
+   "Alt & Noise Rock",
+   "Britpop",
+   "Grunge",
+   "Post-grunge",
+   "Modern Rock"
+  ],
+  "industrial": [
+   "Early Industrial",
+   "Industrial",
+   "Nu & Alt Metal"
+  ],
+  "modern": [
+   "Metalcore",
+   "Deathcore",
+   "Groove & Modern Heavy",
+   "Alt & Genre-bending"
+  ]
+ }
+}

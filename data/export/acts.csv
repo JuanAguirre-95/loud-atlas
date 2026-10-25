@@ -1,0 +1,630 @@
+﻿id,name,type,genre,subgenre,country,formed,ended,dates_verified,formed_source,ended_source,musicbrainz_id,website,wikipedia_or_wikidata
+beatles,The Beatles,band,Classic & Psych Rock,British Invasion,UK,1960,1970,,,,b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d,https://www.thebeatles.com/,https://www.wikidata.org/wiki/Q1299
+stones,The Rolling Stones,band,Classic & Psych Rock,British Invasion,UK,1962,present,,,,b071f9fa-14b0-4217-8e97-eb41da73f598,http://www.rollingstones.com/,https://www.wikidata.org/wiki/Q11036
+who,The Who,band,Classic & Psych Rock,British Invasion,UK,1964,present,,,,9fdaa16b-a6c4-4831-b87c-bc9ca8ce7eaa,https://www.thewho.com/,https://www.wikidata.org/wiki/Q93346
+velvet,The Velvet Underground,band,Classic & Psych Rock,Proto-punk,USA,1964,1973,,,,94b0fb9d-a066-4823-b2ec-af1d324bcfcf,http://www.velvetundergroundmusic.com/,https://www.wikidata.org/wiki/Q103550
+mc5,MC5,band,Classic & Psych Rock,Proto-punk,USA,1964,1972,,,,08b736bb-1c82-40b4-8b0b-49e2182a067a,,https://www.wikidata.org/wiki/Q830316
+doors,The Doors,band,Classic & Psych Rock,Psychedelic & Blues Rock,USA,1965,1973,,,,9efff43b-3b29-4082-824e-bc82f646f93d,http://www.thedoors.com/home,https://www.wikidata.org/wiki/Q45354
+floyd,Pink Floyd,band,Classic & Psych Rock,Psychedelic & Blues Rock,UK,1965,2014,,,,83d91898-7763-47d7-b03b-b92132375c47,https://www.pinkfloyd.com/,https://www.wikidata.org/wiki/Q2306
+cream,Cream,band,Classic & Psych Rock,Psychedelic & Blues Rock,UK,1966,1968,,,,04cd0cfd-bfd1-4c36-bc38-95c35e2c045f,,https://www.wikidata.org/wiki/Q203736
+hendrix,The Jimi Hendrix Experience,band,Classic & Psych Rock,Psychedelic & Blues Rock,UK/USA,1966,1969,,,,33b3c323-77c2-417c-a5b4-af7e6a111cc9,,https://www.wikidata.org/wiki/Q1407424
+stooges,The Stooges,band,Classic & Psych Rock,Proto-punk,USA,1967,1974,,,,794c6bf2-3241-416f-9b8f-24e2d84a1c4b,http://iggyandthestoogesmusic.com/,https://www.wikidata.org/wiki/Q208767
+sabbath,Black Sabbath,band,Hard Rock,Proto-metal,UK,1968,2017,,,,5182c1d9-c7d2-4dad-afa0-ccfeada921a8,https://www.blacksabbath.com/,https://www.wikidata.org/wiki/Q47670
+zeppelin,Led Zeppelin,band,Hard Rock,Classic Hard Rock,UK,1968,1980,,,,678d88b2-87b0-403b-b63d-5da7465aecc3,http://www.ledzeppelin.com/,https://www.wikidata.org/wiki/Q2331
+purple,Deep Purple,band,Hard Rock,Classic Hard Rock,UK,1968,present,,,,79491354-3d83-40e3-9d8e-7592d58d790a,https://deeppurple.com/,https://www.wikidata.org/wiki/Q101505
+bluecheer,Blue Cheer,band,Hard Rock,Proto-metal,USA,1967,1971,,,,523b52d7-a819-4111-9085-69fc269c9638,http://www.bluecheer.us/,https://www.wikidata.org/wiki/Q804567
+queen,Queen,band,Hard Rock,Classic Hard Rock,UK,1970,present,,,,0383dadf-2a4e-4d10-a46a-e9e041da8eb3,http://www.queenonline.com/,https://www.wikidata.org/wiki/Q15862
+aerosmith,Aerosmith,band,Hard Rock,Classic Hard Rock,USA,1970,2024,,,,3d2b98e5-556f-4451-a3ff-c50ea18d57cb,https://www.aerosmith.com/,https://www.wikidata.org/wiki/Q126826
+vanhalen,Van Halen,band,Hard Rock,Classic Hard Rock,USA,1972,2020,,,,b665b768-0d83-4363-950c-31ed39317c15,http://www.van-halen.com/,https://www.wikidata.org/wiki/Q190155
+kiss,Kiss,band,Hard Rock,Classic Hard Rock,USA,1973,2023,,,,e1f1e33e-2e4c-4d43-b91b-7064068d3283,http://www.kissonline.com/,https://www.wikidata.org/wiki/Q124179
+acdc,AC/DC,band,Hard Rock,Classic Hard Rock,Australia,1973,present,,,,66c662b6-6e2f-4930-8610-912e24c63ed1,https://www.acdc.com/,https://www.wikidata.org/wiki/Q27593
+motorhead,Motörhead,band,Hard Rock,Proto-metal,UK,1975,2015,,,,57961a97-3796-4bf7-9f02-a985a8979ae9,http://imotorhead.com/,https://www.wikidata.org/wiki/Q19697
+gnr,Guns N' Roses,band,Hard Rock,Classic Hard Rock,USA,1985,present,,,,,,
+ratt,Ratt,band,Glam & Hair Metal,Hair Metal,USA,1976,present,,,,e0827234-3be3-4973-be59-1aa9575b9c76,http://www.therattpack.com/,https://www.wikidata.org/wiki/Q856941
+twisted,Twisted Sister,band,Glam & Hair Metal,Hair Metal,USA,1972,2016,,,,c6122fee-089f-41c4-a34f-e5f7e5607b05,https://www.twistedsister.com/,https://www.wikidata.org/wiki/Q272239
+motley,Mötley Crüe,band,Glam & Hair Metal,Hair Metal,USA,1981,present,,,,26f07661-e115-471d-a930-206f5c89d17c,https://www.motley.com/,https://www.wikidata.org/wiki/Q486688
+poison,Poison,band,Glam & Hair Metal,Hair Metal,USA,1983,present,,,,c79c43d4-cbed-4373-89ce-6560f62eb7d8,http://www.poisonweb.com/,https://www.wikidata.org/wiki/Q550602
+bonjovi,Bon Jovi,band,Glam & Hair Metal,Hair Metal,USA,1983,present,,,,5dcdb5eb-cb72-4e6e-9e63-b7bace604965,https://bonjovi.com/,https://www.wikidata.org/wiki/Q259254
+ramones,Ramones,band,Punk & Hardcore,Punk,USA,1974,1996,,,,d6ed7887-a401-47a8-893c-34b967444d26,https://www.pirate-punk.net/groupe-musique-punk/?band=Ramones,https://www.wikidata.org/wiki/Q483407
+pistols,Sex Pistols,band,Punk & Hardcore,Punk,UK,1975,1978,,,,e5db18cb-4b1f-496d-a308-548b611090d3,https://www.pirate-punk.net/groupe-musique-punk/?band=Sex%20Pistols,https://www.wikidata.org/wiki/Q82545
+clash,The Clash,band,Punk & Hardcore,Punk,UK,1976,1986,,,,8f92558c-2baa-4758-8c38-615519e9deda,https://www.pirate-punk.net/groupe-musique-punk/?band=The%20Clash,https://www.wikidata.org/wiki/Q125603
+blackflag,Black Flag,band,Punk & Hardcore,Hardcore,USA,1976,1986,,,,9941a936-196a-4a62-ae53-a69cbc33f20e,http://blackflagofficial.com/,https://www.wikidata.org/wiki/Q464476
+misfits,Misfits,band,Punk & Hardcore,Punk,USA,1977,1983,,,,936addc3-91aa-49de-8ec0-0dc186de151f,http://www.misfits.com/,https://www.wikidata.org/wiki/Q311785
+discharge,Discharge,band,Punk & Hardcore,Hardcore,UK,1977,present,,,,0c9bfbdc-4e64-497d-bf80-5c891e6766a3,http://thenightmarecontinues.yolasite.com/,https://www.wikidata.org/wiki/Q1228418
+badbrains,Bad Brains,band,Punk & Hardcore,Hardcore,USA,1977,present,,,,e919b253-da5b-4aae-a444-6a368376a2d6,http://badbrains.com/,https://www.wikidata.org/wiki/Q798671
+deadkennedys,Dead Kennedys,band,Punk & Hardcore,Punk,USA,1978,1986,,,,37c78aeb-d196-42b5-b991-6afb4fc9bc2e,https://www.pirate-punk.net/groupe-musique-punk/?band=Dead%20Kennedys,https://www.wikidata.org/wiki/Q208211
+minorthreat,Minor Threat,band,Punk & Hardcore,Hardcore,USA,1980,1983,,,,09037f07-42bc-46ac-a1ee-37f834451fee,,https://www.wikidata.org/wiki/Q81509
+suicidal,Suicidal Tendencies,band,Punk & Hardcore,Crossover,USA,1980,present,,,,e9e2a634-984f-4c10-bf7b-7970179e1ef1,http://www.suicidaltendencies.com/,https://www.wikidata.org/wiki/Q899341
+cromags,Cro-Mags,band,Punk & Hardcore,Crossover,USA,1981,present,,,,,,
+dri,D.R.I.,band,Punk & Hardcore,Crossover,USA,1982,present,,,,95f6e954-8bed-4f8e-a53e-d155bb6f7ace,http://www.dirtyrottenimbeciles.com/,https://www.wikidata.org/wiki/Q500350
+scorpions,Scorpions,band,Heavy Metal / NWOBHM,Traditional & Continental,Germany,1965,present,,,,c3cceeed-3332-4cf0-8c4c-bbde425147b6,http://www.the-scorpions.com/,https://www.wikidata.org/wiki/Q124147
+priest,Judas Priest,band,Heavy Metal / NWOBHM,Traditional & Continental,UK,1969,present,,,,6b335658-22c8-485d-93de-0bc29a1d0349,https://www.judaspriest.com/,https://www.wikidata.org/wiki/Q83468
+iron,Iron Maiden,band,Heavy Metal / NWOBHM,NWOBHM,UK,1975,present,,,,ca891d65-d9b0-4258-89f7-e6ba29d83767,http://www.ironmaiden.com/,https://www.wikidata.org/wiki/Q42482
+rainbow,Rainbow,band,Heavy Metal / NWOBHM,Traditional & Continental,UK,1975,1997,,,,e3cb4543-210f-499a-b0d1-3882c312dfb9,,https://www.wikidata.org/wiki/Q16005
+saxon,Saxon,band,Heavy Metal / NWOBHM,NWOBHM,UK,1975,present,,,,bbd80354-597e-4d53-94e4-92b3a7cb8f2c,http://www.saxon747.com/,https://www.wikidata.org/wiki/Q504090
+accept,Accept,band,Heavy Metal / NWOBHM,Traditional & Continental,Germany,1976,present,,,,41f4d85a-0bd7-4602-a3e3-8c47f36efb0a,http://www.acceptworldwide.com/,https://www.wikidata.org/wiki/Q25507
+diamondhead,Diamond Head,band,Heavy Metal / NWOBHM,NWOBHM,UK,1976,present,,,,d3dd86df-2f57-4a97-8100-d09915343f60,http://www.diamond-head.net/,https://www.wikidata.org/wiki/Q552377
+defleppard,Def Leppard,band,Heavy Metal / NWOBHM,NWOBHM,UK,1977,present,,,,7249b899-8db8-43e7-9e6e-22f1e736024e,http://www.defleppard.com/,https://www.wikidata.org/wiki/Q182890
+ozzy,Ozzy Osbourne,artist,Heavy Metal / NWOBHM,Traditional & Continental,UK,1979,2025,,,,8aa5b65a-5b3c-4029-92bf-47a544356934,https://www.ozzy.com/,https://www.wikidata.org/wiki/Q133151
+mercyful,Mercyful Fate,band,Heavy Metal / NWOBHM,Traditional & Continental,Denmark,1981,present,,,,9b137ab6-5987-4606-989b-183cdb2d3e50,http://www.kingdiamondcoven.com/,https://www.wikidata.org/wiki/Q647370
+dio,Dio,band,Heavy Metal / NWOBHM,Traditional & Continental,USA,1982,2010,,,,c55193fb-f5d2-4839-a263-4c044fca1456,http://www.ronniejamesdio.com/,https://www.wikidata.org/wiki/Q478750
+exodus,Exodus,band,Thrash Metal,Bay Area,USA,1979,present,,,,18e9bfd5-db23-4bc1-be0f-5710e5d656e4,http://exodusattack.com/,https://www.wikidata.org/wiki/Q728170
+overkill,Overkill,band,Thrash Metal,US Thrash,USA,1980,present,,,,97fa7dd1-4706-4fad-b6ff-e099a37837fc,http://www.wreckingcrew.com/,https://www.wikidata.org/wiki/Q648949
+metallica,Metallica,band,Thrash Metal,Bay Area,USA,1981,present,,,,65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab,https://www.metallica.com/,https://www.wikidata.org/wiki/Q15920
+slayer,Slayer,band,Thrash Metal,US Thrash,USA,1981,2019,,,,bdacc37b-8633-4bf8-9dd5-4662ee651aec,https://www.slayer.net/,https://www.wikidata.org/wiki/Q131231
+anthrax,Anthrax,band,Thrash Metal,US Thrash,USA,1981,present,,,,b616d6f0-ec1f-4c69-8a79-12a97ece7372,http://anthrax.com/,https://www.wikidata.org/wiki/Q109871
+sodom,Sodom,band,Thrash Metal,Teutonic,Germany,1981,present,,,,2251718f-7b5c-4a92-9267-895125c594d3,http://www.sodomized.info/,https://www.wikidata.org/wiki/Q156523
+kreator,Kreator,band,Thrash Metal,Teutonic,Germany,1982,present,,,,39822e8d-f24e-4f07-b51b-28b22e59fbdb,http://kreator-terrorzone.de/,https://www.wikidata.org/wiki/Q151890
+destruction,Destruction,band,Thrash Metal,Teutonic,Germany,1982,present,,,,371f152d-1643-4b54-b32b-dd13d4c23442,http://www.destruction.de/,https://www.wikidata.org/wiki/Q159497
+megadeth,Megadeth,band,Thrash Metal,US Thrash,USA,1983,present,,,,a9044915-8be3-4c7e-b11f-9e2d2ea0a91e,https://www.megadeth.com/,https://www.wikidata.org/wiki/Q83431
+testament,Testament,band,Thrash Metal,Bay Area,USA,1983,present,,,,05106775-5d45-4131-aecc-1177f813ba11,http://www.testamentlegions.com/,https://www.wikidata.org/wiki/Q309312
+sepultura,Sepultura,band,Thrash Metal,Brazilian,Brazil,1984,2024,,,,1d93c839-22e7-4f76-ad84-d27039efc048,https://www.sepultura.com.br/,https://www.wikidata.org/wiki/Q239074
+pantera,Pantera,band,Thrash Metal,Groove,USA,1981,present,,,,541f16f5-ad7a-428e-af89-9fa1b16d3c9c,https://pantera.com/,https://www.wikidata.org/wiki/Q180880
+napalm,Napalm Death,band,Death & Grind,Grindcore & UK Death,UK,1981,present,,,,ce7bba8b-026b-4aa6-bddb-f98ed6d595e4,https://www.napalmdeath.org/,https://www.wikidata.org/wiki/Q321762
+possessed,Possessed,band,Death & Grind,American Death Metal,USA,1983,present,,,,709e937c-496d-4b7f-9219-d5eb9d8b2e2f,http://www.666possessed.com/,https://www.wikidata.org/wiki/Q830761
+death,Death,band,Death & Grind,American Death Metal,USA,1983,2001,,,,dbb3b771-ae77-4381-b61c-758b5b7898ec,https://www.emptywords.org/,https://www.wikidata.org/wiki/Q192843
+morbidangel,Morbid Angel,band,Death & Grind,American Death Metal,USA,1983,present,,,,4355a36d-805e-478d-8589-64f0292724b2,http://www.morbidangel.com/,https://www.wikidata.org/wiki/Q309001
+repulsion,Repulsion,band,Death & Grind,Grindcore & UK Death,USA,1984,present,,,,d1981d41-caf3-4ccb-a1c7-462d74e22f07,http://repulsion.net/,https://www.wikidata.org/wiki/Q1853330
+obituary,Obituary,band,Death & Grind,American Death Metal,USA,1984,present,,,,2e8ac3ed-2a89-4377-ba80-790106aba554,http://www.obituary.cc/,https://www.wikidata.org/wiki/Q334537
+carcass,Carcass,band,Death & Grind,Grindcore & UK Death,UK,1985,present,,,,d50a4b89-ff1f-4659-9fde-f76f8d5b3c89,,https://www.wikidata.org/wiki/Q283835
+boltthrower,Bolt Thrower,band,Death & Grind,Grindcore & UK Death,UK,1986,2016,,,,68bd8072-0412-44b1-81dd-807aa6c1918c,https://www.boltthrower.com/,https://www.wikidata.org/wiki/Q662463
+entombed,Entombed,band,Death & Grind,Swedish Death Metal,Sweden,1987,2014,,,,61b99cc4-06cd-4ad5-9bac-950b2daef9cc,http://www.entombed.org/,https://www.wikidata.org/wiki/Q526132
+cannibal,Cannibal Corpse,band,Death & Grind,American Death Metal,USA,1988,present,,,,af8e4cc5-ef54-458d-a194-7b210acf638f,http://www.cannibalcorpse.net/,https://www.wikidata.org/wiki/Q485231
+dismember,Dismember,band,Death & Grind,Swedish Death Metal,Sweden,1988,2011,,,,49c15d5f-469e-469c-ae94-89e8d31106dd,http://www.dismember.se/,https://www.wikidata.org/wiki/Q773644
+atthegates,At the Gates,band,Death & Grind,Melodic Death,Sweden,1990,present,,,,35f92c4a-69d0-4ed1-ab9e-05259db89d14,http://atthegates.se/,https://www.wikidata.org/wiki/Q540368
+inflames,In Flames,band,Death & Grind,Melodic Death,Sweden,1990,present,,,,31745282-b1ea-4d62-939f-226b14d68e7c,http://inflames.com/,https://www.wikidata.org/wiki/Q258546
+darktranq,Dark Tranquillity,band,Death & Grind,Melodic Death,Sweden,1989,present,,,,9d30e408-1559-448b-b491-2f8de1583ccf,https://www.darktranquillity.com/,https://www.wikidata.org/wiki/Q157026
+nile,Nile,band,Death & Grind,Technical & Blackened,USA,1993,present,,,,adc68a50-38ee-456d-927e-715cbf74c0d5,http://www.nile-catacombs.net/,https://www.wikidata.org/wiki/Q660835
+behemoth,Behemoth,band,Death & Grind,Technical & Blackened,Poland,1991,present,,,,69632f9c-31eb-43d5-a864-e73ac72efc66,https://www.behemoth.pl/,https://www.wikidata.org/wiki/Q272260
+venom,Venom,band,Black Metal,First Wave,UK,1978,present,,,,d2ad8774-9173-4970-8427-06b04df201c1,http://www.venomslegions.com/,https://www.wikidata.org/wiki/Q192861
+bathory,Bathory,band,Black Metal,First Wave,Sweden,1983,2004,,,,d292b4cd-37bd-4a88-a823-8710f273cc31,https://web.archive.org/web/20081106161412/http://www.bathory.nu/,https://www.wikidata.org/wiki/Q157201
+celtic,Celtic Frost,band,Black Metal,First Wave,Switzerland,1984,2008,,,,d91b3683-4622-4d72-8a03-80f1ff59e639,http://www.celticfrost.com/,https://www.wikidata.org/wiki/Q324645
+mayhem,Mayhem,band,Black Metal,Second Wave,Norway,1984,present,,,,c5f9e699-7b0d-4030-86dd-7acc8250d147,http://thetruemayhem.com/,https://www.wikidata.org/wiki/Q485116
+darkthrone,Darkthrone,band,Black Metal,Second Wave,Norway,1986,present,,,,af8fd97c-db72-4e30-b2aa-30ebd0c4f1a0,http://www.darkthrone.no/,https://www.wikidata.org/wiki/Q160119
+burzum,Burzum,artist,Black Metal,Second Wave,Norway,1991,present,,,,49cd96a6-42c3-44f6-ba2a-cd9301046b96,http://www.burzum.org/,https://www.wikidata.org/wiki/Q193172
+emperor,Emperor,band,Black Metal,Second Wave,Norway,1991,2014,,,,d9951785-7906-4daf-9a60-21753bf64aa9,http://www.emperorhorde.com/,https://www.wikidata.org/wiki/Q264029
+immortal,Immortal,band,Black Metal,Second Wave,Norway,1991,present,,,,b863cf80-19c6-4a87-8e42-6cff7ac8f18f,https://www.immortalofficial.com/,https://www.wikidata.org/wiki/Q208417
+cradle,Cradle of Filth,band,Black Metal,Symphonic Black,UK,1991,present,,,,7e26cbe1-b8f5-4215-af82-e43d5f8ff308,https://www.cradleoffilth.com/,https://www.wikidata.org/wiki/Q487479
+gorgoroth,Gorgoroth,band,Black Metal,Second Wave,Norway,1992,present,,,,a1d69fd9-0096-4a60-b277-de34e5a77fca,http://www.gorgoroth.info/,https://www.wikidata.org/wiki/Q152761
+satyricon,Satyricon,band,Black Metal,Second Wave,Norway,1991,present,,,,8eed05a5-e9a1-4dda-8b33-e354c4ecc8b6,https://www.satyricon.no/,https://www.wikidata.org/wiki/Q335352
+dimmu,Dimmu Borgir,band,Black Metal,Symphonic Black,Norway,1993,present,,,,17167af8-c1da-45cc-bba2-9d23f068b7a3,https://www.dimmu-borgir.com/,https://www.wikidata.org/wiki/Q58207
+watain,Watain,band,Black Metal,Modern Black,Sweden,1998,present,,,,8c51b06d-b678-4bbf-aeac-7295dfb69d13,http://www.templeofwatain.com/,https://www.wikidata.org/wiki/Q1509682
+mgla,Mgła,band,Black Metal,Modern Black,Poland,2000,present,,,,e7b4c928-8c45-4ecf-9f08-da64fe5c2ddd,http://www.no-solace.com/,https://www.wikidata.org/wiki/Q4353050
+pentagram,Pentagram,band,Doom & Stoner,Traditional Doom,USA,1971,present,,,,d7e9b9e7-8ac3-4be4-85c8-64601d68261c,http://www.pentagramusa.com/,https://www.wikidata.org/wiki/Q1402704
+saintvitus,Saint Vitus,band,Doom & Stoner,Traditional Doom,USA,1979,present,,,,707d26d5-51ee-42b2-9bc4-19884689d51c,http://www.saintvitusband.com/,https://www.wikidata.org/wiki/Q514336
+trouble,Trouble,band,Doom & Stoner,Traditional Doom,USA,1979,present,,,,2bfd6269-90a6-405e-8ce2-db6ad23a489c,https://www.troublemetal.com/,https://www.wikidata.org/wiki/Q2062170
+candlemass,Candlemass,band,Doom & Stoner,Traditional Doom,Sweden,1984,present,,,,7dba6614-d0bd-4950-8b7b-841b31c413c2,http://www.candlemass.se/,https://www.wikidata.org/wiki/Q840197
+kyuss,Kyuss,band,Doom & Stoner,Stoner Rock,USA,1987,1995,,,,ea0f2a37-7007-4217-a812-396227f5013a,,https://www.wikidata.org/wiki/Q4991503
+eyehategod,Eyehategod,band,Doom & Stoner,Stoner & Sludge,USA,1988,present,,,,742e54f5-debd-4fc1-a7c1-00edf9b673a5,http://eyehategod.ee/,https://www.wikidata.org/wiki/Q973113
+paradise,Paradise Lost,band,Doom & Stoner,Death-Doom,UK,1988,present,,,,10bf95b6-30e3-44f1-817f-45762cdc0de0,https://paradiselost.co.uk/,https://www.wikidata.org/wiki/Q750593
+cathedral,Cathedral,band,Doom & Stoner,Traditional Doom,UK,1989,2013,,,,e659c09d-8ec1-43d8-ab3f-72630b926157,http://www.cathedralcoven.com/,https://www.wikidata.org/wiki/Q1050878
+monstermagnet,Monster Magnet,band,Doom & Stoner,Stoner Rock,USA,1989,present,,,,a0955511-1324-4e9b-834f-e1e140502850,http://www.zodiaclung.com/,https://www.wikidata.org/wiki/Q1430616
+sleep,Sleep,band,Doom & Stoner,Stoner & Sludge,USA,1990,present,,,,6fc69ec6-3e59-4ff7-849d-b5da932abe4d,http://www.weedian.com/,https://www.wikidata.org/wiki/Q1718244
+mdb,My Dying Bride,band,Doom & Stoner,Death-Doom,UK,1990,present,,,,2f04ad1f-9f97-41d0-a09c-59c40dfe9cd1,https://mydyingbride.net/,https://www.wikidata.org/wiki/Q498460
+electricwizard,Electric Wizard,band,Doom & Stoner,Stoner & Sludge,UK,1993,present,,,,da7d57e6-0619-4f0f-8d15-d0b4195c3f55,http://www.electricfuckinwizard.com/,https://www.wikidata.org/wiki/Q1325974
+qotsa,Queens of the Stone Age,band,Doom & Stoner,Stoner Rock,USA,1996,present,,,,7dc8f5bd-9d0b-4087-9f73-dc164950bbd8,https://qotsa.com/,https://www.wikidata.org/wiki/Q1243718
+sunn,Sunn O))),band,Doom & Stoner,Drone,USA,1998,present,,,,1d3da898-4fb4-4445-b704-cd7315e01789,https://sunn.southernlord.com/,https://www.wikidata.org/wiki/Q594855
+manowar,Manowar,band,Power Metal,Epic & Symphonic,USA,1980,present,,,,00eeed6b-5897-4359-8347-b8cd28375331,http://manowar.com/,https://www.wikidata.org/wiki/Q156049
+helloween,Helloween,band,Power Metal,German Power,Germany,1984,present,,,,765774a0-2060-469b-8b7d-612eea48579b,http://www.helloween.org/,https://www.wikidata.org/wiki/Q158895
+blindguardian,Blind Guardian,band,Power Metal,German Power,Germany,1984,present,,,,7fa7fc04-1011-4876-8095-ecd232edea87,https://www.blind-guardian.com/,https://www.wikidata.org/wiki/Q152540
+stratovarius,Stratovarius,band,Power Metal,Finnish & Melodic Speed,Finland,1984,present,,,,c3d6fdd5-67c5-453e-87e3-d17a00a52879,https://stratovarius.com/,https://www.wikidata.org/wiki/Q201207
+gammaray,Gamma Ray,band,Power Metal,German Power,Germany,1989,present,,,,8766cdd6-066c-4b14-ba53-c7958e613bad,http://www.gammaray.org/,https://www.wikidata.org/wiki/Q154129
+rhapsody,Rhapsody of Fire,band,Power Metal,Epic & Symphonic,Italy,1993,present,,,,4e0dffde-ad2d-45b7-9c75-d57ce55de061,http://www.rhapsodyoffire.com/,https://www.wikidata.org/wiki/Q193174
+hammerfall,HammerFall,band,Power Metal,Modern Power,Sweden,1993,present,,,,abf5f674-dbad-4219-b3ad-dbd6fb163c8e,http://www.hammerfall.net/,https://www.wikidata.org/wiki/Q274593
+sonata,Sonata Arctica,band,Power Metal,Finnish & Melodic Speed,Finland,1995,present,,,,319b1175-ced9-438f-986b-9239c3edd92d,https://www.sonataarctica.info/,https://www.wikidata.org/wiki/Q191660
+dragonforce,DragonForce,band,Power Metal,Modern Power,UK,1999,present,,,,ef58d4c9-0d40-42ba-bfab-9186c1483edd,http://www.dragonforce.com/,https://www.wikidata.org/wiki/Q212715
+sabaton,Sabaton,band,Power Metal,Modern Power,Sweden,1999,present,,,,39a31de6-763d-48b6-a45c-f7cfad58ffd8,http://www.sabaton.net/,https://www.wikidata.org/wiki/Q740159
+crimson,King Crimson,band,Progressive,Classic Prog,UK,1968,2021,,,,b38225b8-8e5f-42aa-bcdc-7bae5b5bdab3,https://www.dgmlive.com/,https://www.wikidata.org/wiki/Q189382
+rush,Rush,band,Progressive,Classic Prog,Canada,1968,2018,,,,534ee493-bfac-4575-a44a-0ae41e2c3fe4,https://www.rush.com/,https://www.wikidata.org/wiki/Q203871
+yes,Yes,band,Progressive,Classic Prog,UK,1968,present,,,,c1d4f2ba-cf39-460c-9528-6b827d3417a1,https://www.yesworld.com/,https://www.wikidata.org/wiki/Q184386
+genesis,Genesis,band,Progressive,Classic Prog,UK,1967,2022,,,,8e3fcd7d-bda1-4ca0-b987-b8528d2ee74e,https://www.genesis-music.com/,https://www.wikidata.org/wiki/Q151012
+queensryche,Queensrÿche,band,Progressive,Progressive Metal,USA,1980,present,,,,deeea939-7f89-4762-b09f-79269cd70d3b,http://www.queensrycheofficial.com/,https://www.wikidata.org/wiki/Q462380
+fateswarning,Fates Warning,band,Progressive,Progressive Metal,USA,1982,present,,,,17fbada3-6dac-42f3-8a6c-8c1c1484f730,https://www.fateswarning.com/,https://www.wikidata.org/wiki/Q754323
+dreamtheater,Dream Theater,band,Progressive,Progressive Metal,USA,1985,present,,,,28503ab7-8bf2-4666-a7bd-2644bfc7cb1d,https://dreamtheater.net/,https://www.wikidata.org/wiki/Q162586
+porcupine,Porcupine Tree,band,Progressive,Modern Prog & Art Metal,UK,1987,2010,,,,169c4c28-858e-497b-81a4-8bc15e0026ea,https://porcupinetree.com/,https://www.wikidata.org/wiki/Q213923
+meshuggah,Meshuggah,band,Progressive,Djent & Tech,Sweden,1987,present,,,,cf8b3b8c-118e-4136-8d1d-c37091173413,https://www.meshuggah.net/,https://www.wikidata.org/wiki/Q569408
+opeth,Opeth,band,Progressive,Modern Prog & Art Metal,Sweden,1989,present,,,,c14b4180-dc87-481e-b17a-64e4150f90f6,https://www.opeth.com/,https://www.wikidata.org/wiki/Q18557
+tool,Tool,band,Progressive,Modern Prog & Art Metal,USA,1990,present,,,,66fc5bf8-daa4-4241-b378-9bc9077939d2,https://toolband.com/,https://www.wikidata.org/wiki/Q184827
+mastodon,Mastodon,band,Progressive,Modern Prog & Art Metal,USA,2000,present,,,,bc5e2ad6-0a4a-4d90-b911-e9a7e6861727,https://www.mastodonrocks.com/,https://www.wikidata.org/wiki/Q548844
+btbam,Between the Buried and Me,band,Progressive,Djent & Tech,USA,2000,present,,,,1870fb43-50f1-4660-a879-bb596d1519b6,https://www.betweentheburiedandme.com/,https://www.wikidata.org/wiki/Q850616
+periphery,Periphery,band,Progressive,Djent & Tech,USA,2005,present,,,,a0cef17a-4574-44f4-9f97-fd068615dac6,,https://www.wikidata.org/wiki/Q2071101
+typeo,Type O Negative,band,Gothic & Symphonic,Gothic Metal,USA,1989,2010,,,,a63df8c3-28e4-41db-bac2-c6c6e8ff8f28,https://typeonegative.net/,https://www.wikidata.org/wiki/Q633405
+nightwish,Nightwish,band,Gothic & Symphonic,Symphonic,Finland,1996,present,,,,00a9f935-ba93-4fc8-a33a-993abe9c936b,https://www.nightwish.com/,https://www.wikidata.org/wiki/Q43510
+within,Within Temptation,band,Gothic & Symphonic,Symphonic,Netherlands,1996,present,,,,eace2373-31c8-4aba-9a5c-7bce22dd140a,https://www.within-temptation.com/,https://www.wikidata.org/wiki/Q57138
+evanescence,Evanescence,band,Gothic & Symphonic,Symphonic,USA,1995,present,,,,f4a31f0a-51dd-4fa7-986d-3095c40c5ed9,https://www.evanescence.com/home/,https://www.wikidata.org/wiki/Q1777698
+sonicyouth,Sonic Youth,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1981,2011,,,,5cbef01b-cc35-4f52-af7b-d0df0c4f61b9,http://www.sonicyouth.com/,https://www.wikidata.org/wiki/Q188626
+melvins,Melvins,band,Grunge & Alt Rock,Grunge,USA,1983,present,,,,9ccfbc94-a4f4-42f7-b6f5-d903ab77cccb,http://www.melvins.com/,https://www.wikidata.org/wiki/Q385618
+soundgarden,Soundgarden,band,Grunge & Alt Rock,Grunge,USA,1984,2017,,,,153c9281-268f-4cf3-8938-f5a4593e5df4,http://soundgardenworld.com/,https://www.wikidata.org/wiki/Q174817
+pixies,Pixies,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1986,present,,,,b6b2bb8d-54a9-491f-9607-7b546023b433,https://www.pixiesmusic.com/,https://www.wikidata.org/wiki/Q188464
+mudhoney,Mudhoney,band,Grunge & Alt Rock,Grunge,USA,1988,present,,,,e675295a-1efe-4247-aa3b-53b78d0cdffc,https://web.archive.org/web/19981207073708/http://www.repriserec.com/mudhoney/,https://www.wikidata.org/wiki/Q898820
+aic,Alice in Chains,band,Grunge & Alt Rock,Grunge,USA,1987,present,,,,4bd95eea-b9f6-4d70-a36c-cfea77431553,https://aliceinchains.com/,https://www.wikidata.org/wiki/Q484255
+nirvana,Nirvana,band,Grunge & Alt Rock,Grunge,USA,1987,1994,,,,5b11f4ce-a62d-471e-81fc-a69a8278c7da,https://www.nirvana.com/,https://www.wikidata.org/wiki/Q11649
+smashing,The Smashing Pumpkins,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1988,present,,,,ba0d6274-db14-4ef5-b28d-657ebde1a396,https://www.smashingpumpkins.com/,https://www.wikidata.org/wiki/Q184217
+pearljam,Pearl Jam,band,Grunge & Alt Rock,Grunge,USA,1990,present,,,,83b9cbe7-9857-49e2-ab8e-b57b01038103,https://pearljam.com/,https://www.wikidata.org/wiki/Q142701
+foo,Foo Fighters,band,Grunge & Alt Rock,Post-grunge,USA,1994,present,,,,67f66c07-6e61-4026-ade5-7e782fad3a5d,https://www.foofighters.com/,https://www.wikidata.org/wiki/Q483718
+radiohead,Radiohead,band,Grunge & Alt Rock,Alt & Noise Rock,UK,1985,present,,,,a74b1b7f-71a5-4011-9441-d0b5e4122711,http://www.radiohead.com/,https://www.wikidata.org/wiki/Q44190
+fnm,Faith No More,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1979,present,,,,b15ebd71-a252-417d-9e1c-3e6863da68f8,https://www.fnm.com/,https://www.wikidata.org/wiki/Q320499
+ministry,Ministry,band,Industrial & Nu Metal,Industrial,USA,1981,2022,,,,13df2a46-f72f-40e7-aa63-26fcf62c7048,http://www.thirteenthplanet.com/ministry/,https://www.wikidata.org/wiki/Q425772
+deftones,Deftones,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1988,present,,,,7527f6c2-d762-4b88-b5e2-9244f1e34c46,https://www.deftones.com/,https://www.wikidata.org/wiki/Q485039
+godflesh,Godflesh,band,Industrial & Nu Metal,Industrial,UK,1988,present,,,,864aa861-e22a-4187-8baa-2ef0c215bc0a,,https://www.wikidata.org/wiki/Q1533787
+nin,Nine Inch Nails,artist,Industrial & Nu Metal,Industrial,USA,1988,present,,,,b7ffd2af-418f-4be2-bdd1-22f8b48613da,https://www.nin.com/,https://www.wikidata.org/wiki/Q11647
+manson,Marilyn Manson,artist,Industrial & Nu Metal,Industrial,USA,1989,present,,,,5dfdca28-9ddc-4853-933c-8bc97d87beec,http://www.marilynmanson.com/,https://www.wikidata.org/wiki/Q485893
+fearfactory,Fear Factory,band,Industrial & Nu Metal,Industrial,USA,1989,present,,,,c17f08f4-2542-46fb-97f3-3202d60c225a,https://fearfactory.com/,https://www.wikidata.org/wiki/Q128010
+rage,Rage Against the Machine,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1991,2000,,,,3798b104-01cb-484c-a3b0-56adc6399b80,http://www.ratm.com/,https://www.wikidata.org/wiki/Q72092
+korn,Korn,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1993,present,,,,ac865b2e-bba8-4f5a-8756-dd40d5e39f46,http://www.korn.com/,https://www.wikidata.org/wiki/Q80304
+rammstein,Rammstein,band,Industrial & Nu Metal,Industrial,Germany,1994,present,,,,b2d122f9-eadb-4930-a196-8f221eeb0c66,https://www.rammstein.de/,https://www.wikidata.org/wiki/Q25177
+soad,System of a Down,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1994,present,,,,cc0b7089-c08d-4c10-b6b0-873582c17fd6,https://systemofadown.com/,https://www.wikidata.org/wiki/Q45165
+slipknot,Slipknot,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1995,present,,,,a466c2a2-6517-42fb-a160-1087c3bafd9f,http://www.slipknot1.com/,https://www.wikidata.org/wiki/Q254138
+linkin,Linkin Park,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1996,present,,,,f59c5520-5f46-4d2c-b2c4-822eabf53419,https://www.linkinpark.com/,https://www.wikidata.org/wiki/Q261
+converge,Converge,band,Metalcore & Modern,Metalcore,USA,1990,present,,,,fa31e7d4-a03a-4110-98fc-f8826e95ec25,https://www.convergecult.com/,https://www.wikidata.org/wiki/Q281894
+machinehead,Machine Head,band,Metalcore & Modern,Groove & Modern Heavy,USA,1991,present,,,,22a1f4d7-81ff-4216-ac06-3387da6bc118,https://www.machinehead1.com/,https://www.wikidata.org/wiki/Q319458
+log,Lamb of God,band,Metalcore & Modern,Groove & Modern Heavy,USA,1994,present,,,,298909e4-ebcb-47b8-95e9-cc53b087fc65,https://www.lamb-of-god.com/,https://www.wikidata.org/wiki/Q207731
+bfmv,Bullet for My Valentine,band,Metalcore & Modern,Groove & Modern Heavy,UK,1998,present,,,,d530dbf9-69b1-404f-98f2-0431104f5a1e,http://www.bulletformyvalentine.com/,https://www.wikidata.org/wiki/Q485385
+killswitch,Killswitch Engage,band,Metalcore & Modern,Metalcore,USA,1999,present,,,,8295ee00-0096-461d-95c7-c2263d2a4c6d,http://www.killswitchengage.com/,https://www.wikidata.org/wiki/Q462709
+trivium,Trivium,band,Metalcore & Modern,Groove & Modern Heavy,USA,1999,present,,,,1f5ff245-2837-4d4a-a609-e93e544478c3,https://www.trivium.org/,https://www.wikidata.org/wiki/Q390684
+a7x,Avenged Sevenfold,band,Metalcore & Modern,Groove & Modern Heavy,USA,1999,present,,,,24e1b53c-3085-4581-8472-0b0088d2508c,http://avenged7fold.com/,https://www.wikidata.org/wiki/Q165193
+parkway,Parkway Drive,band,Metalcore & Modern,Metalcore,Australia,2003,present,,,,a436dd02-0549-4c91-b608-df451217fdeb,http://www.parkwaydriverock.com/,https://www.wikidata.org/wiki/Q282855
+bmth,Bring Me the Horizon,band,Metalcore & Modern,Metalcore,UK,2004,present,,,,074e3847-f67f-49f9-81f1-8c8cea147e8e,http://www.bmthofficial.com/,https://www.wikidata.org/wiki/Q494784
+architects,Architects,band,Metalcore & Modern,Metalcore,UK,2004,present,,,,05dffdbe-dc6e-4c8d-a075-50a09c4cb45c,https://www.architectsofficial.com/,https://www.wikidata.org/wiki/Q620454
+gojira,Gojira,band,Metalcore & Modern,Alt & Genre-bending,France,1996,present,,,,1c5efd53-d6b6-4d63-9d22-a15025cf5f07,https://www.gojira-music.com/,https://www.wikidata.org/wiki/Q1011412
+ghost,Ghost,band,Metalcore & Modern,Alt & Genre-bending,Sweden,2006,present,,,,2bcf2e02-5bc3-4c76-bf76-41126cb11444,https://ghost-official.com/,https://www.wikidata.org/wiki/Q1355578
+spiritbox,Spiritbox,band,Metalcore & Modern,Alt & Genre-bending,Canada,2017,present,,,,9c935736-7530-41e4-b776-1dbcf534c061,https://www.spiritboxband.com/,https://www.wikidata.org/wiki/Q104881702
+sleeptoken,Sleep Token,band,Metalcore & Modern,Alt & Genre-bending,UK,2016,present,,,,775ad383-ac2d-479a-af9d-b561442cb749,http://sleep-token.com/,https://www.wikidata.org/wiki/Q96405837
+lou,Lou Reed,artist,Classic & Psych Rock,Proto-punk,USA,1970,2013,,,,9d1ebcfe-4c15-4d18-95d3-d919898638a1,http://www.loureed.com/,https://www.wikidata.org/wiki/Q189080
+iggy,Iggy Pop,artist,Classic & Psych Rock,Proto-punk,USA,1977,present,,,,f37b3f31-b1f8-4b88-8cb5-b34f709b17d7,http://www.iggypop.com/,https://www.wikidata.org/wiki/Q182665
+alice,Alice Cooper,artist,Hard Rock,Classic Hard Rock,USA,1964,present,,,,4d7928cd-7ed2-4282-8c29-c0c9f966f1bd,,https://www.wikidata.org/wiki/Q16821277
+danzig,Danzig,artist,Heavy Metal / NWOBHM,Traditional & Continental,USA,1987,present,,,,8925a01a-8608-411d-a90b-f3a52d061208,http://www.danzig-verotik.com/,https://www.wikidata.org/wiki/Q649175
+kingdiamond,King Diamond,artist,Heavy Metal / NWOBHM,Traditional & Continental,Denmark,1985,present,,,,00565b31-14a3-4913-bd22-385eb40dd13c,http://www.kingdiamondcoven.com/,https://www.wikidata.org/wiki/Q3241839
+dickinson,Bruce Dickinson,artist,Heavy Metal / NWOBHM,Traditional & Continental,UK,1990,present,,,,50698127-f6f4-4c0c-8010-db98c21100e1,http://www.screamforme.com/,https://www.wikidata.org/wiki/Q190151
+malmsteen,Yngwie Malmsteen,artist,Heavy Metal / NWOBHM,Traditional & Continental,Sweden,1983,present,,,,8fa5d80d-37e8-4133-9d5c-6bad446c63f0,http://www.yngwiemalmsteen.com/,https://www.wikidata.org/wiki/Q192260
+vai,Steve Vai,artist,Progressive,Progressive Metal,USA,1984,present,,,,5e7ccd92-6277-451a-aab9-1efd587c50f3,https://www.vai.com/,https://www.wikidata.org/wiki/Q193397
+satriani,Joe Satriani,artist,Progressive,Progressive Metal,USA,1986,present,,,,29762c82-bb92-4acd-b1fb-09cc4da250d2,https://www.satriani.com/,https://www.wikidata.org/wiki/Q194287
+townsend,Devin Townsend,artist,Progressive,Modern Prog & Art Metal,Canada,1996,present,,,,93e8c41e-8e4f-4d08-bbf5-bc1a903b2423,https://hevydevy.com/,https://www.wikidata.org/wiki/Q335629
+cornell,Chris Cornell,artist,Grunge & Alt Rock,Grunge,USA,1999,2017,,,,cbf9738d-8f81-4a92-bc64-ede09341652d,http://chriscornell.com/,https://www.wikidata.org/wiki/Q270935
+whitezombie,White Zombie,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1985,1998,,,,cfe572bf-840f-4bed-934a-f69f4b1e90d4,,https://www.wikidata.org/wiki/Q740623
+robzombie,Rob Zombie,artist,Industrial & Nu Metal,Nu & Alt Metal,USA,1995,present,,,,c995a379-60b9-404b-bd97-a7e2de0751d3,http://robzombie.com/,https://www.wikidata.org/wiki/Q298255
+robertjohnson,Robert Johnson,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1929,1938,,,,8a8bbba6-72f7-4900-a306-c40b94f2631b,,https://www.wikidata.org/wiki/Q192133
+muddy,Muddy Waters,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1941,1983,,,,f86f1f07-d182-45ce-ae93-ef610880ca72,http://www.muddywaters.com/,https://www.wikidata.org/wiki/Q220707
+howlin,Howlin' Wolf,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1951,1976,,,,,,
+hooker,John Lee Hooker,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1948,2001,,,,b0122194-c49a-46a1-ade7-84d1d76bd8e9,http://www.johnleehooker.com/,https://www.wikidata.org/wiki/Q44570
+bbking,B.B. King,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1947,2015,,,,dcb03ce3-67a5-4eb3-b2d1-2a12d93a38f3,https://bbking.com/,https://www.wikidata.org/wiki/Q188969
+bodiddley,Bo Diddley,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1951,2008,,,,bf659d74-0b61-488c-8a7d-594f43bed9e0,http://www.bodiddley.com/,https://www.wikidata.org/wiki/Q208881
+chuckberry,Chuck Berry,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1953,2017,,,,592a3b6d-c42b-4567-99c9-ecf63bd66499,http://chuckberry.com/,https://www.wikidata.org/wiki/Q5921
+littlerichard,Little Richard,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1951,2020,,,,95c2339b-8277-49a6-9aaf-08d8eeeaa0be,,https://www.wikidata.org/wiki/Q82222
+elvis,Elvis Presley,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1954,1977,,,,01809552-4f87-45b0-afff-2c6f0730a3be,http://www.elvis.com/,https://www.wikidata.org/wiki/Q303
+jerrylee,Jerry Lee Lewis,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1956,2022,,,,b59ac58d-036e-4bba-8112-c32a34c4575b,https://jerryleelewis.com/,https://www.wikidata.org/wiki/Q202729
+buddyholly,Buddy Holly & The Crickets,band,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1957,1959,,,,,,
+kinks,The Kinks,band,Classic & Psych Rock,British Invasion,UK,1964,1996,,,,17b53d9f-5c63-4a09-a593-dde4608e0db9,http://www.thekinks.info/,https://www.wikidata.org/wiki/Q188713
+yardbirds,The Yardbirds,band,Classic & Psych Rock,British Blues Boom,UK,1963,1968,,,,191de76f-a224-445d-b041-54df16d65bf7,http://www.theyardbirds.com/,https://www.wikidata.org/wiki/Q192725
+mayall,John Mayall & the Bluesbreakers,band,Classic & Psych Rock,British Blues Boom,UK,1963,2022,,,,4756395c-57ed-4a63-afb2-01117f14dff6,,https://www.wikidata.org/wiki/Q886072
+fleetwood,Fleetwood Mac,band,Classic & Psych Rock,British Blues Boom,UK,1967,present,,,,bd13909f-1c29-4c27-a874-d4aaf27c5b1a,http://www.fleetwoodmac.com/,https://www.wikidata.org/wiki/Q106648
+bobdylan,Bob Dylan,artist,Classic & Psych Rock,Folk Rock,USA,1961,present,,,,72c536dc-7137-4477-a521-567eeb840fa8,https://bobdylan.com/,https://www.wikidata.org/wiki/Q392
+byrds,The Byrds,band,Classic & Psych Rock,Folk Rock,USA,1964,1973,,,,2819834e-4e08-47b0-a2c4-b7672318e8f0,http://www.thebyrds.com/,https://www.wikidata.org/wiki/Q211526
+beachboys,The Beach Boys,band,Classic & Psych Rock,Garage & Surf,USA,1961,present,,,,ebfc1398-8d96-47e3-82c3-f782abcdb13d,http://www.thebeachboys.com/,https://www.wikidata.org/wiki/Q183048
+sonics,The Sonics,band,Classic & Psych Rock,Garage & Surf,USA,1960,1968,,,,16346cf4-4d2b-40ec-8393-0fc7296d92fe,http://thesonicsboom.com/,https://www.wikidata.org/wiki/Q904921
+dickdale,Dick Dale,artist,Classic & Psych Rock,Garage & Surf,USA,1958,2019,,,,cc6115aa-379c-4133-9f46-5743a4a341d0,http://www.dickdale.com/,https://www.wikidata.org/wiki/Q346785
+elevators,13th Floor Elevators,band,Classic & Psych Rock,Psychedelic & Blues Rock,USA,1965,1969,,,,1964494f-9f1a-41c1-b054-80ef3b95025c,,https://www.wikidata.org/wiki/Q861190
+gratefuldead,Grateful Dead,band,Classic & Psych Rock,Psychedelic & Blues Rock,USA,1965,1995,,,,6faa7ca7-0d99-4a5e-bfa6-1fd5037520c6,http://www.dead.net/,https://www.wikidata.org/wiki/Q212533
+jefferson,Jefferson Airplane,band,Classic & Psych Rock,Psychedelic & Blues Rock,USA,1965,1972,,,,39c2a93d-9afa-4a22-9bba-c087ab056e1c,http://www.jeffersonairplane.com/,https://www.wikidata.org/wiki/Q488260
+janis,Janis Joplin,artist,Classic & Psych Rock,Psychedelic & Blues Rock,USA,1966,1970,,,,76c9a186-75bd-436a-85c0-823e3efddb7f,http://www.janisjoplin.com/,https://www.wikidata.org/wiki/Q1514
+santana,Santana,band,Classic & Psych Rock,Psychedelic & Blues Rock,USA,1966,present,,,,9a3bf45c-347d-4630-894d-7cf3e8e0b632,https://www.santana.com/,https://www.wikidata.org/wiki/Q873384
+creedence,Creedence Clearwater Revival,band,Classic & Psych Rock,Roots & Southern Rock,USA,1967,1972,,,,109958eb-a335-4c5e-907e-597ff4c6af46,http://www.creedence-online.net/,https://www.wikidata.org/wiki/Q192463
+allman,The Allman Brothers Band,band,Classic & Psych Rock,Roots & Southern Rock,USA,1969,2014,,,,72359492-22be-4ed9-aaa0-efa434fb2b01,http://www.allmanbrothersband.com/,https://www.wikidata.org/wiki/Q507327
+skynyrd,Lynyrd Skynyrd,band,Classic & Psych Rock,Roots & Southern Rock,USA,1964,present,,,,c544ed4d-2390-4442-a83e-1ea2883b09c8,http://lynyrdskynyrd.com/,https://www.wikidata.org/wiki/Q158462
+zztop,ZZ Top,band,Classic & Psych Rock,Roots & Southern Rock,USA,1969,present,,,,a81259a0-a2f5-464b-866e-71220f2739f1,https://www.zztop.com/,https://www.wikidata.org/wiki/Q136591
+steppenwolf,Steppenwolf,band,Hard Rock,Proto-metal,USA,1967,1976,,,,12ff8858-bfcb-4812-a8dd-7e9debf0cbee,http://steppenwolf.com/,https://www.wikidata.org/wiki/Q465862
+ironbutterfly,Iron Butterfly,band,Hard Rock,Proto-metal,USA,1966,1975,,,,3da3e7e1-e817-47e8-8624-635df4aedbe6,http://www.ironbutterfly.com/,https://www.wikidata.org/wiki/Q743353
+uriahheep,Uriah Heep,band,Hard Rock,Proto-metal,UK,1969,present,,,,f1548c5b-329e-4036-921c-02213a04b525,http://www.uriah-heep.com/,https://www.wikidata.org/wiki/Q108666
+hawkwind,Hawkwind,band,Hard Rock,Proto-metal,UK,1969,present,,,,5a28f8c2-31fb-4047-ae57-c5c326989262,https://www.hawkwind.com/,https://www.wikidata.org/wiki/Q285966
+budgie,Budgie,band,Hard Rock,Proto-metal,UK,1967,2010,,,,517566c5-3d43-4a81-8f78-9a78f3209e09,http://www.budgie.uk.com/,https://www.wikidata.org/wiki/Q508678
+boc,Blue Öyster Cult,band,Hard Rock,Classic Hard Rock,USA,1967,present,,,,c7423e0c-ab3e-4ab4-be10-cdff5a9d3062,http://www.blueoystercult.com/,https://www.wikidata.org/wiki/Q331016
+thinlizzy,Thin Lizzy,band,Hard Rock,Classic Hard Rock,Ireland,1969,present,,,,6a726ac6-019e-455c-8bbb-571a77bed52e,http://www.thinlizzyonline.com/,https://www.wikidata.org/wiki/Q202314
+whitesnake,Whitesnake,band,Hard Rock,Classic Hard Rock,UK,1978,present,,,,5dedf5cf-a598-4408-9556-3bf3f149f3ba,http://www.whitesnake.com/,https://www.wikidata.org/wiki/Q189965
+bowie,David Bowie,artist,Glam & Hair Metal,Glam Rock,UK,1962,2016,,,,5441c29d-3602-4898-b1a1-b77fa23b8e50,https://www.davidbowie.com/,https://www.wikidata.org/wiki/Q5383
+trex,T. Rex,band,Glam & Hair Metal,Glam Rock,UK,1967,1977,,,,c842d29f-a297-48cd-bb71-4f77fd672b16,,https://www.wikidata.org/wiki/Q211770
+roxy,Roxy Music,band,Glam & Hair Metal,Glam Rock,UK,1970,1983,,,,331ce348-1b08-40b9-8ed7-0763b92bd003,http://www.roxymusic.co.uk/,https://www.wikidata.org/wiki/Q334648
+slade,Slade,band,Glam & Hair Metal,Glam Rock,UK,1966,present,,,,2e700147-56a3-416b-a95d-381ea42f947f,http://users.swing.be/amazingslade/,https://www.wikidata.org/wiki/Q156872
+sweet,Sweet,band,Glam & Hair Metal,Glam Rock,UK,1968,present,,,,dc73bb40-b697-4df9-a2ec-0555bebdba75,http://www.thesweet.com/,https://www.wikidata.org/wiki/Q487919
+nydolls,New York Dolls,band,Glam & Hair Metal,Glam Rock,USA,1971,present,,,,1b96b9c9-0832-40cb-9f8d-7274de3733fc,http://nydolls.org/,https://www.wikidata.org/wiki/Q830586
+wasp,W.A.S.P.,band,Glam & Hair Metal,Hair Metal,USA,1982,present,,,,171cbc8f-8ab3-4aec-9916-f0bdbe26bb79,http://www.waspnation.com/,https://www.wikidata.org/wiki/Q467673
+fugazi,Fugazi,band,Punk & Hardcore,Post-hardcore & Emo,USA,1986,2003,,,,233fc3f3-6de2-465c-985e-e721dbabbace,,https://www.wikidata.org/wiki/Q277865
+offspring,The Offspring,band,Punk & Hardcore,Pop Punk,USA,1984,present,,,,23a03e33-a603-404e-bcbf-2c00159d7067,https://www.offspring.com/,https://www.wikidata.org/wiki/Q157041
+greenday,Green Day,band,Punk & Hardcore,Pop Punk,USA,1987,present,,,,084308bd-1654-436f-ba03-df6697104e19,https://greenday.com/,https://www.wikidata.org/wiki/Q47871
+blink,Blink-182,band,Punk & Hardcore,Pop Punk,USA,1992,present,,,,,,
+mcr,My Chemical Romance,band,Punk & Hardcore,Post-hardcore & Emo,USA,2001,present,,,,c07f0676-9143-4217-8a9f-4c26bd636f13,https://www.mychemicalromance.com/,https://www.wikidata.org/wiki/Q483285
+patti,Patti Smith,artist,Post-Punk & New Wave,New Wave,USA,1974,present,,,,d135874d-9cae-4fef-97e3-36acbd9f5a26,http://www.pattismith.net/,https://www.wikidata.org/wiki/Q557
+television,Television,band,Post-Punk & New Wave,New Wave,USA,1973,2023,,,,490bde43-5edb-4a93-b3b3-7a0465fd8909,,https://www.wikidata.org/wiki/Q1160206
+talkingheads,Talking Heads,band,Post-Punk & New Wave,New Wave,USA,1975,1991,,,,a94a7155-c79d-4409-9fcf-220cb0e4dc3a,http://www.talking-heads.net/,https://www.wikidata.org/wiki/Q205001
+blondie,Blondie,band,Post-Punk & New Wave,New Wave,USA,1974,present,,,,4d2956d1-a3f7-44bb-9a41-67563e1a0c94,https://www.blondie.net/,https://www.wikidata.org/wiki/Q202741
+wire,Wire,band,Post-Punk & New Wave,Post-Punk,UK,1976,present,,,,7f2a8098-50e3-451c-8696-c5d9f64f4762,https://www.pinkflag.com/,https://www.wikidata.org/wiki/Q1135620
+gangoffour,Gang of Four,band,Post-Punk & New Wave,Post-Punk,UK,1976,present,,,,d8661c02-f423-4d72-8044-40ff05daf7a1,http://gangoffour.uk/,https://www.wikidata.org/wiki/Q1130624
+pil,Public Image Ltd,band,Post-Punk & New Wave,Post-Punk,UK,1978,present,,,,68950696-ee9a-49b2-a8c2-d1d6c19355cc,http://www.pilofficial.com/,https://www.wikidata.org/wiki/Q845265
+joydivision,Joy Division,band,Post-Punk & New Wave,Post-Punk,UK,1976,1980,,,,9a58fda3-f4ed-4080-a3a5-f457aac9fcdd,https://www.joydivisionofficial.com/,https://www.wikidata.org/wiki/Q172763
+neworder,New Order,band,Post-Punk & New Wave,New Wave,UK,1980,present,,,,f1106b17-dcbb-45f6-b938-199ccfab50cc,http://www.neworder.com/,https://www.wikidata.org/wiki/Q214990
+siouxsie,Siouxsie and the Banshees,band,Post-Punk & New Wave,Goth Rock,UK,1976,1996,,,,78ea5ea1-3c4d-4b7e-ac5d-68900319ebe2,http://www.siouxsieandthebanshees.co.uk/,https://www.wikidata.org/wiki/Q323834
+bauhaus,Bauhaus,band,Post-Punk & New Wave,Goth Rock,UK,1978,1983,,,,0688add2-c282-4ee2-ba61-223ffdb3c201,http://www.bauhausmusik.com/,https://www.wikidata.org/wiki/Q180582
+cure,The Cure,band,Post-Punk & New Wave,Goth Rock,UK,1976,present,,,,69ee3720-a7cb-4402-b48d-a02c366f2bcf,https://www.thecure.com/,https://www.wikidata.org/wiki/Q484427
+sisters,The Sisters of Mercy,band,Post-Punk & New Wave,Goth Rock,UK,1980,present,,,,553d8166-27b0-49fe-b8e4-89a984e2c375,http://www.thesistersofmercy.com/,https://www.wikidata.org/wiki/Q751814
+depeche,Depeche Mode,band,Post-Punk & New Wave,New Wave,UK,1980,present,,,,8538e728-ca0b-4321-b7e5-cff6565dd4c0,https://www.depechemode.com/,https://www.wikidata.org/wiki/Q482964
+huskerdu,Hüsker Dü,band,Grunge & Alt Rock,Indie & College Rock,USA,1979,1987,,,,5c4c90a4-539f-4101-83cf-301bc6a94e06,,https://www.wikidata.org/wiki/Q862223
+replacements,The Replacements,band,Grunge & Alt Rock,Indie & College Rock,USA,1979,1991,,,,dc0d05ce-2f47-4962-b4fa-8631a0a51987,,https://www.wikidata.org/wiki/Q1066024
+rem,R.E.M.,band,Grunge & Alt Rock,Indie & College Rock,USA,1980,2011,,,,ea4dfa26-f633-4da6-a52a-f49ea4897b58,https://remhq.com/,https://www.wikidata.org/wiki/Q134969
+smiths,The Smiths,band,Grunge & Alt Rock,Indie & College Rock,UK,1982,1987,,,,40f5d9e4-2de7-4f2d-ad41-e31a9a9fea27,http://www.officialsmiths.co.uk/,https://www.wikidata.org/wiki/Q180598
+dinojr,Dinosaur Jr.,band,Grunge & Alt Rock,Indie & College Rock,USA,1984,present,,,,77c167d2-4965-4421-830a-9815e4956475,http://www.dinosaurjr.com/,https://www.wikidata.org/wiki/Q622944
+janes,Jane's Addiction,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1985,present,,,,,,
+rhcp,Red Hot Chili Peppers,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1983,present,,,,8bfac288-ccc5-448d-9573-c33ea2aa5c30,https://redhotchilipeppers.com/,https://www.wikidata.org/wiki/Q10708
+oasis,Oasis,band,Grunge & Alt Rock,Britpop,UK,1991,2009,,,,39ab1aed-75e0-4140-bd47-540276886b60,http://www.oasisinet.com/,https://www.wikidata.org/wiki/Q382890
+blur,Blur,band,Grunge & Alt Rock,Britpop,UK,1988,present,,,,ba853904-ae25-4ebb-89d6-c44cfbd71bd2,http://www.blur.co.uk/,https://www.wikidata.org/wiki/Q485820
+jethrotull,Jethro Tull,band,Progressive,Classic Prog,UK,1967,present,,,,ece57992-dc2e-4f67-a269-fa43626c1a3d,https://jethrotull.com/,https://www.wikidata.org/wiki/Q192353
+elp,"Emerson, Lake & Palmer",band,Progressive,Classic Prog,UK,1970,1998,,,,ad996aef-cc1c-42ac-af5c-619c370f4b8a,https://www.emersonlakepalmer.com/,https://www.wikidata.org/wiki/Q273171
+zappa,Frank Zappa,artist,Progressive,Classic Prog,USA,1964,1993,,,,e20747e7-55a4-452e-8766-7b985585082d,https://www.zappa.com/,https://www.wikidata.org/wiki/Q127330
+can,Can,band,Progressive,Krautrock & Space,Germany,1968,1979,,,,13501c7d-d181-45ba-af52-5f101d8516a0,http://www.spoonrecords.com/,https://www.wikidata.org/wiki/Q170132
+neu,Neu!,band,Progressive,Krautrock & Space,Germany,1971,1975,,,,adec1fc3-83c1-48f7-9e49-8347ac6d40b0,http://www.neu2010.com/,https://www.wikidata.org/wiki/Q181874
+tangerine,Tangerine Dream,band,Progressive,Krautrock & Space,Germany,1967,2015,,,,23d8426c-18c7-46e6-a51d-7395bd43c641,https://www.tangerinedreammusic.com/,https://www.wikidata.org/wiki/Q153616
+kraftwerk,Kraftwerk,band,Industrial & Nu Metal,Early Industrial,Germany,1970,present,,,,5700dcd4-c139-4f31-aa3e-6382b9af9032,http://www.kraftwerk.com/,https://www.wikidata.org/wiki/Q44892
+throbbing,Throbbing Gristle,band,Industrial & Nu Metal,Early Industrial,UK,1975,1981,,,,e135d690-9c53-4333-8f11-98aec8c9f434,http://www.throbbing-gristle.com/,https://www.wikidata.org/wiki/Q1165655
+neubauten,Einstürzende Neubauten,band,Industrial & Nu Metal,Early Industrial,Germany,1980,present,,,,6e9ac29b-798c-4af7-8d9e-55cdc72a999c,https://neubauten.org/,https://www.wikidata.org/wiki/Q11898
+hellhammer,Hellhammer,band,Black Metal,First Wave,Switzerland,1982,1984,,,,66f561b1-a9d6-4656-a226-6b63384869e7,,https://www.wikidata.org/wiki/Q685190
+dissection,Dissection,band,Black Metal,Second Wave,Sweden,1989,2006,,,,92d48f3d-a9cb-4011-a002-2e9ac3a6843d,http://www.dissection.se/,https://www.wikidata.org/wiki/Q1145479
+deafheaven,Deafheaven,band,Black Metal,Modern Black,USA,2010,present,,,,f4ccf6c5-ad41-4f8f-bb9e-6e2c6ad23302,https://deafheaven.com/,https://www.wikidata.org/wiki/Q5245804
+autopsy,Autopsy,band,Death & Grind,American Death Metal,USA,1987,present,,,,1d097d38-d5ca-4cd4-9200-7f08eedd0875,http://autopsydeathmetal.com/,https://www.wikidata.org/wiki/Q676620
+suffocation,Suffocation,band,Death & Grind,American Death Metal,USA,1989,present,,,,5db9f569-cadd-4f8b-b460-d4031b0b3716,https://www.suffocationofficial.com/,https://www.wikidata.org/wiki/Q269450
+amonamarth,Amon Amarth,band,Death & Grind,Melodic Death,Sweden,1992,present,,,,5b687684-ad34-4a9f-b425-0e7aa81fbd38,https://www.amonamarth.com/,https://www.wikidata.org/wiki/Q192863
+coc,Corrosion of Conformity,band,Doom & Stoner,Stoner & Sludge,USA,1982,present,,,,0f6e80ef-1972-4dee-8896-dc9955f1beeb,http://www.coc.com/,https://www.wikidata.org/wiki/Q1135391
+neurosis,Neurosis,band,Doom & Stoner,Post-metal,USA,1985,present,,,,a9416fb3-4d28-4575-abae-f0d160be83ed,http://www.neurosis.com/,https://www.wikidata.org/wiki/Q334093
+down,Down,band,Doom & Stoner,Stoner & Sludge,USA,1991,present,,,,4c01333f-e8e8-43bd-9923-8de83ef6f63d,http://www.down-nola.com/,https://www.wikidata.org/wiki/Q832141
+highonfire,High on Fire,band,Doom & Stoner,Stoner & Sludge,USA,1998,present,,,,720249d5-62c5-4679-8ead-dcda3329d6e7,http://www.highonfire.com/,https://www.wikidata.org/wiki/Q278406
+isis,Isis,band,Doom & Stoner,Post-metal,USA,1997,2010,,,,5e521e8c-0ab2-44c4-8fd8-14d8d3321265,http://www.isistheband.com/,https://www.wikidata.org/wiki/Q740430
+baroness,Baroness,band,Doom & Stoner,Stoner & Sludge,USA,2003,present,,,,eeb41a1e-4326-4d04-8c47-0f564ceecd68,https://yourbaroness.com/,https://www.wikidata.org/wiki/Q808701
+hatebreed,Hatebreed,band,Metalcore & Modern,Metalcore,USA,1994,present,,,,40b7efb7-1268-4a80-b354-600afdcbe9e2,http://hatebreed.com/,https://www.wikidata.org/wiki/Q268359
+jamesbrown,James Brown,artist,"Funk, Soul & Fusion",Funk & Soul,USA,1953,2006,,,,20ff3303-4fe2-4a47-a1b6-291e26aa3438,http://www.godfatherofsoul.com/,https://www.wikidata.org/wiki/Q5950
+themeters,The Meters,band,"Funk, Soul & Fusion",Funk & Soul,USA,1964,1977,,,,851827d6-ae31-4093-a166-1420cac610a4,http://www.funkymeters.com/,https://www.wikidata.org/wiki/Q1887369
+sly,Sly and the Family Stone,band,"Funk, Soul & Fusion",Funk & Soul,USA,1966,1983,,,,,,
+funkadelic,Funkadelic,band,"Funk, Soul & Fusion",Funk & Soul,USA,1968,1981,,,,cf042013-3edd-46c4-9b0e-a62faac98d0b,,https://www.wikidata.org/wiki/Q523957
+parliament,Parliament,band,"Funk, Soul & Fusion",Funk & Soul,USA,1970,1980,,,,d1947987-9614-49ae-bd36-8000e6b6f7d0,,https://www.wikidata.org/wiki/Q1892425
+prince,Prince,artist,"Funk, Soul & Fusion",Funk & Soul,USA,1978,2016,,,,070d193a-845c-479f-980e-bef15710653e,https://www.prince.com/,https://www.wikidata.org/wiki/Q7542
+miles,Miles Davis,artist,"Funk, Soul & Fusion",Jazz Fusion,USA,1944,1991,,,,561d854a-6a28-4aa7-8c99-323e6ce46c2a,https://www.milesdavis.com/,https://www.wikidata.org/wiki/Q93341
+mahavishnu,Mahavishnu Orchestra,band,"Funk, Soul & Fusion",Jazz Fusion,USA,1971,1976,,,,a2be74f5-0735-46f7-a295-7e41aab30029,,https://www.wikidata.org/wiki/Q841778
+weather,Weather Report,band,"Funk, Soul & Fusion",Jazz Fusion,USA,1970,1986,,,,0f9997bd-e079-429e-8ccd-9378c9b0c746,http://weatherreportmusic.com/,https://www.wikidata.org/wiki/Q1120697
+rtf,Return to Forever,band,"Funk, Soul & Fusion",Jazz Fusion,USA,1972,1977,,,,5f8cce81-1ff5-4cca-9c6e-8d3c58dc0c36,http://return2forever.com/,https://www.wikidata.org/wiki/Q1065887
+flowertravellin,Flower Travellin' Band,band,Hard Rock,Proto-metal,Japan,1967,1973,,,,,,
+happyend,Happy End,band,Classic & Psych Rock,Folk Rock,Japan,1969,1973,,,,7bf8eb8d-3539-4bd6-9ef8-36b7df97f872,http://www.jaksiemasz.pl/,https://www.wikidata.org/wiki/Q8685493
+loudness,Loudness,band,Heavy Metal / NWOBHM,Traditional & Continental,Japan,1981,present,,,,513b6df2-f44c-4484-b99d-97f79266cb4a,http://beinggiza.com/ci/artist/loudness/,https://www.wikidata.org/wiki/Q1130108
+xjapan,X Japan,band,Power Metal,Epic & Symphonic,Japan,1982,present,,,,3f77449d-48e4-4ceb-b869-69af48da877b,http://xjapanlive.com/,https://www.wikidata.org/wiki/Q179767
+boris,Boris,band,Doom & Stoner,Drone,Japan,1992,present,,,,57652bf8-cfe8-42e7-b9a7-5572a7080d8d,https://borisheavyrocks.com/,https://www.wikidata.org/wiki/Q893604
+sigh,Sigh,band,Black Metal,Second Wave,Japan,1990,present,,,,844bc028-d3c5-4656-a874-57232df54630,,https://www.wikidata.org/wiki/Q1382642
+direngrey,Dir En Grey,band,Industrial & Nu Metal,Nu & Alt Metal,Japan,1997,present,,,,ab309b83-904f-4e2c-8d11-a0223bba51f9,https://direngrey.co.jp/,https://www.wikidata.org/wiki/Q379852
+babymetal,Babymetal,band,Metalcore & Modern,Alt & Genre-bending,Japan,2010,present,,,,27e2997f-f7a1-4353-bcc4-57b9274fa9a4,https://www.babymetal.com/,https://www.wikidata.org/wiki/Q11190781
+mono,Mono,band,Post-Rock & Shoegaze,Post-Rock,Japan,1999,present,,,,ffe02aed-ef7e-4736-a186-c2f1dd55ce8d,https://www.monoofjapan.com/,https://www.wikidata.org/wiki/Q1143745
+boredoms,Boredoms,band,Post-Rock & Shoegaze,Post-Rock,Japan,1986,present,,,,0798d15b-64e2-499f-9969-70167b1d8617,http://www.boredoms.jp/,https://www.wikidata.org/wiki/Q1328096
+saicos,Los Saicos,band,Punk & Hardcore,Punk,Peru,1964,1966,,,,096e3e94-0faa-41a0-a94e-da54eeac7466,http://lossaicos.com/,https://www.wikidata.org/wiki/Q1539252
+mutantes,Os Mutantes,band,Classic & Psych Rock,Psychedelic & Blues Rock,Brazil,1966,present,,,,a3212186-5da5-4e84-a935-6952b3e14921,https://www.osmutantes.com.br/,https://www.wikidata.org/wiki/Q1325248
+cadillacs,Los Fabulosos Cadillacs,band,Punk & Hardcore,Punk,Argentina,1985,present,,,,cfe85625-10af-46c1-99fb-765ed3a4f1ad,https://fabulososcadillacs.com/,https://www.wikidata.org/wiki/Q1870518
+sodastereo,Soda Stereo,band,Post-Punk & New Wave,New Wave,Argentina,1982,1997,,,,3f8a5e5b-c24b-4068-9f1c-afad8829e06b,http://www.sodastereo.com/,https://www.wikidata.org/wiki/Q1816849
+prisioneros,Los Prisioneros,band,Post-Punk & New Wave,New Wave,Chile,1983,1992,,,,a1d044b9-76c9-46d7-a5a6-0f52421e1ed7,,https://www.wikidata.org/wiki/Q783578
+caifanes,Caifanes,band,Post-Punk & New Wave,Goth Rock,Mexico,1987,1995,,,,77814bfb-f1b0-47fd-8492-65d6f72c246d,http://www.caifanes.com.mx/,https://www.wikidata.org/wiki/Q1025839
+cafetacvba,Café Tacvba,band,Grunge & Alt Rock,Alt & Noise Rock,Mexico,1989,present,,,,c2b37a39-c66a-44b2-b190-a69485ae5d95,https://tacvba.com.mx/,https://www.wikidata.org/wiki/Q951620
+heroes,Héroes del Silencio,band,Grunge & Alt Rock,Alt & Noise Rock,Spain,1984,1996,,,,4bb712d6-8be9-4c09-810a-eb3bed2be345,http://heroesdelsilencio.es/,https://www.wikidata.org/wiki/Q1434852
+baronrojo,Barón Rojo,band,Heavy Metal / NWOBHM,Traditional & Continental,Spain,1980,present,,,,fae59483-47cf-4499-aa30-f07c120983dd,http://www.baronrojo.net/,https://www.wikidata.org/wiki/Q2280243
+angra,Angra,band,Power Metal,Epic & Symphonic,Brazil,1991,present,,,,b0fe8ef0-d59b-4d41-afee-2d21b59112ab,https://angra.net/,https://www.wikidata.org/wiki/Q542745
+krisiun,Krisiun,band,Death & Grind,Technical & Blackened,Brazil,1990,present,,,,9e6458d6-7053-48eb-ac8f-bf6fdf9169c6,http://www.krisiun.com.br/,https://www.wikidata.org/wiki/Q937907
+sarcofago,Sarcófago,band,Black Metal,First Wave,Brazil,1985,2000,,,,f5003609-10fb-478f-91c3-49277a074a42,,https://www.wikidata.org/wiki/Q176546
+plastic,The Plastic People of the Universe,band,Classic & Psych Rock,Proto-punk,Czechoslovakia,1968,present,,,,5dd115f6-566e-48f8-a678-17942b30d050,http://www.plasticpeople.eu/,https://www.wikidata.org/wiki/Q1478653
+kino,Kino,band,Post-Punk & New Wave,Post-Punk,USSR,1981,1990,,,,,,
+aria,Aria,band,Heavy Metal / NWOBHM,Traditional & Continental,Russia,1985,present,,,,8690522c-1981-4b92-a528-91e46c2d90c1,,
+mastershammer,Master's Hammer,band,Black Metal,Second Wave,Czechoslovakia,1987,present,,,,,,
+root,Root,band,Black Metal,First Wave,Czechoslovakia,1987,present,,,,6031dc2d-1331-49c2-8a95-743091ff6a30,http://www.rootan.net/,https://www.wikidata.org/wiki/Q3499184
+vader,Vader,band,Death & Grind,Eastern European Death,Poland,1983,present,,,,db859a53-b7ca-4892-bcda-5ef78d2c891f,https://vader-store.com/,https://www.wikidata.org/wiki/Q622982
+decapitated,Decapitated,band,Death & Grind,Eastern European Death,Poland,1996,present,,,,bfef61c6-53c0-4a12-9a42-1411111e7402,http://www.decapitatedband.net/,https://www.wikidata.org/wiki/Q1181716
+riverside,Riverside,band,Progressive,Modern Prog & Art Metal,Poland,2001,present,,,,985c5cc9-2dc1-49ac-8806-5b66586a2d58,https://riversideband.pl/,https://www.wikidata.org/wiki/Q268612
+slint,Slint,band,Post-Rock & Shoegaze,Post-Rock,USA,1986,1992,,,,2869c510-2679-4a3f-bf15-e5e8b49f2f28,http://www.slint.us/,https://www.wikidata.org/wiki/Q578979
+godspeed,Godspeed You! Black Emperor,band,Post-Rock & Shoegaze,Post-Rock,Canada,1994,present,,,,3648db01-b29d-4ab9-835c-83f6a5068fe4,https://brainwashed.com/godspeed/,https://www.wikidata.org/wiki/Q181341
+mogwai,Mogwai,band,Post-Rock & Shoegaze,Post-Rock,UK,1995,present,,,,d700b3f5-45af-4d02-95ed-57d301bda93e,http://www.mogwai.co.uk/,https://www.wikidata.org/wiki/Q645980
+eits,Explosions in the Sky,band,Post-Rock & Shoegaze,Post-Rock,USA,1999,present,,,,4236acde-2ce2-441c-a3d4-38d55f1b5474,https://explosionsinthesky.com/,https://www.wikidata.org/wiki/Q578270
+sigur,Sigur Rós,band,Post-Rock & Shoegaze,Post-Rock,Iceland,1994,present,,,,f6f2326f-6b25-4170-b89d-e235b25508e8,http://www.sigur-ros.co.uk/,https://www.wikidata.org/wiki/Q483828
+tortoise,Tortoise,band,Post-Rock & Shoegaze,Post-Rock,USA,1990,present,,,,e0953daa-860f-4dc8-9f1a-b12587cdaf17,http://www.trts.com/,https://www.wikidata.org/wiki/Q1412030
+cocteau,Cocteau Twins,band,Post-Rock & Shoegaze,Shoegaze & Dream Pop,UK,1979,1997,,,,000fc734-b7e1-4a01-92d1-f544261b43f5,http://www.cocteautwins.com/,https://www.wikidata.org/wiki/Q588820
+mbv,My Bloody Valentine,band,Post-Rock & Shoegaze,Shoegaze & Dream Pop,Ireland,1983,present,,,,8ca01f46-53ac-4af2-8516-55a909c0905e,https://mybloodyvalentine.org/,https://www.wikidata.org/wiki/Q841042
+ride,Ride,band,Post-Rock & Shoegaze,Shoegaze & Dream Pop,UK,1988,present,,,,3f575ecd-627d-4f08-a89f-abd46d469c7e,https://www.thebandride.com/,https://www.wikidata.org/wiki/Q4371
+slowdive,Slowdive,band,Post-Rock & Shoegaze,Shoegaze & Dream Pop,UK,1989,present,,,,a16371b9-7d36-497a-a9d4-42b0a0440c5e,https://slowdiveofficial.com/,https://www.wikidata.org/wiki/Q1502037
+tesseract,TesseracT,band,Progressive,Djent & Tech,UK,2003,present,,,,f1ec4765-e5da-4591-8b50-a8ff9627dda8,https://www.tesseractband.co.uk/,https://www.wikidata.org/wiki/Q1430984
+aal,Animals as Leaders,band,Progressive,Djent & Tech,USA,2007,present,,,,5c2d2520-950b-4c78-84fc-78a9328172a3,https://animalsasleaders.org/,https://www.wikidata.org/wiki/Q547666
+vildhjarta,Vildhjärta,band,Progressive,Djent & Tech,Sweden,2005,present,,,,,,
+plini,Plini,artist,Progressive,Djent & Tech,Australia,2013,present,,,,3f6c0aa1-a7a9-4ff2-9c50-e84d4b0de178,https://www.plini.co/,https://www.wikidata.org/wiki/Q56303103
+alcest,Alcest,band,Black Metal,Modern Black,France,2000,present,,,,dd77b8da-cdc7-46b8-8a7f-10894ca0490e,https://alcestmusic.com/,https://www.wikidata.org/wiki/Q1517060
+wolves,Wolves in the Throne Room,band,Black Metal,Modern Black,USA,2003,present,,,,e9452446-7702-4853-96ce-5dfe6748d3fb,https://wittr.com/,https://www.wikidata.org/wiki/Q763887
+liturgy,Liturgy,band,Black Metal,Modern Black,USA,2005,present,,,,a3dfd599-c84c-4588-b3a2-ebd98c8aeaa0,https://arkwork.org/,https://www.wikidata.org/wiki/Q1602155
+codeorange,Code Orange,band,Metalcore & Modern,Metalcore,USA,2008,present,,,,b87d5807-c37a-4d0e-a53c-9cdf6bc6caa1,https://www.codeorangetoth.com/,https://www.wikidata.org/wiki/Q5140037
+lornashore,Lorna Shore,band,Metalcore & Modern,Metalcore,USA,2010,present,,,,e86fc1f5-d632-44b2-8aea-38f83aadffe8,https://ifeeltheeverblackfesteringwithinme.com/,https://www.wikidata.org/wiki/Q17125981
+loathe,Loathe,band,Metalcore & Modern,Alt & Genre-bending,UK,2014,present,,,,56eb02c4-1f16-4613-8bb3-b4a752283fc3,http://www.loatheasone.com/,https://www.wikidata.org/wiki/Q30610109
+zeal,Zeal & Ardor,band,Metalcore & Modern,Alt & Genre-bending,Switzerland,2013,present,,,,5e90193b-5183-406b-9f3a-b66bb66daccb,https://www.zealandardor.com/,https://www.wikidata.org/wiki/Q30316618
+turnstile,Turnstile,band,Punk & Hardcore,Hardcore,USA,2010,present,,,,7b748dac-f5ce-45a7-9b95-c1d8b5b013ed,https://www.turnstilehardcore.com/,https://www.wikidata.org/wiki/Q18719133
+primus,Primus,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1984,present,,,,84dc4f23-c0b8-4fe1-bbca-a3993ddc8fc2,https://www.primusville.com/,https://www.wikidata.org/wiki/Q741836
+livingcolour,Living Colour,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1984,present,,,,dc6f8c1f-626b-42b0-9115-7e66ae4cecd6,http://www.livingcolour.com/,https://www.wikidata.org/wiki/Q1478077
+dethklok,Dethklok,band,Death & Grind,Melodic Death,USA,2006,present,,,,1afcd689-9be4-4d1a-a9fa-49e086250f51,http://www.adultswim.com/videos/metalocalypse/,https://www.wikidata.org/wiki/Q1201201
+cheaptrick,Cheap Trick,band,Hard Rock,Classic Hard Rock,USA,1973,present,,,,9f870653-72b0-4c6d-8c59-439a95963e09,http://www.cheaptrick.com/,https://www.wikidata.org/wiki/Q1068713
+boston,Boston,band,Hard Rock,Classic Hard Rock,USA,1975,present,,,,0d8b0d50-e4cf-4da4-965d-f24c58ec3268,http://www.boston.org/,https://www.wikidata.org/wiki/Q204289
+heart,Heart,band,Hard Rock,Classic Hard Rock,USA,1973,present,,,,bdbd48f5-abf3-4a4f-9a21-4551dbc3fde9,https://www.heart-music.com/,https://www.wikidata.org/wiki/Q941662
+thecult,The Cult,band,Hard Rock,Classic Hard Rock,UK,1983,present,,,,8846e4ff-0c19-4af2-872b-7a8dc7497f68,http://www.thecult.us/,https://www.wikidata.org/wiki/Q887376
+ufo,UFO,band,Hard Rock,Classic Hard Rock,UK,1968,2019,,,,c0bf9e20-2872-4897-ad1f-0882b83272a0,http://www.ufo-music.info/,https://www.wikidata.org/wiki/Q251657
+badco,Bad Company,band,Hard Rock,Classic Hard Rock,UK,1973,present,,,,0053dbd9-bfbc-4e38-9f08-66a27d914c38,http://www.badcompany.com/,https://www.wikidata.org/wiki/Q745517
+wishboneash,Wishbone Ash,band,Hard Rock,Classic Hard Rock,UK,1969,present,,,,406f1b42-0c9e-4427-aeb7-02f78e188ec4,https://www.wishboneashofficial.com/,https://www.wikidata.org/wiki/Q137758
+statusquo,Status Quo,band,Hard Rock,Classic Hard Rock,UK,1962,present,,,,1884ed9c-6fe1-468d-a7f8-8d19c9c4e441,http://www.statusquo.co.uk/,https://www.wikidata.org/wiki/Q322265
+skidrow,Skid Row,band,Glam & Hair Metal,Hair Metal,USA,1986,present,,,,6da0515e-a27d-449d-84cc-00713c38a140,http://www.skidrow.com/,https://www.wikidata.org/wiki/Q461269
+dokken,Dokken,band,Glam & Hair Metal,Hair Metal,USA,1978,present,,,,09ade3bd-b110-4277-b923-7dc32e6a3f92,https://www.dokken.net/,https://www.wikidata.org/wiki/Q831041
+quietriot,Quiet Riot,band,Glam & Hair Metal,Hair Metal,USA,1973,present,,,,5c6acb91-4b9b-4245-b92f-e817295c4ed0,https://quietriot.band/,https://www.wikidata.org/wiki/Q221494
+europe,Europe,band,Glam & Hair Metal,Hair Metal,Sweden,1979,present,,,,ccfe7a3c-1a45-4984-a8d0-644549cefe61,http://www.europetheband.com/,https://www.wikidata.org/wiki/Q185144
+tesla,Tesla,band,Glam & Hair Metal,Hair Metal,USA,1981,present,,,,eeacb319-8d4c-48e0-80a0-944e71c375bf,http://teslatheband.com/,https://www.wikidata.org/wiki/Q1428953
+greatwhite,Great White,band,Glam & Hair Metal,Hair Metal,USA,1977,present,,,,328676f3-76ac-40df-b154-31e6f533286a,http://www.callitrocknroll.com/,https://www.wikidata.org/wiki/Q1330850
+extreme,Extreme,band,Glam & Hair Metal,Hair Metal,USA,1985,present,,,,0e6cc5e5-4f03-4993-a481-d70d0e354d9f,http://extreme-band.com/,https://www.wikidata.org/wiki/Q682710
+motthehoople,Mott the Hoople,band,Glam & Hair Metal,Glam Rock,UK,1969,1976,,,,435f1441-0f43-479d-92db-a506449a686b,https://mottthehoople.com/,https://www.wikidata.org/wiki/Q1126287
+girlschool,Girlschool,band,Heavy Metal / NWOBHM,NWOBHM,UK,1978,present,,,,ebe18ea1-9fcf-426e-9c54-10eecc207a66,http://www.girlschoolband.com/,https://www.wikidata.org/wiki/Q1142870
+tygers,Tygers of Pan Tang,band,Heavy Metal / NWOBHM,NWOBHM,UK,1978,present,,,,fe179f28-3cab-4337-9575-c13f8d077b13,http://www.tygersofpantang.com/,https://www.wikidata.org/wiki/Q1753013
+angelwitch,Angel Witch,band,Heavy Metal / NWOBHM,NWOBHM,UK,1976,present,,,,8e8bce36-51e0-4d10-8be4-19a8931b73b1,http://www.angelwitchcoven.com/,https://www.wikidata.org/wiki/Q531934
+raven,Raven,band,Heavy Metal / NWOBHM,NWOBHM,UK,1974,present,,,,b4854d3a-2678-4f0b-8024-ea78e5c32800,http://www.ravenlunatics.com/,https://www.wikidata.org/wiki/Q765111
+samson,Samson,band,Heavy Metal / NWOBHM,NWOBHM,UK,1977,2002,,,,df38c0f9-aea2-425c-bd92-8d2e101fadd6,,https://www.wikidata.org/wiki/Q1138767
+satan,Satan,band,Heavy Metal / NWOBHM,NWOBHM,UK,1979,present,,,,ee2c4239-6a04-492a-a157-1382837962db,http://www.satanmusic.com/,https://www.wikidata.org/wiki/Q933072
+tank,Tank,band,Heavy Metal / NWOBHM,NWOBHM,UK,1980,present,,,,9e4d93b6-0b22-4914-a3e4-efe8b8cd0378,http://www.tankfilthhounds.net/,https://www.wikidata.org/wiki/Q933207
+anvil,Anvil,band,Heavy Metal / NWOBHM,Traditional & Continental,Canada,1978,present,,,,07a85e96-bb72-4930-b41d-24853f4a4ede,http://my.tbaytel.net/tgallo/anvil/,https://www.wikidata.org/wiki/Q613022
+exciter,Exciter,band,Heavy Metal / NWOBHM,Traditional & Continental,Canada,1978,present,,,,0fa1e771-9aa6-49fe-82b7-d5ea09f33519,http://www.monsternation.se/exciter/,https://www.wikidata.org/wiki/Q1383552
+cirithungol,Cirith Ungol,band,Heavy Metal / NWOBHM,US Heavy & Epic,USA,1971,present,,,,c1341251-e2c7-4eae-989c-645f0c22487c,https://cirithungol.band/,https://www.wikidata.org/wiki/Q220938
+manillaroad,Manilla Road,band,Heavy Metal / NWOBHM,US Heavy & Epic,USA,1977,2018,,,,71dc0b7d-64f7-49ba-8723-f60804911b4e,http://truemetal.org/manillaroad/,https://www.wikidata.org/wiki/Q1889141
+omen,Omen,band,Heavy Metal / NWOBHM,US Heavy & Epic,USA,1983,present,,,,596cc676-32c7-480c-9bf4-dcc9d8ff62d3,,https://www.wikidata.org/wiki/Q2023278
+riot,Riot,band,Heavy Metal / NWOBHM,US Heavy & Epic,USA,1975,present,,,,7d48f4c1-80b5-41f3-af5a-b0d5410b44f7,http://weareriot.net/,
+armoredsaint,Armored Saint,band,Heavy Metal / NWOBHM,US Heavy & Epic,USA,1982,present,,,,8ac580bd-5b33-4ee3-83df-8d406908e300,http://www.armoredsaint.com/,https://www.wikidata.org/wiki/Q688879
+virginsteele,Virgin Steele,band,Heavy Metal / NWOBHM,US Heavy & Epic,USA,1981,present,,,,74b86100-7414-4b64-b386-a48270a9bb02,http://www.virgin-steele.com/,https://www.wikidata.org/wiki/Q1544403
+gravedigger,Grave Digger,band,Power Metal,German Power,Germany,1980,present,,,,ed114045-8462-4b49-89ae-527fa2544a2b,https://www.grave-digger.de/,https://www.wikidata.org/wiki/Q571672
+runningwild,Running Wild,band,Power Metal,German Power,Germany,1976,present,,,,ad73761f-c66d-4149-899d-21f56d1969a1,http://www.running-wild.net/,https://www.wikidata.org/wiki/Q163173
+primalfear,Primal Fear,band,Power Metal,German Power,Germany,1997,present,,,,32567eb3-aeca-467f-8b89-a69b11fcb781,http://www.primalfear.de/,https://www.wikidata.org/wiki/Q163112
+edguy,Edguy,band,Power Metal,German Power,Germany,1992,present,,,,83998f9c-846b-4294-aede-d7735531c901,https://www.edguy.net/,https://www.wikidata.org/wiki/Q158932
+powerwolf,Powerwolf,band,Power Metal,Modern Power,Germany,2003,present,,,,3ef77bdc-b1ce-4e44-aa4b-acfa763c5284,http://www.powerwolf.net/,https://www.wikidata.org/wiki/Q706748
+gloryhammer,Gloryhammer,band,Power Metal,Modern Power,UK,2010,present,,,,85997032-ff48-4383-b86a-a920d4230a0b,http://www.gloryhammer.com/,https://www.wikidata.org/wiki/Q11838832
+kamelot,Kamelot,band,Power Metal,Epic & Symphonic,USA,1991,present,,,,2449300a-6ca7-45da-8102-22789d256475,https://kamelot.com/,https://www.wikidata.org/wiki/Q457368
+avantasia,Avantasia,band,Power Metal,Epic & Symphonic,Germany,2000,present,,,,2ecbc483-dee4-442f-8ce7-f3ab31c73f87,https://avantasia.com/,https://www.wikidata.org/wiki/Q158641
+icedearth,Iced Earth,band,Power Metal,US Power,USA,1985,present,,,,8a0e10a9-80c7-40e0-bf5b-89f1d57f9537,http://www.icedearth.com/,https://www.wikidata.org/wiki/Q728109
+savatage,Savatage,band,Power Metal,US Power,USA,1978,present,,,,ac15222f-fb8a-4d2b-b4da-bde1c19f0a9f,https://www.savatage.com/,https://www.wikidata.org/wiki/Q830598
+deathangel,Death Angel,band,Thrash Metal,Bay Area,USA,1982,present,,,,562ff334-c34f-45b0-a519-e5d171482df2,https://www.deathangel.us/,https://www.wikidata.org/wiki/Q1181233
+violence,Vio-lence,band,Thrash Metal,Bay Area,USA,1985,present,,,,cf2544d6-b4f2-405d-a525-08c1ec5034f1,http://www.vio-lence.com/,https://www.wikidata.org/wiki/Q2063903
+forbidden,Forbidden,band,Thrash Metal,Bay Area,USA,1985,present,,,,e7df158d-1895-400d-919e-dc0a93e13c16,https://forbiddenreborn.com/,https://www.wikidata.org/wiki/Q588106
+heathen,Heathen,band,Thrash Metal,Bay Area,USA,1984,present,,,,dfbfe956-7719-4cd6-b4db-b9c22657c925,http://www.heathenmetal.com/,https://www.wikidata.org/wiki/Q1592554
+nuclearassault,Nuclear Assault,band,Thrash Metal,US Thrash,USA,1984,present,,,,ffd3ac37-4d0a-42a1-a41e-e160cf60dca5,http://www.nuclearassault.us/,https://www.wikidata.org/wiki/Q899032
+sacredreich,Sacred Reich,band,Thrash Metal,US Thrash,USA,1985,present,,,,05ada461-fa66-4c15-a1c1-206fda754d18,,https://www.wikidata.org/wiki/Q1537628
+darkangel,Dark Angel,band,Thrash Metal,US Thrash,USA,1981,present,,,,1dd1f238-839c-4609-9bcb-5f866c82b3e8,http://www.darkangelmusic.com/,https://www.wikidata.org/wiki/Q1362401
+flotsam,Flotsam and Jetsam,band,Thrash Metal,US Thrash,USA,1981,present,,,,7448d493-0b9d-4057-9a50-bf2bd096d961,http://www.flotsam-and-jetsam.com/,https://www.wikidata.org/wiki/Q1339648
+onslaught,Onslaught,band,Thrash Metal,European & Canadian,UK,1982,present,,,,faa76524-c57c-4303-843e-925f5aa02f87,http://onslaughtuk.com/,https://www.wikidata.org/wiki/Q1417965
+sabbat,Sabbat,band,Thrash Metal,European & Canadian,UK,1985,present,,,,6082bb10-ba2f-4990-9b1f-ab6b868f4683,http://isten.net/sabbat/,https://www.wikidata.org/wiki/Q1397606
+annihilator,Annihilator,band,Thrash Metal,European & Canadian,Canada,1984,present,,,,c30ebe30-514f-4e6d-823a-19adf0225a56,https://www.annihilatormetal.com/,https://www.wikidata.org/wiki/Q567086
+voivod,Voivod,band,Thrash Metal,European & Canadian,Canada,1982,present,,,,66cb12f6-6502-486d-bf67-efd5bdaee6ac,https://www.voivod.com/,https://www.wikidata.org/wiki/Q845926
+coroner,Coroner,band,Thrash Metal,European & Canadian,Switzerland,1983,present,,,,509dc5b1-f264-43f3-9035-473e7020e77f,https://coronerofficial.com/,https://www.wikidata.org/wiki/Q687760
+artillery,Artillery,band,Thrash Metal,European & Canadian,Denmark,1982,present,,,,bd7febcc-fa2c-498a-a48b-9cf2be54dfed,http://artillery.dk/,https://www.wikidata.org/wiki/Q713037
+tankard,Tankard,band,Thrash Metal,Teutonic,Germany,1982,present,,,,619ce797-ddb3-4411-9e42-30eafe2ca5ec,http://www.tankard.info/,https://www.wikidata.org/wiki/Q318311
+exhorder,Exhorder,band,Thrash Metal,Groove,USA,1985,present,,,,0884d73a-39f8-4e3f-b1c2-b7344e031283,http://exhorder.com/,https://www.wikidata.org/wiki/Q1383759
+prong,Prong,band,Thrash Metal,Groove,USA,1986,present,,,,366b86a0-74b2-4fcb-ba79-637258299dbb,http://prongmusic.com/,https://www.wikidata.org/wiki/Q1638101
+municipalwaste,Municipal Waste,band,Thrash Metal,Revival,USA,2000,present,,,,b5a31e9b-1fa2-45f9-91f5-b3a25fb38038,https://www.municipalwaste.net/,https://www.wikidata.org/wiki/Q922034
+powertrip,Power Trip,band,Thrash Metal,Revival,USA,2008,present,,,,7f179acc-d6eb-4ca9-af90-c14e397fb613,,https://www.wikidata.org/wiki/Q28225662
+havok,Havok,band,Thrash Metal,Revival,USA,2004,present,,,,c4f35f4b-0716-463b-b3f2-40feede7b2e1,http://havokband.com/,https://www.wikidata.org/wiki/Q955594
+vektor,Vektor,band,Thrash Metal,Revival,USA,2002,present,,,,c5119d8a-ffee-48bc-99c3-f323bdf16d82,,https://www.wikidata.org/wiki/Q2512236
+deicide,Deicide,band,Death & Grind,American Death Metal,USA,1987,present,,,,0bd96fa4-9835-49b0-a1f2-7421e6a79dfa,,https://www.wikidata.org/wiki/Q506314
+malevolentcreation,Malevolent Creation,band,Death & Grind,American Death Metal,USA,1987,present,,,,77b6b083-d27d-4948-a389-3d5055daf5ae,http://www.malevolent-creation.com/,https://www.wikidata.org/wiki/Q908396
+incantation,Incantation,band,Death & Grind,American Death Metal,USA,1989,present,,,,c29973c6-1a7c-401d-bce6-67b7240de677,https://www.incantation.com/,https://www.wikidata.org/wiki/Q1116390
+immolation,Immolation,band,Death & Grind,American Death Metal,USA,1986,present,,,,c373c7f0-fddf-4c04-a327-19dd83590753,https://www.immolation.info/,https://www.wikidata.org/wiki/Q671359
+hateeternal,Hate Eternal,band,Death & Grind,American Death Metal,USA,1997,present,,,,5c9e111d-579e-4eb3-a6e4-51e223635ee0,http://www.hateeternal.net/,https://www.wikidata.org/wiki/Q943934
+atheist,Atheist,band,Death & Grind,Technical & Blackened,USA,1983,present,,,,424f2349-f719-46c0-ab39-abbb4364d95f,http://www.officialatheist.com/,https://www.wikidata.org/wiki/Q755034
+cynic,Cynic,band,Death & Grind,Technical & Blackened,USA,1987,present,,,,d7381ee3-d8ac-4622-ae9a-7e659143eacb,http://cyniconline.com/,https://www.wikidata.org/wiki/Q370835
+gorguts,Gorguts,band,Death & Grind,Technical & Blackened,Canada,1989,present,,,,a95ef44c-aeda-4222-9d57-10b28240e634,http://www.gorguts.com/,https://www.wikidata.org/wiki/Q1538284
+pestilence,Pestilence,band,Death & Grind,Technical & Blackened,Netherlands,1986,present,,,,1dbc1f29-19b7-49de-950d-e7b7391f56f0,http://www.pestilence.nl/,https://www.wikidata.org/wiki/Q1066740
+dyingfetus,Dying Fetus,band,Death & Grind,Technical & Blackened,USA,1991,present,,,,f76167bb-c117-4022-8b6b-54c796edf5c9,https://dyingfetusband.com/,https://www.wikidata.org/wiki/Q549768
+cryptopsy,Cryptopsy,band,Death & Grind,Technical & Blackened,Canada,1992,present,,,,756af95c-8793-4546-a93f-f3581b5b1c8d,http://cryptopsy.ca/,https://www.wikidata.org/wiki/Q745915
+obscura,Obscura,band,Death & Grind,Technical & Blackened,Germany,2002,present,,,,f002e30d-401c-44b1-82e0-d6796870594d,http://www.realmofobscura.com/,https://www.wikidata.org/wiki/Q686550
+kataklysm,Kataklysm,band,Death & Grind,Technical & Blackened,Canada,1991,present,,,,91d51bc3-bfcc-49f2-b6c4-d6d205d6291b,http://kataklysm.ca/,https://www.wikidata.org/wiki/Q944379
+brutaltruth,Brutal Truth,band,Death & Grind,Grindcore & UK Death,USA,1990,present,,,,4ddc0620-38e2-40ec-8915-009967520168,http://www.brutaltruth.com/,https://www.wikidata.org/wiki/Q994671
+nasum,Nasum,band,Death & Grind,Grindcore & UK Death,Sweden,1992,2012,,,,4b52ef0a-78c3-4b52-b4ee-658ac47ff889,http://nasum.com/,https://www.wikidata.org/wiki/Q1500192
+terrorizer,Terrorizer,band,Death & Grind,Grindcore & UK Death,USA,1986,present,,,,7cd29567-b431-4989-9870-a81bc5596dd2,http://www.terrorizergrindcore.net/,https://www.wikidata.org/wiki/Q965154
+hypocrisy,Hypocrisy,band,Death & Grind,Swedish Death Metal,Sweden,1991,present,,,,b1e23ada-a7eb-42d7-91ec-67a43bead43a,https://www.hypocrisyband.com/,https://www.wikidata.org/wiki/Q1120650
+unleashed,Unleashed,band,Death & Grind,Swedish Death Metal,Sweden,1989,present,,,,4dffdaf8-8fb8-4b3d-8088-427b1e9d1af3,http://www.unleashed.se/,https://www.wikidata.org/wiki/Q913377
+grave,Grave,band,Death & Grind,Swedish Death Metal,Sweden,1986,present,,,,13991835-5e66-4fdd-aad3-211e8129c599,http://www.grave.se/,https://www.wikidata.org/wiki/Q1028007
+archenemy,Arch Enemy,band,Death & Grind,Melodic Death,Sweden,1995,present,,,,e631bb92-3e2b-43e3-a2cb-b605e2fb53bd,https://www.archenemy.net/,https://www.wikidata.org/wiki/Q163989
+soilwork,Soilwork,band,Death & Grind,Melodic Death,Sweden,1995,present,,,,d8d1b067-78bb-4db7-8f91-db2ff9a83ee5,http://www.soilwork.org/,https://www.wikidata.org/wiki/Q257615
+childrenofbodom,Children of Bodom,band,Death & Grind,Melodic Death,Finland,1993,2019,,,,f57e14e4-b030-467c-b202-539453f504ec,https://www.cobhc.com/,https://www.wikidata.org/wiki/Q171718
+insomnium,Insomnium,band,Death & Grind,Melodic Death,Finland,1997,present,,,,c1f8e226-75ea-4fe6-83ce-59c122bcbca4,https://www.insomnium.net/,https://www.wikidata.org/wiki/Q1146675
+whitechapel,Whitechapel,band,Metalcore & Modern,Deathcore,USA,2006,present,,,,56ba013c-610e-4d9b-98ed-c2ccff977a9e,http://www.whitechapelband.com/,https://www.wikidata.org/wiki/Q1138974
+suicidesilence,Suicide Silence,band,Metalcore & Modern,Deathcore,USA,2002,present,,,,4fd53e84-ffa1-4434-9146-3fab25ece7e0,http://www.suicidesilence.net/,https://www.wikidata.org/wiki/Q431700
+jobforacowboy,Job for a Cowboy,band,Metalcore & Modern,Deathcore,USA,2003,present,,,,709b6c87-4870-4596-b981-afdc61f39476,http://www.jfacmetal.com/,https://www.wikidata.org/wiki/Q1348291
+allshallperish,All Shall Perish,band,Metalcore & Modern,Deathcore,USA,2002,2011,,,,eb55f2c5-e7dc-4697-9ed7-864438d10eb6,http://www.allshallperish.com/,https://www.wikidata.org/wiki/Q430581
+thyartismurder,Thy Art Is Murder,band,Metalcore & Modern,Deathcore,Australia,2006,present,,,,d846000e-71cf-4eb3-a462-9badab2c3eca,https://www.thyartismurder.net/,https://www.wikidata.org/wiki/Q2430218
+asilaydying,As I Lay Dying,band,Metalcore & Modern,Metalcore,USA,2000,present,,,,ba147ea0-60c4-4a40-9da6-0d5c2b2e7b03,http://asilaydying.com/,https://www.wikidata.org/wiki/Q693583
+atreyu,Atreyu,band,Metalcore & Modern,Metalcore,USA,1998,present,,,,17e137fb-59e5-4fd7-af48-afc34995396c,https://www.atreyuofficial.com/,https://www.wikidata.org/wiki/Q240703
+augustburnsred,August Burns Red,band,Metalcore & Modern,Metalcore,USA,2003,present,,,,5bac9b4f-2f1c-4d39-8d11-231d5b6650ce,https://augustburnsred.com/,https://www.wikidata.org/wiki/Q537954
+allthatremains,All That Remains,band,Metalcore & Modern,Metalcore,USA,1998,present,,,,4f8b7186-b2a2-40db-97ae-6e1cd46d57b1,https://allthatremainsonline.com/,https://www.wikidata.org/wiki/Q654147
+unearth,Unearth,band,Metalcore & Modern,Metalcore,USA,1998,present,,,,9f336c50-ae4c-4440-bda7-958aa12bc15a,https://unearthofficial.com/,https://www.wikidata.org/wiki/Q1425718
+shadowsfall,Shadows Fall,band,Metalcore & Modern,Metalcore,USA,1995,present,,,,2e3b75d8-00a8-486a-b4e7-a1f8f65e64c9,http://shadowsfall.com/,https://www.wikidata.org/wiki/Q1353720
+darkesthour,Darkest Hour,band,Metalcore & Modern,Metalcore,USA,1995,present,,,,e0ededb4-6085-4f68-90f7-89bc560930a3,http://officialdarkesthour.com/,https://www.wikidata.org/wiki/Q1166257
+burytomorrow,Bury Tomorrow,band,Metalcore & Modern,Metalcore,UK,2006,present,,,,95c4e9ef-291b-4f94-8bc9-2b00e76eacb0,https://www.bury-tomorrow.com/,https://www.wikidata.org/wiki/Q1017202
+sylosis,Sylosis,band,Metalcore & Modern,Metalcore,UK,2000,present,,,,114f8840-8704-4b70-9673-904d60ecadc8,http://sylosis.com/,https://www.wikidata.org/wiki/Q1631741
+motionlessinwhite,Motionless in White,band,Metalcore & Modern,Metalcore,USA,2005,present,,,,1c5b9bd6-76e8-4fe7-a6df-3bc0b5a452cc,http://motionlessinwhite.net/,https://www.wikidata.org/wiki/Q1583306
+blackveilbrides,Black Veil Brides,band,Metalcore & Modern,Metalcore,USA,2006,present,,,,33319aed-9bd7-4cd1-903c-716845c1b7cd,http://www.blackveilbrides.net/,https://www.wikidata.org/wiki/Q627269
+askingalexandria,Asking Alexandria,band,Metalcore & Modern,Metalcore,UK,2006,present,,,,9d2fde91-4633-430d-87f0-2b9bbb7fa451,https://www.askingalexandria.com/,https://www.wikidata.org/wiki/Q731642
+iceninekills,Ice Nine Kills,band,Metalcore & Modern,Metalcore,USA,2002,present,,,,d8f0f6ac-a0a7-47bd-9786-f9106d7bdd11,http://iceninekills.com/,https://www.wikidata.org/wiki/Q5985325
+badomens,Bad Omens,band,Metalcore & Modern,Metalcore,USA,2015,present,,,,eecada09-acfc-472d-ae55-e9e5a43f12d8,http://www.badomensofficial.com/,https://www.wikidata.org/wiki/Q54958373
+polaris,Polaris,band,Metalcore & Modern,Metalcore,Australia,2012,present,,,,6ffb7be4-0a53-4014-853d-83790cd5e091,http://polarisaus.com.au/,https://www.wikidata.org/wiki/Q51029232
+knockedloose,Knocked Loose,band,Metalcore & Modern,Metalcore,USA,2013,present,,,,9ca10859-49e2-44e3-b3d6-04c535207bc2,https://knockedloose.com/,https://www.wikidata.org/wiki/Q27817179
+chimaira,Chimaira,band,Metalcore & Modern,Groove & Modern Heavy,USA,1998,2014,,,,d624df22-b03d-4746-ac28-a4bd72aeec26,http://chimaira.com/,https://www.wikidata.org/wiki/Q1073095
+devildriver,DevilDriver,band,Metalcore & Modern,Groove & Modern Heavy,USA,2002,present,,,,1aded574-9e16-4648-861a-24fd6f1c309e,https://devildriver.com/,https://www.wikidata.org/wiki/Q1133406
+enslaved,Enslaved,band,Black Metal,Second Wave,Norway,1991,present,,,,29bb04d6-5602-464c-8577-f55a27511b27,https://enslaved.no/,https://www.wikidata.org/wiki/Q916688
+marduk,Marduk,band,Black Metal,Second Wave,Sweden,1990,present,,,,b7dc7c76-53f1-49ac-8dc2-d469ed7f8e65,http://marduk.nu/,https://www.wikidata.org/wiki/Q683775
+darkfuneral,Dark Funeral,band,Black Metal,Second Wave,Sweden,1993,present,,,,7561ff6c-2ab7-4776-9a9a-662f23b2effc,http://www.darkfuneral.se/,https://www.wikidata.org/wiki/Q2834192
+taake,Taake,band,Black Metal,Second Wave,Norway,1993,present,,,,52d858dc-d61d-4572-b70f-cc467d1612d8,http://taake.theblacksun.org/,https://www.wikidata.org/wiki/Q1334010
+rottingchrist,Rotting Christ,band,Black Metal,Second Wave,Greece,1987,present,,,,2d576cfe-7669-4af0-a66a-86c8362f47c5,https://www.rotting-christ.com/,https://www.wikidata.org/wiki/Q938889
+samael,Samael,band,Black Metal,Second Wave,Switzerland,1987,present,,,,6a2ca1ac-408d-49b0-a7f6-cd608f2f684f,https://www.samael.info/,https://www.wikidata.org/wiki/Q688874
+impalednazarene,Impaled Nazarene,band,Black Metal,Second Wave,Finland,1990,present,,,,2228019e-67b4-4d2e-a101-f2d5dcaf892f,http://www.impnaz.com/,https://www.wikidata.org/wiki/Q629689
+beherit,Beherit,band,Black Metal,First Wave,Finland,1989,present,,,,65a8ee1c-20ef-4e2d-bf55-33a35bd7e644,https://www.beherit.fi/,https://www.wikidata.org/wiki/Q814482
+blutausnord,Blut Aus Nord,band,Black Metal,Modern Black,France,1994,present,,,,c21db200-1f7c-4c23-b518-cf7fac6b8e85,http://www.blutausnord.com/,https://www.wikidata.org/wiki/Q632229
+deathspell,Deathspell Omega,band,Black Metal,Modern Black,France,1998,present,,,,37ea73dd-a48c-4659-8b9d-5c77bd9cbd12,http://www.deathspellomega.com/,https://www.wikidata.org/wiki/Q903033
+drudkh,Drudkh,band,Black Metal,Modern Black,Ukraine,2002,present,,,,469eb232-7163-47a8-96a3-8c82d24b2888,,https://www.wikidata.org/wiki/Q1261136
+agalloch,Agalloch,band,Black Metal,Modern Black,USA,1995,2016,,,,3d46727d-9367-47b8-8b8b-f7b6767f7d57,http://www.agalloch.org/,https://www.wikidata.org/wiki/Q390300
+ihsahn,Ihsahn,artist,Black Metal,Modern Black,Norway,2005,present,,,,d0471ad5-6591-477c-8790-efdce698d3b6,https://www.ihsahn.com/,https://www.wikidata.org/wiki/Q386992
+witchfinder,Witchfinder General,band,Doom & Stoner,Traditional Doom,UK,1979,present,,,,89618a45-ff4a-4e5f-942e-3ef93c8c555c,http://www.witchfindergeneral.net/,https://www.wikidata.org/wiki/Q1814408
+solitude,Solitude Aeturnus,band,Doom & Stoner,Traditional Doom,USA,1987,present,,,,2cf7ba64-5f16-4382-be45-7f3ae2473e01,http://www.eternalsolitude.com/,https://www.wikidata.org/wiki/Q2139942
+pallbearer,Pallbearer,band,Doom & Stoner,Traditional Doom,USA,2008,present,,,,4d263664-5418-4f6c-b46a-36f413044e73,https://pallbearerdoom.com/,https://www.wikidata.org/wiki/Q16966548
+windhand,Windhand,band,Doom & Stoner,Traditional Doom,USA,2008,present,,,,17bdc2bd-dcec-4267-aa4c-87238f763066,https://www.windhand.band/,https://www.wikidata.org/wiki/Q23139176
+theobsessed,The Obsessed,band,Doom & Stoner,Traditional Doom,USA,1976,present,,,,aa043c18-c0a0-4cbe-bda0-8541f1fe59bd,https://www.theobsessedofficial.com/,https://www.wikidata.org/wiki/Q957090
+reverendbizarre,Reverend Bizarre,band,Doom & Stoner,Death-Doom,Finland,1992,2007,,,,97992045-1d3f-469d-91ce-27afd0bd216b,,https://www.wikidata.org/wiki/Q1627650
+esoteric,Esoteric,band,Doom & Stoner,Death-Doom,UK,1992,present,,,,2fb3d95a-3a38-47bf-bb9a-0592e28a75d8,https://www.esotericuk.net/,https://www.wikidata.org/wiki/Q1113168
+anathema,Anathema,band,Doom & Stoner,Death-Doom,UK,1990,2020,,,,20aa23e3-3532-42ca-acf6-e8c2e9df2688,https://www.anathemamusic.com/,https://www.wikidata.org/wiki/Q487396
+katatonia,Katatonia,band,Doom & Stoner,Death-Doom,Sweden,1991,present,,,,61ed9c9c-79eb-4e8f-8015-bd599ac0ab49,https://katatonia.com/,https://www.wikidata.org/wiki/Q515273
+skepticism,Skepticism,band,Doom & Stoner,Death-Doom,Finland,1991,present,,,,20d47cfb-cd42-41e8-b7e0-e7fdd3cf2fe4,https://www.skepticism.fi/,https://www.wikidata.org/wiki/Q981397
+crowbar,Crowbar,band,Doom & Stoner,Stoner & Sludge,USA,1988,present,,,,04fc15f9-2555-4699-9215-2ee6c84a2346,http://www.crowbarnola.com/,https://www.wikidata.org/wiki/Q528912
+acidbath,Acid Bath,band,Doom & Stoner,Stoner & Sludge,USA,1991,1997,,,,8b8b33a3-0a11-48b4-8f5a-aaa79f4282a8,https://www.acidbathofficial.com/,https://www.wikidata.org/wiki/Q341338
+torche,Torche,band,Doom & Stoner,Stoner & Sludge,USA,2004,present,,,,a04428a8-f7df-42fe-95dc-47762fe346f6,http://www.torchemusic.com/,https://www.wikidata.org/wiki/Q1394100
+clutch,Clutch,band,Doom & Stoner,Stoner Rock,USA,1990,present,,,,0cdb0359-5698-487d-9aae-a25fb4dcdc4d,http://www.pro-rock.com/,https://www.wikidata.org/wiki/Q578376
+orangegoblin,Orange Goblin,band,Doom & Stoner,Stoner Rock,UK,1995,2025,,,,7b88d629-5885-41c0-9096-f21cec310692,https://www.orangegoblinofficial.com/,https://www.wikidata.org/wiki/Q1671193
+fumanchu,Fu Manchu,band,Doom & Stoner,Stoner Rock,USA,1985,present,,,,f96de591-5dae-41da-855b-eb387d88d7d4,http://www.fu-manchu.com/,https://www.wikidata.org/wiki/Q137769
+elder,Elder,band,Doom & Stoner,Stoner Rock,USA,2006,present,,,,a92e181b-9d97-4442-8af2-a8967284c974,https://beholdtheelder.com/,https://www.wikidata.org/wiki/Q16834874
+monolord,Monolord,band,Doom & Stoner,Stoner Rock,Sweden,2013,present,,,,043225b4-3c61-4aea-8644-9065306d3499,http://monolord.com/,https://www.wikidata.org/wiki/Q29421154
+uncleacid,Uncle Acid & the Deadbeats,band,Doom & Stoner,Stoner Rock,UK,2009,present,,,,e5edd3b8-2a81-42c4-93a4-c19a10713295,,https://www.wikidata.org/wiki/Q14197609
+earth,Earth,band,Doom & Stoner,Drone,USA,1989,present,,,,60dd41cf-8f9d-46d8-bc19-dc7e5acb24c8,https://www.thronesanddominions.com/,https://www.wikidata.org/wiki/Q1277599
+moonspell,Moonspell,band,Gothic & Symphonic,Gothic Metal,Portugal,1992,present,,,,386b19c6-a3d2-414a-bef2-c178572b1cbe,https://moonspell.com/,https://www.wikidata.org/wiki/Q914074
+tiamat,Tiamat,band,Gothic & Symphonic,Gothic Metal,Sweden,1987,present,,,,8930ec4e-51c7-4905-ac40-684459878085,http://www.churchoftiamat.com/,https://www.wikidata.org/wiki/Q761119
+theatreoftragedy,Theatre of Tragedy,band,Gothic & Symphonic,Gothic Metal,Norway,1993,2010,,,,1b6ce503-df5f-45d5-86cf-54740c30042f,http://www.theatreoftragedy.com/,https://www.wikidata.org/wiki/Q240457
+lacuna,Lacuna Coil,band,Gothic & Symphonic,Gothic Metal,Italy,1994,present,,,,6fea1339-260c-40fe-bb7a-ace5c8438955,https://www.lacunacoil.com/,https://www.wikidata.org/wiki/Q46573
+tristania,Tristania,band,Gothic & Symphonic,Gothic Metal,Norway,1995,present,,,,7e482754-d3f6-49e5-b351-235849754e26,http://www.tristania.com/,https://www.wikidata.org/wiki/Q213476
+gathering,The Gathering,band,Gothic & Symphonic,Gothic Metal,Netherlands,1989,present,,,,004e5eed-e267-46ea-b504-54526f1f377d,https://gathering.nl/,https://www.wikidata.org/wiki/Q687651
+amorphis,Amorphis,band,Gothic & Symphonic,Gothic Metal,Finland,1990,present,,,,efaefde1-e09b-4d49-9d8e-b1304d2ece8d,https://amorphis.net/,https://www.wikidata.org/wiki/Q474169
+epica,Epica,band,Gothic & Symphonic,Symphonic,Netherlands,2002,present,,,,21985b14-1b0d-44fe-b357-310b29bba510,https://www.epica.nl/,https://www.wikidata.org/wiki/Q76244
+afterforever,After Forever,band,Gothic & Symphonic,Symphonic,Netherlands,1995,2009,,,,6b966946-5274-4e3d-aabb-7563814d805f,,https://www.wikidata.org/wiki/Q389008
+delain,Delain,band,Gothic & Symphonic,Symphonic,Netherlands,2002,present,,,,3b0e8f01-3fd9-4104-9532-1e4b526ce562,http://www.delain.nl/,https://www.wikidata.org/wiki/Q178792
+therion,Therion,band,Gothic & Symphonic,Symphonic,Sweden,1987,present,,,,c6b0db5a-d750-4ed8-9caa-ddcfb75dcb0a,https://www.therion.se/,https://www.wikidata.org/wiki/Q162247
+marillion,Marillion,band,Progressive,Classic Prog,UK,1979,present,,,,1932f5b6-0b7b-4050-b1df-833ca89e5f44,https://www.marillion.com/,https://www.wikidata.org/wiki/Q678410
+camel,Camel,band,Progressive,Classic Prog,UK,1971,present,,,,94b7a39b-f3cc-4796-90dd-b1786a62877e,http://www.camelproductions.com/,https://www.wikidata.org/wiki/Q612471
+gentlegiant,Gentle Giant,band,Progressive,Classic Prog,UK,1970,1980,,,,f795c501-1c41-4be2-bc2a-875eba75aa31,https://gentlegiantmusic.com/,https://www.wikidata.org/wiki/Q943241
+vandergraaf,Van der Graaf Generator,band,Progressive,Classic Prog,UK,1967,present,,,,b892f72d-05e2-4ff7-b863-3d5dec6331fd,https://www.vandergraafgenerator.co.uk/,https://www.wikidata.org/wiki/Q752170
+caravan,Caravan,band,Progressive,Classic Prog,UK,1968,present,,,,82dd3f5d-4c36-4dbe-981d-6845c91445f8,https://officialcaravan.co.uk/,https://www.wikidata.org/wiki/Q767871
+magma,Magma,band,Progressive,Classic Prog,France,1969,present,,,,7f89e84d-4c35-4d53-a965-4f3ce1c4ef4f,https://www.magmamusic.org/,https://www.wikidata.org/wiki/Q914489
+focus,Focus,band,Progressive,Classic Prog,Netherlands,1969,present,,,,821e11d6-cfec-44a7-9615-06a4e631c975,http://www.focustheband.com/,https://www.wikidata.org/wiki/Q288918
+spocksbeard,Spock's Beard,band,Progressive,Classic Prog,USA,1992,present,,,,,,
+nevermore,Nevermore,band,Progressive,Progressive Metal,USA,1991,2011,,,,7d093650-89be-4108-842b-ba7f5367504b,,https://www.wikidata.org/wiki/Q130563
+symphonyx,Symphony X,band,Progressive,Progressive Metal,USA,1994,present,,,,b669c53e-5a1f-4adc-80be-755e64e8115e,https://www.symphonyx.com/,https://www.wikidata.org/wiki/Q648940
+painofsalvation,Pain of Salvation,band,Progressive,Progressive Metal,Sweden,1984,present,,,,f7c65346-9631-4220-9188-5e90baae58d5,https://painofsalvation.com/,https://www.wikidata.org/wiki/Q757386
+evergrey,Evergrey,band,Progressive,Progressive Metal,Sweden,1995,present,,,,40842674-a794-4580-a0f5-e43d5b600729,https://evergrey.net/,https://www.wikidata.org/wiki/Q1132855
+karnivool,Karnivool,band,Progressive,Modern Prog & Art Metal,Australia,1997,present,,,,9ee2638f-c3a3-4532-bc08-54d397241c2a,https://www.karnivool.com/,https://www.wikidata.org/wiki/Q912678
+leprous,Leprous,band,Progressive,Modern Prog & Art Metal,Norway,2001,present,,,,a2e55cf5-ca3a-4c26-ba62-fc4a4f2bc603,https://www.leprous.net/,https://www.wikidata.org/wiki/Q1547803
+haken,Haken,band,Progressive,Modern Prog & Art Metal,UK,2007,present,,,,0246a3fd-a254-416d-8cd2-e31da4ac6f59,https://hakenmusic.com/,https://www.wikidata.org/wiki/Q774774
+textures,Textures,band,Progressive,Modern Prog & Art Metal,Netherlands,2001,present,,,,27672880-726b-423d-8456-72b8f404710f,http://www.texturesband.com/,https://www.wikidata.org/wiki/Q2031683
+kmfdm,KMFDM,band,Industrial & Nu Metal,Industrial,Germany,1984,present,,,,45074d7c-5307-44a8-854f-ae072e1622ae,https://kmfdm.net/,https://www.wikidata.org/wiki/Q1351424
+front242,Front 242,band,Industrial & Nu Metal,Industrial,Belgium,1981,present,,,,8fb6c00f-61d8-4f27-98f9-53e1ba481626,http://www.front242.com/,https://www.wikidata.org/wiki/Q527787
+skinnypuppy,Skinny Puppy,band,Industrial & Nu Metal,Industrial,Canada,1982,present,,,,5a24bc1a-c093-4a82-84ed-8d7f2da0570d,http://skinnypuppy.com/,https://www.wikidata.org/wiki/Q371535
+nitzerebb,Nitzer Ebb,band,Industrial & Nu Metal,Industrial,UK,1982,present,,,,d260c14e-2ef1-4d3d-8739-70d517efac8a,https://www.nitzerebbprodukt.com/,https://www.wikidata.org/wiki/Q580943
+frontlineassembly,Front Line Assembly,band,Industrial & Nu Metal,Industrial,Canada,1986,present,,,,b847e9d2-c931-4daf-900c-42c7b2c42e16,,https://www.wikidata.org/wiki/Q1470010
+staticx,Static-X,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1994,present,,,,,,
+mudvayne,Mudvayne,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1996,present,,,,f1c8da15-b408-4149-b863-f1cbe9971f19,https://www.mudvayneofficial.com/,https://www.wikidata.org/wiki/Q671183
+disturbed,Disturbed,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1994,present,,,,4bb4e4e4-5f66-4509-98af-62dbb90c45c5,http://www.disturbed1.com/,https://www.wikidata.org/wiki/Q131366
+godsmack,Godsmack,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1995,present,,,,ac2d1c91-3667-46aa-9fe7-170ca7fce9e2,https://www.godsmack.com/,https://www.wikidata.org/wiki/Q207306
+paparoach,Papa Roach,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1993,present,,,,c5eb9407-caeb-4303-b383-6929aa94021c,https://www.paparoach.com/,https://www.wikidata.org/wiki/Q254371
+limpbizkit,Limp Bizkit,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1994,present,,,,8f9d6bb2-dba4-4cca-9967-cc02b9f4820c,http://www.limpbizkit.com/,https://www.wikidata.org/wiki/Q240767
+coalchamber,Coal Chamber,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1993,present,,,,f3430779-bbec-437b-944d-1fbf45d2e786,http://www.coalchamberofficial.com/,https://www.wikidata.org/wiki/Q1104250
+sevendust,Sevendust,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1994,present,,,,52b9e109-44a0-45eb-a197-226c4abab232,https://sevendust.com/,https://www.wikidata.org/wiki/Q741801
+soulfly,Soulfly,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1997,present,,,,832a43c7-aa7d-439b-a6b4-4f1afa671c24,https://www.soulfly.com/,https://www.wikidata.org/wiki/Q178642
+pod,P.O.D.,band,Industrial & Nu Metal,Nu & Alt Metal,USA,1992,present,,,,57e79d57-b795-475e-9fa2-5dd9d5513b8c,http://payableondeath.com/,https://www.wikidata.org/wiki/Q494743
+baddreligion,Bad Religion,band,Punk & Hardcore,Punk,USA,1980,present,,,,149e6720-4e4a-41a4-afca-6d29083fc091,http://www.badreligion.com/,https://www.wikidata.org/wiki/Q201669
+nofx,NOFX,band,Punk & Hardcore,Punk,USA,1983,2024,,,,dcaa4f81-bfb7-44eb-8594-4e74f004b6e4,http://www.nofxofficialwebsite.com/,https://www.wikidata.org/wiki/Q265222
+rancid,Rancid,band,Punk & Hardcore,Punk,USA,1991,present,,,,24f8d8a5-269b-475c-a1cb-792990b0b2ee,http://www.rancidrancid.com/,https://www.wikidata.org/wiki/Q390590
+socialdistortion,Social Distortion,band,Punk & Hardcore,Punk,USA,1978,present,,,,e1e05cce-3922-44e1-8f20-015abe5e309d,http://www.socialdistortion.com/,https://www.wikidata.org/wiki/Q976882
+thedamned,The Damned,band,Punk & Hardcore,Punk,UK,1976,present,,,,77d21c13-846f-4f48-9546-873949eff6ae,http://www.officialdamned.com/,https://www.wikidata.org/wiki/Q940536
+buzzcocks,Buzzcocks,band,Punk & Hardcore,Punk,UK,1976,present,,,,31e9c35b-2675-4632-8596-f9bd9286f6c8,https://web.archive.org/web/19980203220629/http://www.buzzcocks.demon.co.uk/,https://www.wikidata.org/wiki/Q939329
+stifflittlefingers,Stiff Little Fingers,band,Punk & Hardcore,Punk,UK,1977,present,,,,022865bc-84c9-4002-b6c1-d5fc6e12b7d8,https://web.archive.org/web/19970206083750/http://www.his.com/~slf/,https://www.wikidata.org/wiki/Q1538935
+deadboys,Dead Boys,band,Punk & Hardcore,Punk,USA,1976,1979,,,,7e2cf7cc-211e-4588-9069-b3126a29d1b1,,https://www.wikidata.org/wiki/Q1180791
+germs,Germs,band,Punk & Hardcore,Punk,USA,1976,1981,,,,42c4b58d-2e28-41d4-bfe5-4edee68386cf,http://www.germsreturn.com/,https://www.wikidata.org/wiki/Q1850698
+xband,X,band,Punk & Hardcore,Punk,USA,1977,present,,,,ddd553d4-977e-416c-8f57-e4b72c0fc746,http://xtheband.com/,https://www.wikidata.org/wiki/Q1570087
+circlejerks,Circle Jerks,band,Punk & Hardcore,Hardcore,USA,1979,present,,,,22995eba-1238-4b4f-a937-ac2c5767ab9f,http://www.officialcirclejerks.com/,https://www.wikidata.org/wiki/Q522463
+descendents,Descendents,band,Punk & Hardcore,Hardcore,USA,1977,present,,,,f035837e-4117-438d-a524-cacf43500e68,http://descendentsonline.com/,https://www.wikidata.org/wiki/Q301142
+agnosticfront,Agnostic Front,band,Punk & Hardcore,Hardcore,USA,1980,present,,,,40b8a690-94e4-4c82-ad0f-73f4b841e46a,https://www.pirate-punk.net/groupe-musique-punk/?band=Agnostic%20Front,https://www.wikidata.org/wiki/Q395013
+sickofitall,Sick of It All,band,Punk & Hardcore,Hardcore,USA,1986,present,,,,e204ed91-3684-4561-b29b-d0b53f8459a7,https://www.pirate-punk.net/groupe-musique-punk/?band=Sick%20Of%20It%20All,https://www.wikidata.org/wiki/Q931471
+youthoftoday,Youth of Today,band,Punk & Hardcore,Hardcore,USA,1985,present,,,,9ca27db4-f127-4aeb-ae87-29e21f558c13,,https://www.wikidata.org/wiki/Q1927874
+gorillabiscuits,Gorilla Biscuits,band,Punk & Hardcore,Hardcore,USA,1986,present,,,,0320a32e-b781-40df-bf48-5cb5ee842762,,https://www.wikidata.org/wiki/Q1538312
+theexploited,The Exploited,band,Punk & Hardcore,Hardcore,UK,1979,present,,,,9876cc18-e3c4-487a-b330-e67b08eee2b2,http://www.the-exploited.net/,https://www.wikidata.org/wiki/Q117684
+gbh,G.B.H.,band,Punk & Hardcore,Hardcore,UK,1978,present,,,,,,
+jimmyeatworld,Jimmy Eat World,band,Punk & Hardcore,Post-hardcore & Emo,USA,1993,present,,,,bbc5b66b-d037-4f26-aecf-0b129e7f876a,http://jimmyeatworld.com/,https://www.wikidata.org/wiki/Q642988
+hotwatermusic,Hot Water Music,band,Punk & Hardcore,Post-hardcore & Emo,USA,1994,present,,,,c83907ee-8b5a-4547-8f68-96572243ea7f,http://hotwatermusic.com/,https://www.wikidata.org/wiki/Q1525702
+thursday,Thursday,band,Punk & Hardcore,Post-hardcore & Emo,USA,1997,2012,,,,0acae232-d31a-4211-b6d0-6af1b6350274,https://www.thursday.net/,https://www.wikidata.org/wiki/Q1433169
+takingbacksunday,Taking Back Sunday,band,Punk & Hardcore,Post-hardcore & Emo,USA,1999,present,,,,350bce49-c21b-4137-b50a-0766ded07e4d,http://www.takingbacksunday.com/,https://www.wikidata.org/wiki/Q283487
+afi,AFI,band,Punk & Hardcore,Post-hardcore & Emo,USA,1991,present,,,,1c3919b2-43ca-4a4a-935d-9d50135ec0ef,http://afireinside.net/,https://www.wikidata.org/wiki/Q292061
+falloutboy,Fall Out Boy,band,Punk & Hardcore,Pop Punk,USA,2001,present,,,,516cef4d-0718-4007-9939-f9b38af3f784,https://www.falloutboy.com/,https://www.wikidata.org/wiki/Q485811
+paramore,Paramore,band,Punk & Hardcore,Pop Punk,USA,2004,present,,,,44cf61b8-5197-448a-b82b-cef6ee89fac5,https://wmg.jp/paramore/,https://www.wikidata.org/wiki/Q473466
+panic,Panic! at the Disco,band,Punk & Hardcore,Pop Punk,USA,2004,2023,,,,b9472588-93f3-4922-a1a2-74082cdf9ce8,http://www.panicatthedisco.com/,https://www.wikidata.org/wiki/Q277551
+alkalinetrio,Alkaline Trio,band,Punk & Hardcore,Pop Punk,USA,1996,present,,,,69421e11-e4c3-4854-951b-ceab4972e38e,http://www.alkalinetrio.com/,https://www.wikidata.org/wiki/Q1142703
+echobunnymen,Echo & the Bunnymen,band,Post-Punk & New Wave,Post-Punk,UK,1978,present,,,,ccd4879c-5e88-4385-b131-bf65296bf245,http://www.bunnymen.com/,https://www.wikidata.org/wiki/Q925641
+killingjoke,Killing Joke,band,Post-Punk & New Wave,Post-Punk,UK,1978,present,,,,f5aca88c-e3c1-4bc2-af33-68a9a9f7b56a,http://www.killingjoke.com/,https://www.wikidata.org/wiki/Q250421
+thefall,The Fall,band,Post-Punk & New Wave,Post-Punk,UK,1976,2018,,,,d5da1841-9bc8-4813-9f89-11098090148e,https://thefall.xyz/,https://www.wikidata.org/wiki/Q909916
+magazine,Magazine,band,Post-Punk & New Wave,Post-Punk,UK,1977,1981,,,,043324ca-100d-48ce-8c7c-fd015afc103b,,https://www.wikidata.org/wiki/Q1475584
+pereubu,Pere Ubu,band,Post-Punk & New Wave,Post-Punk,USA,1975,present,,,,5a54b72e-bfb3-4ca6-944a-e17261399965,http://www.ubuprojex.com/,https://www.wikidata.org/wiki/Q1500073
+slits,The Slits,band,Post-Punk & New Wave,Post-Punk,UK,1976,1981,,,,ff9ef2ef-73a6-496c-8528-4b12b21afbfd,http://www.theslits.co.uk/,https://www.wikidata.org/wiki/Q677115
+suicide,Suicide,band,Post-Punk & New Wave,Post-Punk,USA,1970,2016,,,,7a0f02e0-0ab8-4a62-9e14-c6925cfaed07,,https://www.wikidata.org/wiki/Q285108
+deadcandance,Dead Can Dance,band,Post-Punk & New Wave,Goth Rock,Australia,1981,present,,,,ccda046a-2674-4f7d-97e6-f23d6c156432,http://www.deadcandance.com/,https://www.wikidata.org/wiki/Q324400
+fieldsnephilim,Fields of the Nephilim,band,Post-Punk & New Wave,Goth Rock,UK,1984,present,,,,a262543f-6ab4-4ac7-86f3-4fc09ff56f3b,https://fields-of-the-nephilim.com/,https://www.wikidata.org/wiki/Q378948
+themission,The Mission,band,Post-Punk & New Wave,Goth Rock,UK,1986,present,,,,d85e95a3-07c7-4c04-a411-234290615113,https://themissionukband.com/,https://www.wikidata.org/wiki/Q1778916
+xtc,XTC,band,Post-Punk & New Wave,New Wave,UK,1972,2005,,,,97c86b2c-2765-46a2-aef8-76a7e24c430f,https://www.xtcidearecords.co.uk/,https://www.wikidata.org/wiki/Q1413926
+costello,Elvis Costello,artist,Post-Punk & New Wave,New Wave,UK,1976,present,,,,8a338e06-d182-46f2-bd16-30a09bc840ba,https://www.elviscostello.com/,https://www.wikidata.org/wiki/Q206939
+police,The Police,band,Post-Punk & New Wave,New Wave,UK,1977,1986,,,,9e0e2b01-41db-4008-bd8b-988977d6019a,https://thepolice.com/,https://www.wikidata.org/wiki/Q178095
+stranglers,The Stranglers,band,Post-Punk & New Wave,New Wave,UK,1974,present,,,,a96d82a0-cdca-40bf-b4c8-3d7ec178d85b,http://www.stranglers.net/,https://www.wikidata.org/wiki/Q1532854
+u2,U2,band,Post-Punk & New Wave,New Wave,Ireland,1976,present,,,,a3cb23fc-acd3-4ce0-8f36-1e5aa6a18432,https://www.u2.com/,https://www.wikidata.org/wiki/Q396
+devo,Devo,band,Post-Punk & New Wave,New Wave,USA,1973,present,,,,d2db1078-c170-4e22-b261-14f3ad60a690,http://www.clubdevo.com/,https://www.wikidata.org/wiki/Q908848
+b52s,The B-52's,band,Post-Punk & New Wave,New Wave,USA,1976,2022,,,,,,
+greenriver,Green River,band,Grunge & Alt Rock,Grunge,USA,1984,1988,,,,78f56916-fe11-4110-8f10-d553ddf8de7b,,https://www.wikidata.org/wiki/Q1127431
+motherlovebone,Mother Love Bone,band,Grunge & Alt Rock,Grunge,USA,1988,1990,,,,a5585acd-9b65-49a7-a63b-3cc4ee18846e,,https://www.wikidata.org/wiki/Q1053623
+templeofthedog,Temple of the Dog,band,Grunge & Alt Rock,Grunge,USA,1990,1992,,,,e9571c17-817f-4d34-ae3f-0c7a96f822c1,http://www.templeofthedog.com/,https://www.wikidata.org/wiki/Q845759
+screamingtrees,Screaming Trees,band,Grunge & Alt Rock,Grunge,USA,1985,2000,,,,bc5e6e42-73ba-44fa-a41e-3379402f0429,http://screamingtrees.net/,https://www.wikidata.org/wiki/Q1411035
+madseason,Mad Season,band,Grunge & Alt Rock,Grunge,USA,1994,1999,,,,bfd085b8-0bbf-46b3-8ab9-193bca5c85e7,,https://www.wikidata.org/wiki/Q376283
+tad,Tad,band,Grunge & Alt Rock,Grunge,USA,1988,1999,,,,,,
+l7,L7,band,Grunge & Alt Rock,Grunge,USA,1985,present,,,,57111f1f-9829-45ea-bb4e-a5aba37cd1d1,,https://www.wikidata.org/wiki/Q1138185
+stonetemple,Stone Temple Pilots,band,Grunge & Alt Rock,Post-grunge,USA,1989,present,,,,8c32bb01-58a3-453b-8050-8c0620edb0e5,https://stonetemplepilots.com/,https://www.wikidata.org/wiki/Q329270
+bush,Bush,band,Grunge & Alt Rock,Post-grunge,UK,1992,present,,,,93ccd76c-3790-4435-a8bf-02bc26294b93,http://bushofficial.com/,https://www.wikidata.org/wiki/Q247949
+silverchair,Silverchair,band,Grunge & Alt Rock,Post-grunge,Australia,1992,2011,,,,b0799818-22cb-4564-8e68-3c410d0722ee,http://www.chairpage.com/,https://www.wikidata.org/wiki/Q157327
+jesuslizard,The Jesus Lizard,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1987,present,,,,dfebd6c0-dae7-4cc8-a8e9-0dbaa382209f,https://bsky.app/profile/thejesuslizard.bsky.social,https://www.wikidata.org/wiki/Q475227
+bigblack,Big Black,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1981,1987,,,,9463868f-edc8-427e-ac07-ea89698e5f15,,https://www.wikidata.org/wiki/Q572821
+butthole,Butthole Surfers,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1981,present,,,,2339bc21-aa92-4850-86f0-4bb9433910c8,http://www.buttholesurfers.com/,https://www.wikidata.org/wiki/Q1018174
+helmet,Helmet,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1989,present,,,,582fee78-d934-4603-9f5c-1729e0ca36b7,http://www.helmetmusic.com/,https://www.wikidata.org/wiki/Q1412298
+thebreeders,The Breeders,band,Grunge & Alt Rock,Alt & Noise Rock,USA,1989,present,,,,667e856e-f3a7-42e9-8244-95422ef31321,http://breedersdigest.net/,https://www.wikidata.org/wiki/Q1332134
+placebo,Placebo,band,Grunge & Alt Rock,Alt & Noise Rock,UK,1994,present,,,,847e8284-8582-4b0e-9c26-b042a4f49e57,https://www.placeboworld.co.uk/,https://www.wikidata.org/wiki/Q484839
+garbage,Garbage,band,Grunge & Alt Rock,Alt & Noise Rock,USA/UK,1993,present,,,,f9ef7a22-4262-4596-a2a8-1d19345b8e50,https://www.garbage.com/,https://www.wikidata.org/wiki/Q485673
+pavement,Pavement,band,Grunge & Alt Rock,Indie & College Rock,USA,1989,1999,,,,36bfa85f-737b-41db-a8fc-b8825850ffc3,http://www.matadorrecords.com/pavement/,https://www.wikidata.org/wiki/Q922445
+builttospill,Built to Spill,band,Grunge & Alt Rock,Indie & College Rock,USA,1992,present,,,,3ac482b8-1494-4071-a0e9-f192f9d2c2b0,https://www.builttospill.com/,https://www.wikidata.org/wiki/Q1003115
+weezer,Weezer,band,Grunge & Alt Rock,Indie & College Rock,USA,1992,present,,,,6fe07aa5-fec0-4eca-a456-f29bff451b04,https://www.weezer.com/,https://www.wikidata.org/wiki/Q209956
+thecranberries,The Cranberries,band,Grunge & Alt Rock,Indie & College Rock,Ireland,1989,2019,,,,c98d40fd-f6cf-4b26-883e-eaa515ee2851,https://www.cranberries.com/,https://www.wikidata.org/wiki/Q483810
+bigstar,Big Star,band,Grunge & Alt Rock,Indie & College Rock,USA,1971,2010,,,,21d177ba-3d51-461e-9b3f-ad9a80b419dc,http://www.bigstarband.com/,https://www.wikidata.org/wiki/Q72608
+muse,Muse,band,Grunge & Alt Rock,Modern Rock,UK,1994,present,,,,9c9f1380-2516-4fc9-a3e6-f9f61941d090,https://muse.mu/,https://www.wikidata.org/wiki/Q22151
+arcticmonkeys,Arctic Monkeys,band,Grunge & Alt Rock,Modern Rock,UK,2002,present,,,,ada7a83c-e3e1-40f1-93f9-3e73dbc9298a,https://www.arcticmonkeys.com/,https://www.wikidata.org/wiki/Q170599
+strokes,The Strokes,band,Grunge & Alt Rock,Modern Rock,USA,1998,present,,,,f181961b-20f7-459e-89de-920ef03c7ed0,https://www.thestrokes.com/,https://www.wikidata.org/wiki/Q211583
+whitestripes,The White Stripes,band,Grunge & Alt Rock,Modern Rock,USA,1997,2011,,,,11ae9fbb-f3d7-4a47-936f-4c0a04d3b3b5,https://www.whitestripes.com/,https://www.wikidata.org/wiki/Q268160
+kingsofleon,Kings of Leon,band,Grunge & Alt Rock,Modern Rock,USA,1999,present,,,,6ffb8ea9-2370-44d8-b678-e9237bbd347b,https://kingsofleon.com/,https://www.wikidata.org/wiki/Q192486
+blackkeys,The Black Keys,band,Grunge & Alt Rock,Modern Rock,USA,2001,present,,,,d15721d8-56b4-453d-b506-fc915b14cba2,https://www.theblackkeys.com/,https://www.wikidata.org/wiki/Q606226
+royalblood,Royal Blood,band,Grunge & Alt Rock,Modern Rock,UK,2011,present,,,,aa62b28e-b6d4-4086-91d4-e5fac1ed56f3,https://www.royalbloodband.com/,https://www.wikidata.org/wiki/Q16632343
+gretavanfleet,Greta Van Fleet,band,Grunge & Alt Rock,Modern Rock,USA,2012,present,,,,0be22557-d8c7-4706-a531-625c4c570162,http://gretavanfleet.com/,https://www.wikidata.org/wiki/Q30636835
+rosettatharpe,Sister Rosetta Tharpe,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1938,1973,,,,f5625c87-5a62-4b3b-a375-fe08a71acddc,,https://www.wikidata.org/wiki/Q438106
+charleypatton,Charley Patton,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1929,1934,,,,c71b4f57-29da-4bf2-bccb-9dc81cd2d905,,https://www.wikidata.org/wiki/Q354519
+sonhouse,Son House,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1930,1988,,,,8c87dda0-be58-4e48-a3b5-2626f26364c7,,https://www.wikidata.org/wiki/Q352999
+tbonewalker,T-Bone Walker,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1929,1975,,,,,,
+elmorejames,Elmore James,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1951,1963,,,,6fbd2cfb-5f9c-497c-8e06-3c6668367681,,https://www.wikidata.org/wiki/Q356598
+albertking,Albert King,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1953,1992,,,,10f89195-3af1-46f5-aa36-504aa3309f5a,,https://www.wikidata.org/wiki/Q44809
+buddyguy,Buddy Guy,artist,Blues & Rock 'n' Roll,Delta & Chicago Blues,USA,1957,present,,,,4336a134-d091-4e54-9967-c7c433db6d4e,http://www.buddyguy.net/,https://www.wikidata.org/wiki/Q314208
+fatsdomino,Fats Domino,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1949,2017,,,,e787de5d-49e2-4b1f-9bde-1fd3a671b971,,https://www.wikidata.org/wiki/Q209586
+billhaley,Bill Haley & His Comets,band,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1952,1981,,,,,,
+carlperkins,Carl Perkins,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1954,1998,,,,068bd7ab-c38e-4fae-8ed2-cb0c153ed68f,,https://www.wikidata.org/wiki/Q310339
+johnnycash,Johnny Cash,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1954,2003,,,,d43d12a1-2dc9-4257-a2fd-0a3bb1081b86,http://www.losthighwayrecords.com/johnnycash,https://www.wikidata.org/wiki/Q42775
+eddiecochran,Eddie Cochran,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1955,1960,,,,17995d1c-5b3c-4ee9-98f5-105ee3b4ada1,,https://www.wikidata.org/wiki/Q5969
+genevincent,Gene Vincent,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1956,1971,,,,f491f5ad-0946-40a6-bab9-da319c3f3995,http://www.rockabillyhall.com/GeneVincent.html,https://www.wikidata.org/wiki/Q82311
+royorbison,Roy Orbison,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1956,1988,,,,0bbbc496-c7b5-4b3f-bb6d-bd312827d6e5,http://www.royorbison.com/,https://www.wikidata.org/wiki/Q188426
+linkwray,Link Wray,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1956,2005,,,,1c1c86a2-7850-47ac-8771-ae6359bae2b7,http://www.rollercoasterrecords.com/link_wray.htm,https://www.wikidata.org/wiki/Q252248
+theventures,The Ventures,band,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1958,present,,,,b2cc8903-0077-4bef-8454-ac5cef53d126,http://www.theventures.com/,https://www.wikidata.org/wiki/Q770732
+duaneeddy,Duane Eddy,artist,Blues & Rock 'n' Roll,Rock 'n' Roll,USA,1957,2024,,,,efc0ee36-ad69-45af-8602-991b254b7529,,https://www.wikidata.org/wiki/Q455818
+neilyoung,Neil Young,artist,Classic & Psych Rock,Folk Rock,Canada,1966,present,,,,75167b8b-44e4-407b-9d35-effe87b223cf,http://www.neilyoungarchives.com/,https://www.wikidata.org/wiki/Q633
+theband,The Band,band,Classic & Psych Rock,Folk Rock,Canada/USA,1967,1999,,,,8c90ad8c-9150-4c51-a1eb-342232e99d06,,https://www.wikidata.org/wiki/Q600344
+fairport,Fairport Convention,band,Classic & Psych Rock,Folk Rock,UK,1967,present,,,,cc60d937-e80b-4c66-8aa2-e89cb57c8b08,http://www.fairportconvention.com/,https://www.wikidata.org/wiki/Q1145652
+steeleye,Steeleye Span,band,Classic & Psych Rock,Folk Rock,UK,1969,present,,,,68c6926c-03e0-4afc-9f54-2190b2c8d468,http://steeleyespan.org.uk/,https://www.wikidata.org/wiki/Q1413921
+faces,Faces,band,Classic & Psych Rock,British Blues Boom,UK,1969,1975,,,,8c7a8406-f15a-408d-b0f6-23be813bdddc,http://the-faces.com/,https://www.wikidata.org/wiki/Q1136388
+smallfaces,Small Faces,band,Classic & Psych Rock,British Invasion,UK,1965,1969,,,,7771a68c-ef6a-400f-978d-64050d45a54c,http://www.thesmallfaces.com/,https://www.wikidata.org/wiki/Q222628
+zombies,The Zombies,band,Classic & Psych Rock,British Invasion,UK,1961,present,,,,230ca093-1d00-4c57-9235-147942f66930,https://www.thezombiesmusic.com/,https://www.wikidata.org/wiki/Q1163207
+love,Love,band,Classic & Psych Rock,Psychedelic & Blues Rock,USA,1965,1974,,,,34ec9a8d-c65b-48fd-bcdd-aad2f72fdb47,http://lovearthurlee.com/,https://www.wikidata.org/wiki/Q664248
+seeds,The Seeds,band,Classic & Psych Rock,Garage & Surf,USA,1965,1972,,,,f706bac1-a02a-4569-9164-9f3371e6fa74,,https://www.wikidata.org/wiki/Q2142320
+herbiehancock,Herbie Hancock,artist,"Funk, Soul & Fusion",Jazz Fusion,USA,1961,present,,,,27613b78-1b9d-4ec3-9db5-fa0743465fdd,http://www.herbiehancock.com/,https://www.wikidata.org/wiki/Q105875
+isleybrothers,The Isley Brothers,band,"Funk, Soul & Fusion",Funk & Soul,USA,1954,present,,,,4a76400d-283f-492e-9754-18ef41755f81,http://www.legacyrecordings.com/theisleybrothers/,https://www.wikidata.org/wiki/Q178134
+curtismayfield,Curtis Mayfield,artist,"Funk, Soul & Fusion",Funk & Soul,USA,1958,1999,,,,4dca4bb2-23ba-4103-97e6-5810311db33a,,https://www.wikidata.org/wiki/Q310170

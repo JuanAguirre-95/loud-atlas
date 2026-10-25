@@ -3,35 +3,28 @@
 //
 //   node tools/build.js
 //
-// Copies only what the site needs and slims data.mb.js (the app ignores MusicBrainz album lists,
-// so they are dropped). Upload or drag the contents of ./dist.
+// 1. regenerates the data bundles from the JSON files in ./data (tools/build-data.js), after validating them
+// 2. copies only what the site needs. Upload or drag the contents of ./dist.
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 const root = path.join(__dirname, '..');
 const dist = path.join(root, 'dist');
 
+execFileSync(process.execPath, [path.join(__dirname, 'validate.js')], { stdio: 'inherit' });
+execFileSync(process.execPath, [path.join(__dirname, 'build-data.js')], { stdio: 'inherit' });
+
 fs.rmSync(dist, { recursive: true, force: true });
-fs.mkdirSync(dist);
+fs.mkdirSync(path.join(dist, 'data'), { recursive: true });
 
 const copy = f => {
   if (!fs.existsSync(path.join(root, f))) { console.log('skip (missing):', f); return; }
   fs.copyFileSync(path.join(root, f), path.join(dist, f));
 };
-['index.html', 'style.css', 'app.js', 'data.js', 'data.extra.js', 'data.wiki.js', 'data.albums.js', 'fonts.css'].forEach(copy);
+['index.html', 'style.css', 'app.js', 'fonts.css'].forEach(copy);
+fs.readdirSync(path.join(root, 'data')).filter(f => /^bundle..*.js$/.test(f)).forEach(f => copy('data/' + f));
 fs.cpSync(path.join(root, 'fonts'), path.join(dist, 'fonts'), { recursive: true });
-
-
-// data.mb.js: keep mbid, confidence, members; drop albums
-const w = {};
-new Function('window', fs.readFileSync(path.join(root, 'data.mb.js'), 'utf8'))(w);
-for (const k of Object.keys(w.MB)) {
-  delete w.MB[k].albums;
-  w.MB[k].members = w.MB[k].members.map(m => ({ name: m.name, from: m.from, to: m.to }));   // person ids are unused by the app
-}
-fs.writeFileSync(path.join(dist, 'data.mb.js'),
-  '// slimmed by tools/build.js (MusicBrainz, CC0)\n' +
-  'window.MB = ' + JSON.stringify(w.MB) + ';\nwindow.MB_LINKS = ' + JSON.stringify(w.MB_LINKS) + ';\n');
 
 fs.writeFileSync(path.join(dist, '_headers'),
 `/*
@@ -47,9 +40,9 @@ fs.writeFileSync(path.join(dist, '_headers'),
 `);
 
 let total = 0;
-for (const f of fs.readdirSync(dist)) {
+for (const f of [...fs.readdirSync(dist).filter(x => x !== 'data' && x !== 'fonts'), ...fs.readdirSync(path.join(dist, 'data')).map(x => 'data/' + x)]) {
   const size = fs.statSync(path.join(dist, f)).size;
   total += size;
-  console.log(f.padEnd(16), (size / 1024).toFixed(0).padStart(5), 'KB');
+  console.log(f.padEnd(24), (size / 1024).toFixed(0).padStart(5), 'KB');
 }
 console.log('total'.padEnd(16), (total / 1024).toFixed(0).padStart(5), 'KB  ->', dist);

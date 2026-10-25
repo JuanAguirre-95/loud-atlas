@@ -34,61 +34,83 @@
   <header>
     <h1>Loud Atlas</h1>
     <button id="listIcon" class="iconbtn" title="Show the acts as a list (L)" aria-label="Show the acts as a list">☰</button>
+    <button id="graphIcon" class="iconbtn" title="Show the relationship graph (G)" aria-label="Show the relationship graph" aria-pressed="false">◎</button>
     <button id="themeBtn" class="iconbtn" title="Switch theme" aria-label="Switch theme">☀</button>
     <button id="collapse" title="Collapse panel" aria-label="Collapse panel">×</button>
   </header>
   <nav class="tabs" role="tablist">
     <button data-tab="filters" class="on" role="tab" aria-selected="true">Filters</button>
+    <button data-tab="view" role="tab" aria-selected="false">View</button>
     <button data-tab="explore" role="tab">Explore</button>
     <button data-tab="about" role="tab">About</button>
   </nav>
 
   <div class="body" id="tab-filters">
-    <div class="searchrow">
-      <input id="search" type="search" placeholder="Search…" aria-label="Search" autocomplete="off">
-      <select id="scope" aria-label="Search in">
-        <option value="all">Everything</option>
-        <option value="name">Band name</option>
-        <option value="album">Album</option>
-        <option value="member">Member</option>
-      </select>
+    <div class="searchwrap">
+      <div class="searchrow">
+        <input id="search" type="search" placeholder="Search…" aria-label="Search" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sugg" aria-autocomplete="list">
+        <select id="scope" aria-label="Search in">
+          <option value="all">Everything</option>
+          <option value="name">Band name</option>
+          <option value="album">Album</option>
+          <option value="member">Member</option>
+        </select>
+      </div>
+      <div id="sugg" role="listbox" aria-label="Search suggestions" hidden></div>
     </div>
     <div id="people"></div>
 
-    <section>
-      <h2>Type</h2>
+    <details class="sec" open>
+      <summary><span>Type</span><em id="sumType"></em></summary>
       <div id="kinds">
         <label><input type="checkbox" value="band" checked> Bands</label>
         <label><input type="checkbox" value="artist" checked> Solo artists <span class="muted">(rounded bars)</span></label>
       </div>
-    </section>
+    </details>
 
-    <section>
-      <h2>Era <span class="mini"><button id="eraClear">clear</button></span></h2>
+    <details class="sec" open>
+      <summary><span>Era</span><em id="sumEra"></em><button class="mini" id="eraClear" title="Clear the era selection">clear</button></summary>
       <div id="eras" class="eras"></div>
       <div class="range">
         <input id="from" type="number" min="1930" max="2026" value="1930" aria-label="From year">
         <span>–</span>
         <input id="to" type="number" min="1930" max="2026" value="2026" aria-label="To year">
       </div>
-    </section>
+    </details>
 
-    <section>
-      <h2>Genres <span class="mini"><button id="gAll">all</button><button id="gNone">none</button></span></h2>
+    <details class="sec" open>
+      <summary><span>Genres</span><em id="sumGenres"></em><span class="minis"><button class="mini" id="gAll">all</button><button class="mini" id="gNone">none</button></span></summary>
       <div id="genres"></div>
-    </section>
+    </details>
 
-    <section>
-      <h2>Country</h2>
+    <details class="sec">
+      <summary><span>Country</span><em id="sumCountry"></em></summary>
       <select id="country"><option value="">All countries</option></select>
-    </section>
+    </details>
 
+    <div class="foot">
+      <p id="count" class="muted"></p>
+      <div class="actions">
+        <button id="fit">Fit view</button>
+        <button id="reset">Reset filters</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="body" id="tab-view" hidden>
     <section>
-      <h2>Display</h2>
+      <h2>Releases</h2>
       <label><input type="checkbox" id="optAlbums" checked> Show releases on the timeline</label>
+      <label>Key releases are the
+        <select id="optCriterion">
+          <option value="acclaimed">Most acclaimed albums</option>
+          <option value="popular">Most listened albums</option>
+        </select>
+      </label>
+      <div class="muted" id="critNote"></div>
       <label>Releases shown
         <select id="optReleases">
-          <option value="key">Key releases (curated)</option>
+          <option value="key">Key releases only</option>
           <option value="all">All albums (MusicBrainz)</option>
         </select>
       </label>
@@ -96,8 +118,14 @@
       <div class="legend" aria-label="Release marker colours">
         <span><i class="k"></i>key release</span><span><i class="s"></i>studio album</span><span><i class="l"></i>live album</span>
       </div>
+    </section>
+    <section>
+      <h2>Bars and lanes</h2>
       <label><input type="checkbox" id="optStatus" checked> Active bands fade to today</label>
       <label><input type="checkbox" id="optSplit" checked> Split lanes by subgenre</label>
+    </section>
+    <section>
+      <h2>Connections</h2>
       <label>Influence lines
         <select id="optRel">
           <option value="selected">On hover / select</option>
@@ -112,14 +140,9 @@
           <option value="off">Hidden</option>
         </select>
       </label>
+      <button id="viewGraph" class="wide">◎ Open the relationship graph</button>
     </section>
-
-    <div class="actions">
-      <button id="fit">Fit view</button>
-      <button id="reset">Reset filters</button>
-    </div>
-    <p id="count" class="muted"></p>
-    <p class="muted hint">Drag to pan · scroll to zoom · Shift+scroll zooms time only · click a band for details · click the ruler: top row toggles a decade, bottom row picks a year · arrows/+/−/0 on keyboard</p>
+    <p class="muted hint">Drag to pan · scroll to zoom · Shift+scroll zooms time only · click a band for details · click the ruler: top row toggles a decade, bottom row picks a year · arrows, + / − and 0 on the keyboard · G graph · L list · T theme · / search</p>
   </div>
 
   <div class="body" id="tab-explore" hidden>
@@ -195,7 +218,7 @@
       <span>View the source on GitHub<small>JuanAguirre-95/loud-atlas</small></span>
     </a>
     <p class="muted">Spotted a wrong date or a missing band? <a href="https://github.com/JuanAguirre-95/loud-atlas/issues/new" target="_blank" rel="noopener">Open an issue</a>
-      or send a pull request. The data is plain text in <code>data.js</code>.</p>
+      or send a pull request. The data is plain JSON in <code>data/</code>.</p>
 
     <section>
       <h2>Keyboard</h2>
@@ -241,6 +264,20 @@
 
 <datalist id="bandlist"></datalist>
 <div id="filterbar" role="group" aria-label="Active filters" hidden></div>
+<div id="graphview" hidden>
+  <canvas id="gcanvas" role="img" aria-label="Relationship graph of the acts that match the filters. Nodes are acts coloured by genre; lines are influences and shared members. Press L for a text list."></canvas>
+  <div id="gbar" role="toolbar" aria-label="Graph options">
+    <label><input type="checkbox" id="gInfl" checked> Influences</label>
+    <label><input type="checkbox" id="gShared" checked> Shared members</label>
+    <label><input type="checkbox" id="gLoose"> Unconnected acts</label>
+    <label><input type="checkbox" id="gLabels" checked> Names</label>
+    <button id="gFit" title="Fit the graph in the window">Fit</button>
+    <button id="gShake" title="Scramble and settle the layout again">Re-layout</button>
+    <span id="gStats" class="muted"></span>
+    <button id="gClose" aria-label="Back to the timeline" title="Back to the timeline (Esc)">✕ Timeline</button>
+  </div>
+  <p id="gHint" class="muted">Drag to pan, scroll to zoom, drag an act to move it. Click an act for its details, double-click to find it on the timeline. Colour = genre. Solid line = influence, dashed = shared member.</p>
+</div>
 <div id="listview" hidden role="dialog" aria-modal="true" aria-labelledby="lvTitle">
   <div class="lvbox">
     <header>
@@ -276,9 +313,7 @@
   <button id="zout" aria-label="Zoom out">−</button>
 </div>
 
-<script src="data.js"></script>
-<script src="data.extra.js"></script>
-<script src="data.mb.js" onerror="console.info('data.mb.js not found — run: node tools/mb.js enrich')"></script>
+<script src="data/bundle.core.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -395,3 +395,53 @@ body.lvopen { overflow: hidden; }
   #lvTable th, #lvTable td { padding: 5px 6px; }
   .lvbox header { flex-wrap: wrap; gap: 6px 12px; }
 }
+
+#detail .rel .rate { color: var(--muted); margin-left: 6px; font-size: 12px; white-space: nowrap; }
+#critNote { font-size: 12px; line-height: 1.35; margin: -2px 0 8px; }
+#detail .songs { margin: 0; padding-left: 22px; }
+#detail .songs li { padding: 1px 0; }
+#detail .songs em { color: var(--muted); font-size: 12px; }
+#detail .songs small.rate { float: right; }
+
+/* ---------- graph view ---------- */
+#graphview { position: fixed; inset: 0; z-index: 3; background: var(--bg); }
+#graphview[hidden] { display: none; }
+#gcanvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+#gbar { position: absolute; top: 12px; left: 292px; right: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 6px 12px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; width: fit-content; max-width: calc(100% - 304px); z-index: 1; }
+#gbar label { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+#gbar button { padding: 3px 10px; }
+#gHint { position: absolute; left: 292px; bottom: 14px; margin: 0; max-width: min(640px, calc(100% - 320px)); font-size: 12.5px; pointer-events: none; text-shadow: 0 0 6px var(--bg), 0 0 6px var(--bg); }
+body.graphopen #mini, body.graphopen #brushwrap, body.graphopen #zoom, body.graphopen #filterbar { display: none; }
+body.graphopen #c { visibility: hidden; }
+@media (max-width: 700px) {
+  #gbar { left: 12px; max-width: calc(100% - 24px); }
+  #gHint { left: 12px; max-width: calc(100% - 24px); }
+}
+
+/* ---------- filter panel: sticky search and footer, collapsible sections, suggestions ---------- */
+#panel .body { position: relative; }
+.searchwrap { position: sticky; top: -8px; z-index: 3; margin: -8px -14px 0; padding: 8px 14px 6px; background: var(--panel); }
+.searchrow { display: flex; gap: 6px; }
+.searchrow #search { flex: 1; min-width: 0; }
+.searchrow #scope { width: 92px; flex: none; background: var(--input); border: 1px solid var(--line); border-radius: 6px; padding: 5px 4px; }
+#sugg { position: absolute; left: 14px; right: 14px; top: 100%; margin-top: -2px; max-height: 300px; overflow-y: auto; background: var(--panel-2, var(--panel)); border: 1px solid var(--line-strong); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow); z-index: 4; }
+#sugg[hidden] { display: none; }
+#sugg [role=option] { display: flex; flex-direction: column; padding: 6px 10px; cursor: pointer; border-bottom: 1px solid var(--line-soft); }
+#sugg [role=option]:last-child { border-bottom: 0; }
+#sugg [role=option]:hover, #sugg [role=option].on { background: var(--hover); box-shadow: inset 2px 0 0 var(--accent); }
+#sugg b { font-weight: 600; }
+#sugg small { color: var(--muted); font-size: 12px; }
+details.sec { margin-top: 10px; border-top: 1px solid var(--line-soft); padding-top: 8px; }
+details.sec > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary::before { content: '▸'; font-size: 10px; transition: transform .12s; }
+details.sec[open] > summary::before { transform: rotate(90deg); }
+details.sec > summary span:first-child { color: var(--head); font-weight: 600; }
+details.sec > summary em { font-style: normal; text-transform: none; letter-spacing: 0; flex: 1; text-align: right; color: var(--text); font-size: 12px; opacity: .8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+details.sec > summary .minis { display: flex; }
+button.mini { padding: 0 6px; font-size: 11px; background: none; border: none; color: var(--muted); text-decoration: underline; text-transform: none; letter-spacing: 0; }
+.foot { position: sticky; bottom: -14px; margin: 14px -14px -14px; padding: 8px 14px 12px; background: var(--panel); border-top: 1px solid var(--line-soft); }
+.foot #count { margin: 0 0 6px; font-size: 12px; }
+.foot .actions { margin-top: 0; }
+button.wide { width: 100%; margin-top: 8px; }
