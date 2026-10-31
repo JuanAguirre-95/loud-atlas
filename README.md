@@ -85,7 +85,11 @@ connect.
 
 ### Shareable links
 
-The page reads its state from the URL hash, so you can link to a view:
+The **Share** button (under the filters, and in Insights) copies a link to exactly what is on screen: the selected act and year, the search, decades, key-release strategy, all-albums mode, the graph, or an Insights page with its genre, act or year. On phones it opens the share sheet. The state lives in the URL hash, so it works on any static host and needs no server. Pasting a link into a tab that is already open applies it.
+
+One limit: a hash is never sent to the server, so every link shows the same preview card when pasted into a chat. Per-act previews would need a static page per act.
+
+You can also write links by hand:
 
 ```
 index.html#band=metallica&year=1986&zoom=1.6
@@ -107,6 +111,9 @@ index.html#era=5,6
 | `expand` | Genres to open in the list, e.g. `expand=thrash,death`. `tab=about` opens the About tab. |
 | `releases`, `live`, `criterion` | `releases=all` shows all albums, `live=1` adds live albums, `criterion=popular` picks the most-listened key releases |
 | `zoom` | Zoom level when used with `band` |
+| `viz`, `genre`, `act`, `vyear` | An Insights page: `viz=guide&genre=doom`, `viz=tree&act=nirvana`, `viz=flow&act=megadeth`, `viz=map&vyear=1985`, `viz=method` |
+| `graph` | `graph=1` opens the relationship graph |
+| `criterion` | `acclaimed`, `popular`, `consensus` or `balanced` |
 
 ## Run it
 

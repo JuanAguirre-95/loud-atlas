@@ -32,9 +32,11 @@ fs.writeFileSync(path.join(dist, '_headers'),
   Referrer-Policy: strict-origin-when-cross-origin
 
 /*.js
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
 /*.css
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
+/data/*
+  Cache-Control: public, max-age=0, must-revalidate
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 `);

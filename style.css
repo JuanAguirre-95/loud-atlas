@@ -606,3 +606,10 @@ label.inl { display: inline-flex; flex-direction: row; gap: 5px; }
 .mt-table thead th { color: var(--head); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
 .mt-table td.few { color: var(--muted); }
 .mt-pick input { background: var(--input); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }
+
+#toast { position: fixed; left: 50%; bottom: 86px; transform: translate(-50%, 12px); background: var(--panel); color: var(--text); border: 1px solid var(--line-strong); border-radius: 8px; padding: 8px 16px; z-index: 300; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; box-shadow: 0 6px 24px var(--shadow); }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+#vizbar .vz-share { margin-left: auto; margin-bottom: 4px; }
+#vizbar .vz-share + .vz-close { margin-left: 8px; }
+.foot .actions { flex-wrap: wrap; }
+.foot .actions #shareBtn { flex-basis: 100%; }

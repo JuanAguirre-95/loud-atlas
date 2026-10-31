@@ -2021,6 +2021,7 @@ function graphNodeAt(px, py) {
 function graphOpen() {
   if (gv.open) return;
   if (vizOpen) closeViz();
+  if (W <= 700) setPanel(false);
   gv.open = true;
   document.body.classList.add('graphopen');
   $('graphview').hidden = false;
@@ -2098,9 +2099,9 @@ gcv.addEventListener('wheel', e => {
 
 // ---------- Insights: extra visualizations in viz.js, loaded on first use ----------
 let vizOpen = false;
-function openViz(tab, genre) {
+function openViz(tab, genre, extra) {
   if (gv.open) graphClose();
-  const go = () => { vizOpen = true; document.body.classList.add('vizopen', 'graphopen'); $('vizview').hidden = false; $('vizIcon').setAttribute('aria-pressed', 'true'); if (genre !== undefined) window.AtlasViz.setGuide(genre); window.AtlasViz.show(tab || window.AtlasViz.current || 'guide'); };
+  const go = () => { if (W <= 700) setPanel(false); vizOpen = true; document.body.classList.add('vizopen', 'graphopen'); $('vizview').hidden = false; $('vizIcon').setAttribute('aria-pressed', 'true'); if (genre !== undefined) window.AtlasViz.setGuide(genre); if (extra) window.AtlasViz.setState(extra); window.AtlasViz.show(tab || window.AtlasViz.current || 'guide'); };
   if (window.AtlasViz) return go();
   loadScript('viz.js', ok => { if (!ok) { alert('Could not load viz.js'); return; } const a = ok && window.ATLAS_VIZ ? 1 : 0; if (window.ATLAS_VIZ) go(); else loadScript('data/bundle.viz.js', ok2 => ok2 ? go() : alert('Could not load data/bundle.viz.js')); });
 }
@@ -2111,7 +2112,45 @@ function closeViz() {
 function openDay(m, d) { closeViz(); setPanel(true); dayMD = [m, d]; showTab('today'); renderToday(); }
 $('vizIcon').onclick = () => (vizOpen ? closeViz() : openViz());
 const openGuide = id => openViz('guide', id);
-window.AtlasApp = { openGuide, A, BANDS, GENRES, genreById, bandById, children, esc, col, NOW, T0, select, loadAlbums, bandFromInput, openDay, closeViz };
+// ---------- sharing: a link that restores what is on screen ----------
+function shareUrl() {
+  const p = new URLSearchParams();
+  if (vizOpen && window.AtlasViz) { const s = window.AtlasViz.state(); p.set('viz', s.view); ['genre', 'act', 'vyear'].forEach(k => { if (s[k]) p.set(k, s[k]); }); }
+  else if (gv.open) p.set('graph', '1');
+  if (selected) p.set('band', selected.id);
+  if (selYear != null) p.set('year', selYear);
+  if (filters.q.trim()) { p.set('q', filters.q.trim()); if (filters.scope !== 'all') p.set('scope', filters.scope); }
+  if (filters.eras.size) p.set('era', [...filters.eras].sort((x, y) => x - y).join(','));
+  if (filters.criterion !== 'acclaimed') p.set('criterion', filters.criterion);
+  if (filters.releases === 'all') { p.set('releases', 'all'); if (filters.live) p.set('live', '1'); }
+  const th = document.documentElement.getAttribute('data-theme');
+  try { if (localStorage.getItem('loud-atlas-theme')) p.set('theme', th); } catch (e) {}
+  const q = p.toString();
+  return location.origin + location.pathname + (q ? '#' + q : '');
+}
+function toast(msg) {
+  let t = $('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 2600);
+}
+async function shareView() {
+  const url = shareUrl();
+  try {
+    if (navigator.share && matchMedia('(pointer: coarse)').matches) { await navigator.share({ title: 'Loud Atlas', url }); return; }
+    await navigator.clipboard.writeText(url);
+    toast('Link copied');
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;
+    window.prompt('Copy this link', url);
+  }
+}
+['shareBtn', 'vizShare'].forEach(id => { const el = $(id); if (el) el.onclick = shareView; });
+window.addEventListener('hashchange', () => {
+  const hp = new URLSearchParams(location.hash.slice(1));
+  if (hp.get('viz') && [...hp.keys()].every(k => ['viz', 'genre', 'act', 'vyear', 'perf'].includes(k))) openViz(hp.get('viz'), hp.get('genre') || undefined, { act: hp.get('act'), vyear: hp.get('vyear') });
+  else if (location.hash.length > 1 && !/^#perf$/.test(location.hash)) location.reload();       // a pasted link with other settings: start fresh from it
+});
+window.AtlasApp = { shareUrl, shareView, openGuide, A, BANDS, GENRES, genreById, bandById, children, esc, col, NOW, T0, select, loadAlbums, bandFromInput, openDay, closeViz };
 onLayout = graphRefresh;
 onDetail = () => { if (gv.open) graphDraw(); };
 
@@ -2197,7 +2236,8 @@ if (document.fonts) {
     $('pathA').value = bandById[hp.get('a')].name; $('pathB').value = bandById[hp.get('b')].name; showTab('connect'); runPath();
   }
   if (hp.get('cmp')) { compareIds = hp.get('cmp').split(',').filter(i => bandById[i]).slice(0, 3); showTab('compare'); renderCompare(true); }
-  if (hp.get('viz')) openViz(hp.get('viz'), hp.get('genre') || undefined);                                     // #viz=matrix opens an Insights view
+  if (hp.get('viz')) openViz(hp.get('viz'), hp.get('genre') || undefined, { act: hp.get('act'), vyear: hp.get('vyear') });          // #viz=matrix opens an Insights view
+  else if (hp.get('graph')) graphOpen();                                                                                          // #graph=1 opens the graph
   if (hp.get('list')) openList();                                                // #list=1 opens the list view
   if (hp.get('md')) { const q = hp.get('md').split('-').map(Number); if (q.length === 2 && q[0] >= 1 && q[0] <= 12) dayMD = q; }
   if (hp.get('tab') === 'today') renderToday();

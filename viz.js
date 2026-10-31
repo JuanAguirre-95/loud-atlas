@@ -7,7 +7,7 @@ const root = document.getElementById('vizview'), bar = document.getElementById('
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const decades = Array.from({ length: 10 }, (_, i) => 1930 + i * 10);
-let current = null, cleanup = null;
+let current = null, cleanup = null, mapYear = NOW;
 
 // ---------- small helpers ----------
 const showTip = (e, html) => { tip.hidden = false; tip.innerHTML = html; tip.style.left = Math.min(e.clientX + 14, innerWidth - 260) + 'px'; tip.style.top = Math.min(e.clientY + 14, innerHeight - 90) + 'px'; };
@@ -208,12 +208,12 @@ function renderMap() {
   const X = x => ((x / 10) - lon0) * sx, Y = y => (lat1 - (y / 10)) * sy;
   const paths = Object.entries(geo).map(([name, rings]) => `<path data-c="${esc(name)}" d="${rings.map(r => { let d = ''; for (let i = 0; i < r.length; i += 2) d += (i ? 'L' : 'M') + X(r[i]).toFixed(1) + ' ' + Y(r[i + 1]).toFixed(1); return d + 'Z'; }).join('')}"/>`).join('');
   stage.innerHTML = head('Scene map', 'Where the acts on the map come from, and how that changes over time. Drag the year, or press play. Countries shade by how many acts formed there.') + `
-    <div class="vz-controls"><button id="mapPlay" aria-label="Play">▶</button><input id="mapYear" type="range" min="1930" max="${NOW}" value="${NOW}" aria-label="Year"><b id="mapYearLabel">${NOW}</b>
+    <div class="vz-controls"><button id="mapPlay" aria-label="Play">▶</button><input id="mapYear" type="range" min="1930" max="${NOW}" value="${mapYear}" aria-label="Year"><b id="mapYearLabel">${NOW}</b>
       <label class="inl"><input type="radio" name="mapMode" value="cum" checked> formed so far</label><label class="inl"><input type="radio" name="mapMode" value="act"> active that year</label><span id="mapTotal" class="muted"></span></div>
     <div class="vz-cols"><svg id="worldmap" viewBox="0 0 ${mapW} ${mapH}" width="${mapW}" height="${mapH}" role="img" aria-label="World map shaded by number of acts">${paths}</svg><div id="mapSide" class="vz-side"></div></div>`;
   const svg = $('worldmap'), side = $('mapSide');
   const nodes = new Map([...svg.querySelectorAll('path')].map(p => [p.dataset.c, p]));
-  let mode = 'cum', year = NOW, picked = null;
+  let mode = 'cum', year = mapYear, picked = null;
   const counts = () => {
     const m = new Map();
     for (const b of BANDS) {
@@ -245,7 +245,7 @@ function renderMap() {
   svg.addEventListener('mouseleave', hideTip);
   svg.addEventListener('click', e => { const p = e.target.closest('path'); if (p) { picked = p.dataset.c; paint(); } });
   side.addEventListener('click', e => { const c = e.target.closest('[data-country]'); if (c) { picked = c.dataset.country; paint(); } });
-  $('mapYear').addEventListener('input', e => { year = +e.target.value; paint(); });
+  $('mapYear').addEventListener('input', e => { year = +e.target.value; mapYear = year; paint(); });
   stage.querySelectorAll('[name=mapMode]').forEach(r => r.addEventListener('change', () => { mode = r.value; paint(); }));
   let timer = 0;
   $('mapPlay').onclick = () => {
@@ -642,8 +642,8 @@ const VIEWS = [
   ['guide', 'Genre guide', renderGuide], ['method', 'How it works', renderMethod], ['map', 'Scene map', renderMap], ['flow', 'Lineup flow', renderFlow], ['era', 'Era fingerprint', renderFingerprint], ['stars', 'Album constellation', renderStars],
   ['tree', 'Influence tree', renderTree], ['game', 'Six degrees', renderGame], ['calendar', 'Calendar', renderCalendar], ['matrix', 'Genre matrix', renderMatrix], ['listen', 'Neighbourhoods', renderSimilar],
 ];
-bar.innerHTML = VIEWS.map(([id, label]) => `<button data-view="${id}" role="tab">${label}</button>`).join('') + '<button id="vizClose" class="vz-close" aria-label="Back to the timeline" title="Back to the timeline (Esc)">✕ Timeline</button>';
-bar.addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view); if (e.target.closest('#vizClose')) App.closeViz(); });
+bar.innerHTML = VIEWS.map(([id, label]) => `<button data-view="${id}" role="tab">${label}</button>`).join('') + '<button id="vizShare" class="vz-share" title="Copy a link to this page">🔗 Share</button><button id="vizClose" class="vz-close" aria-label="Back to the timeline" title="Back to the timeline (Esc)">✕ Timeline</button>';
+bar.addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view); if (e.target.closest('#vizClose')) App.closeViz(); if (e.target.closest('#vizShare')) App.shareView(); });
 function show(id) {
   if (!VIEWS.some(v => v[0] === id)) id = 'guide';
   if (cleanup) { cleanup(); cleanup = null; }
@@ -652,8 +652,11 @@ function show(id) {
   bar.querySelectorAll('[data-view]').forEach(b => { const on = b.dataset.view === id; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
   stage.scrollTop = 0;
   VIEWS.find(v => v[0] === id)[2]();
-  try { history.replaceState(null, '', '#viz=' + id + (id === 'guide' && guideId ? '&genre=' + guideId : '')); } catch (e) {}
+  try { const s = window.AtlasViz.state(); history.replaceState(null, '', '#viz=' + id + (s.genre ? '&genre=' + s.genre : '') + (s.act ? '&act=' + s.act : '') + (s.vyear ? '&vyear=' + s.vyear : '')); } catch (e) {}
 }
 window.addEventListener('resize', () => { if (!root.hidden && current && !['game', 'stars', 'listen', 'guide'].includes(current)) show(current); else if (!root.hidden && stage._redraw) stage._redraw(); });
-window.AtlasViz = { show, setGuide(id) { guideId = genreById[id] ? id : ''; }, get current() { return current; }, views: VIEWS.map(v => v[0]) };
+window.AtlasViz = { show,
+  // what a shared link needs to bring this page back
+  state() { return { view: current, genre: current === 'guide' ? guideId : '', act: current === 'tree' ? treeId : current === 'flow' ? flowId : '', vyear: current === 'map' && mapYear !== NOW ? String(mapYear) : '' }; },
+  setState(s) { if (s.act && bandById[s.act]) { treeId = s.act; flowId = s.act; } if (s.vyear && +s.vyear >= 1930 && +s.vyear <= NOW) mapYear = +s.vyear; }, setGuide(id) { guideId = genreById[id] ? id : ''; }, get current() { return current; }, views: VIEWS.map(v => v[0]) };
 })();
