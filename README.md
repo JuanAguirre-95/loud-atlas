@@ -14,7 +14,9 @@ connect.
 - **2,277 key releases** chosen by rule (most acclaimed or most listened), with an option to show every studio and live album
 - No build step, no framework, no server: it is a static page drawn on an HTML canvas
 
-![Band details](docs/band-details.png)
+![Band details with the Listen menu](docs/band-details.png)
+
+![Relationship graph](docs/graph.png)
 
 ## Features
 
@@ -38,6 +40,7 @@ connect.
 | **About tab** | Explains the map, links to this repository and the issue tracker, and lists the data sources. |
 | **Relationship graph** | Press `G`: the acts that match your filters as a network, coloured by genre, with influences and shared members as lines. Drag, zoom, click an act for its details, double-click to find it on the timeline. |
 | **Two ways to pick key releases** | In the **View** tab choose the most acclaimed albums (community ratings) or the most listened (ListenBrainz). |
+| **Listen** | A **Listen** menu in each act's details: links to its page on Spotify, Apple Music, YouTube, Bandcamp and others (from MusicBrainz), or a search link where none is stored. Nothing is embedded or loaded from those services until you click. |
 | **Official links** | Each act's official site, social profiles and reference pages (from MusicBrainz) in its details. |
 | **Search suggestions** | Typing lists matching acts, members and albums; Enter jumps to the act at a readable zoom. |
 | **Minimap** | Click or drag to jump around the whole map. |
@@ -196,13 +199,9 @@ node tools/build-data.js          # regenerate data/bundle.*.js
 node tools/export-csv.js          # optional spreadsheet export
 ```
 
-### Listen to an artist (planned)
+### Listen to an artist
 
-Everything a "Listen" feature needs is already in `data/links.json`, taken from MusicBrainz: for most acts a Spotify, Apple Music,
-Deezer, Tidal, YouTube, Bandcamp or SoundCloud page. The planned design is a **Listen** button in an act's details that opens a small menu
-of those services as plain links (opens in a new tab, no tracking, no embedded players, nothing loaded from a third party until you
-click). Acts without a link for a service fall back to that service's search URL for the artist name. A later step could embed
-Bandcamp or YouTube players on request, or play the top songs from `data/popularity.json` through the user's own service.
+The **Listen** menu uses `data/links.json` (MusicBrainz url-relations). It lists the act's own page on each service it has, and a search link for Spotify, YouTube and Apple Music where it has none. Everything is a plain link that opens in a new tab: no embedded players, no third-party requests until you click. Embedding a player on request, or playing the top songs from `data/popularity.json`, would be a later step.
 
 ## Performance
 

@@ -1,0 +1,20 @@
+name: Add a band or artist
+description: Suggest an act that should be on the map
+labels: [new-act]
+body:
+  - type: input
+    id: act
+    attributes:
+      label: Name
+    validations:
+      required: true
+  - type: input
+    id: musicbrainz
+    attributes:
+      label: MusicBrainz link (if you know it)
+      description: Helps pick the right act when several share a name.
+  - type: textarea
+    id: why
+    attributes:
+      label: Genre, and who influenced them
+      description: Which genre lane it belongs in, and any acts it clearly grew out of.

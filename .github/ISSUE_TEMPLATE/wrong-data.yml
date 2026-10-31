@@ -1,0 +1,24 @@
+name: Wrong or missing data
+description: A wrong date, album, genre, influence link or lineup
+labels: [data]
+body:
+  - type: input
+    id: act
+    attributes:
+      label: Which band or artist?
+    validations:
+      required: true
+  - type: dropdown
+    id: what
+    attributes:
+      label: What is wrong?
+      options: [Years active, Album or release year, Genre or subgenre, Influence line, Shared member or lineup, Link or summary, Something else]
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: What should it say, and where can it be checked?
+      description: A link to a source (Wikipedia, MusicBrainz, the band's site) makes this much quicker to fix.
+    validations:
+      required: true

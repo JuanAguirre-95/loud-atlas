@@ -23,14 +23,14 @@ function layout(acts, genreIds, influence, shared) {
   let alpha = 0.9;
   while (alpha > 0.004) {
     const cells = new Map();
-    for (const n of nodes) { const k = Math.floor(n.x / 300) + ',' + Math.floor(n.y / 300); (cells.get(k) || cells.set(k, []).get(k)).push(n); }
+    for (const n of nodes) { const k = Math.floor(n.x / 170) + ',' + Math.floor(n.y / 170); (cells.get(k) || cells.set(k, []).get(k)).push(n); }
     for (const n of nodes) {
-      const cx = Math.floor(n.x / 300), cy = Math.floor(n.y / 300);
+      const cx = Math.floor(n.x / 170), cy = Math.floor(n.y / 170);
       for (let ox = -1; ox <= 1; ox++) for (let oy = -1; oy <= 1; oy++) {
         for (const m of cells.get((cx + ox) + ',' + (cy + oy)) || []) {
           if (m === n || m.id < n.id) continue;
           let dx = n.x - m.x, dy = n.y - m.y, d2 = dx * dx + dy * dy;
-          if (d2 > 90000) continue;
+          if (d2 > 28900) continue;
           if (d2 < 1) { dx = rand() - .5; dy = rand() - .5; d2 = 1; }
           const f = (900 / d2) * alpha * 14, d = Math.sqrt(d2);
           n.vx += dx / d * f; n.vy += dy / d * f; m.vx -= dx / d * f; m.vy -= dy / d * f;

@@ -53,7 +53,10 @@ const mini = $('mini'), mctx = mini.getContext('2d');
 const brush = $('brush'), bctx = brush.getContext('2d');
 // ---------- data: the generated bundle (data/bundle.core.js, built by tools/build-data.js from the JSON files in data/) ----------
 const A = window.ATLAS;
-if (!A) throw new Error('data/bundle.core.js is missing. Run: node tools/build-data.js');
+if (!A) {
+  document.body.insertAdjacentHTML('beforeend', '<div class="fatal" role="alert"><h2>The data did not load</h2><p>Loud Atlas could not read <code>data/bundle.core.js</code>. Reload the page. If you are running a copy of the repository, run <code>node tools/build-data.js</code> first.</p></div>');
+  return;
+}
 const GENRES = A.genres, SUB_ORDER = A.subOrder;
 const genreById = Object.fromEntries(GENRES.map(g => [g.id, g]));
 const BANDS = A.acts.map(a => ({ ...a, sub: a.sub || 'Other', from: a.from || [], country: a.country || '', members: (A.members[a.id] || []).map(([name, from, to]) => ({ name, from, to })), albums: [], rel: [] }));
@@ -981,7 +984,7 @@ function releaseList(b) {
     <ul class="rel">${list.map(a => `<li data-year="${a.year}" class="${a.year === selYear ? 'cur' : ''}${a.key ? '' : ' minor'}"><b>${a.year}</b><span>${esc(a.title)}${a.live ? ' <em>live</em>' : ''}${stat(a)}</span></li>`).join('')}</ul>
     ${more > 0 ? `<div class="muted">+ ${more} more studio album${more > 1 ? 's' : ''}: set <b>Releases</b> to All albums in the filters.</div>` : ''}`;
 }
-const SITE = { website: 'Website', x: 'X', facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', bandcamp: 'Bandcamp', soundcloud: 'SoundCloud', tiktok: 'TikTok', bluesky: 'Bluesky', mastodon: 'Mastodon', patreon: 'Patreon', myspace: 'Myspace', vk: 'VK', weibo: 'Weibo', twitch: 'Twitch', threads: 'Threads', wikidata: 'Wikidata', discogs: 'Discogs', allmusic: 'AllMusic', musicbrainz: 'MusicBrainz' };
+const SITE = { spotify: 'Spotify', apple: 'Apple Music', deezer: 'Deezer', tidal: 'Tidal', youtubemusic: 'YouTube Music', amazon: 'Amazon Music', qobuz: 'Qobuz', website: 'Website', x: 'X', facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', bandcamp: 'Bandcamp', soundcloud: 'SoundCloud', tiktok: 'TikTok', bluesky: 'Bluesky', mastodon: 'Mastodon', patreon: 'Patreon', myspace: 'Myspace', vk: 'VK', weibo: 'Weibo', twitch: 'Twitch', threads: 'Threads', wikidata: 'Wikidata', discogs: 'Discogs', allmusic: 'AllMusic', musicbrainz: 'MusicBrainz' };
 const safeUrl = u => /^https?:\/\//i.test(u) ? esc(u) : '#';
 const lazyLoaded = {};
 function lazyBundle(varName, file) {            // download a data bundle on first use, then redraw the details panel
@@ -998,6 +1001,24 @@ function songList(b) {
   return '<h4>Top songs <span class="muted">· most listened</span></h4><ol class="songs">' +
     s.map(([t, n, alb]) => '<li><span>' + esc(t) + (alb ? ' <em>' + esc(alb) + '</em>' : '') + '</span><small class="rate" title="ListenBrainz listens">' + n.toLocaleString('en') + '</small></li>').join('') +
     '</ol><div class="src">Listen counts from <a href="https://listenbrainz.org" target="_blank" rel="noopener">ListenBrainz</a> (open data, CC0). Reflects its users, not all listeners.</div>';
+}
+// "Listen" menu: plain links to the act's own page on each service (from MusicBrainz). Nothing is embedded or loaded from a service
+// until you click. Services without a stored page get a search link for the name instead, for the three most common ones.
+const LISTEN_ORDER = ['spotify', 'apple', 'youtubemusic', 'youtube', 'bandcamp', 'deezer', 'tidal', 'amazon', 'qobuz', 'soundcloud'];
+const LISTEN_SEARCH = {
+  spotify: q => 'https://open.spotify.com/search/' + q,
+  youtube: q => 'https://www.youtube.com/results?search_query=' + q,
+  apple: q => 'https://music.apple.com/search?term=' + q,
+};
+function listenMenu(b) {
+  lazyBundle('ATLAS_LINKS', 'data/bundle.links.js');
+  if (!window.ATLAS_LINKS) return '';
+  const own = new Map(((window.ATLAS_LINKS[b.id] || {}).listen || []).map(x => [x.site, x.url]));
+  const q = encodeURIComponent(b.name);
+  const items = LISTEN_ORDER.filter(s => own.has(s)).map(s => [s, own.get(s), false]);
+  for (const s of Object.keys(LISTEN_SEARCH)) if (!own.has(s) && !(s === 'youtube' && own.has('youtubemusic'))) items.push([s, LISTEN_SEARCH[s](q), true]);
+  const link = ([s, u, search]) => '<a href="' + safeUrl(u) + '" target="_blank" rel="noopener noreferrer"' + (search ? ' title="Search for ' + esc(b.name) + ' (no page stored for this act)"' : '') + '>' + (SITE[s] || esc(s)) + (search ? ' <em>search</em>' : '') + ' ↗</a>';
+  return '<details class="listen"><summary>▶ Listen to ' + esc(b.name) + '</summary><div class="ext">' + items.map(link).join('') + '</div><div class="src">Opens the service in a new tab. Nothing is loaded from them until you click.</div></details>';
 }
 function linkList(b, wiki) {
   lazyBundle('ATLAS_LINKS', 'data/bundle.links.js');
@@ -1037,6 +1058,7 @@ function renderDetail() {
     <h3>${esc(b.name)}</h3>
     <div class="tags"><span class="tag click" data-genre="${b.genre}" title="Show only ${esc(g.name)}">${esc(g.name)}</span>${b.sub && b.sub !== 'Other' ? `<span class="tag ghost click" data-genre="${b.genre}" data-sub="${esc(b.sub)}" title="Show only ${esc(b.sub)}">${esc(b.sub)}</span>` : ''}<span class="tag ghost">${b.kind === 'artist' ? 'Solo artist' : 'Band'}</span></div>
 
+    ${listenMenu(b)}
     <div class="qa"><button data-qa="compare" title="Compare this act with others">⟷ Compare</button><button data-qa="connect" title="Find how this act connects to another">⇢ Connect</button></div>
 
     <h4>Summary</h4>
@@ -1549,7 +1571,7 @@ function setCriterion(c) {
   layout();
 }
 $('optCriterion').onchange = e => setCriterion(e.target.value);
-$('optCriterion').querySelector('[value=popular]').disabled = !A.criteria.popular;
+if (!A.criteria.popular) $('optCriterion').querySelector('[value=popular]').remove();      // offered only when listening data has been built in
 $('optLive').onchange = e => { filters.live = e.target.checked; layout(); };
 $('optStatus').onchange = e => { filters.fade = e.target.checked; dirty = true; };
 $('optRel').onchange = e => { filters.rel = e.target.value; dirty = true; };
@@ -1829,7 +1851,7 @@ function graphBuild() {
   gv.edges.forEach(e => { (nb.get(e.a) || nb.set(e.a, new Set()).get(e.a)).add(e.b); (nb.get(e.b) || nb.set(e.b, new Set()).get(e.b)).add(e.a); });
   gv.nb = nb;
   $('gStats').textContent = nodes.length + ' acts · ' + gv.edges.length + ' connections' + (nodes.length < visible.length ? ' (' + (visible.length - nodes.length) + ' unconnected hidden)' : '');
-  graphHeat(nodes.every(n => n.p.pre) ? 0.04 : 0.9);       // the build already settled the layout; only new or moved acts need work
+  if (!nodes.every(n => n.p.pre)) graphHeat(0.9);          // the build already settled the layout; only acts without a stored position need work
 }
 
 function graphHeat(a) { gv.alpha = Math.max(gv.alpha, a); if (gv.open && !gv.raf) gv.raf = requestAnimationFrame(graphTick); }
@@ -1840,15 +1862,15 @@ function graphTick() {
   const N = gv.nodes, steps = gv.alpha > 0.5 ? 2 : 1;
   for (let s = 0; s < steps && gv.alpha > 0.012; s++) {
     const a = gv.alpha;
-    const cells = new Map();                                  // repulsion only matters nearby, so look at neighbouring 300px cells
-    for (const n of N) { const k = Math.floor(n.p.x / 300) + ',' + Math.floor(n.p.y / 300); (cells.get(k) || cells.set(k, []).get(k)).push(n); }
+    const cells = new Map();                                  // repulsion only matters nearby, so look at neighbouring 170px cells
+    for (const n of N) { const k = Math.floor(n.p.x / 170) + ',' + Math.floor(n.p.y / 170); (cells.get(k) || cells.set(k, []).get(k)).push(n); }
     for (const n of N) {
-      const ni = n.p, cx = Math.floor(ni.x / 300), cy = Math.floor(ni.y / 300);
+      const ni = n.p, cx = Math.floor(ni.x / 170), cy = Math.floor(ni.y / 170);
       for (let ox = -1; ox <= 1; ox++) for (let oy = -1; oy <= 1; oy++) for (const m of cells.get((cx + ox) + ',' + (cy + oy)) || []) {
         if (m === n || m.b.id < n.b.id) continue;
         const nj = m.p;
         let dx = ni.x - nj.x, dy = ni.y - nj.y, d2 = dx * dx + dy * dy;
-        if (d2 > 90000) continue;
+        if (d2 > 28900) continue;
         if (d2 < 1) { dx = Math.random() - .5; dy = Math.random() - .5; d2 = 1; }
         const f = (900 / d2) * a * 14, d = Math.sqrt(d2);
         ni.vx += dx / d * f; ni.vy += dy / d * f; nj.vx -= dx / d * f; nj.vy -= dy / d * f;
@@ -1901,16 +1923,29 @@ function graphDraw() {
   const fid = focus ? focus.id : null, near = fid && gv.nb.get(fid);
   c.clearRect(0, 0, gv.W, gv.H);
   c.lineCap = 'round';
-  // connections
+  // connections: the ones not touching the highlighted act are drawn in a few batched strokes (one per genre colour), then the highlighted ones
+  const idle = fid ? .04 : null, buckets = new Map(), lit = [];
   for (const e of gv.edges) {
-    const hit = fid && (e.a === fid || e.b === fid);
+    if (fid && (e.a === fid || e.b === fid)) { lit.push(e); continue; }
+    const key = e.t === 's' ? 's' : e.na.b.genre;
+    (buckets.get(key) || buckets.set(key, []).get(key)).push(e);
+  }
+  c.lineWidth = 1;
+  for (const [key, list] of buckets) {
+    c.globalAlpha = idle ?? (key === 's' ? .14 : .26);
+    c.setLineDash(key === 's' ? [4, 3] : []);
+    c.strokeStyle = key === 's' ? (T.sharedLine || '#f2b134') : col(genreById[key], 62);
+    c.beginPath();
+    for (const e of list) { const [x1, y1] = gToScreen(e.na.p.x, e.na.p.y), [x2, y2] = gToScreen(e.nb.p.x, e.nb.p.y); c.moveTo(x1, y1); c.lineTo(x2, y2); }
+    c.stroke();
+  }
+  for (const e of lit) {
     const [x1, y1] = gToScreen(e.na.p.x, e.na.p.y), [x2, y2] = gToScreen(e.nb.p.x, e.nb.p.y);
-    c.globalAlpha = fid ? (hit ? .95 : .04) : e.t === 'i' ? .26 : .14;
-    c.lineWidth = hit ? 2 : 1;
+    c.globalAlpha = .95; c.lineWidth = 2;
     if (e.t === 's') { c.setLineDash([4, 3]); c.strokeStyle = T.sharedLine || '#f2b134'; }
     else { c.setLineDash([]); c.strokeStyle = col(genreById[e.na.b.genre], 62); }
     c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
-    if (hit && e.t === 'i') {                                   // arrowhead towards the act that was influenced
+    if (e.t === 'i') {                                          // arrowhead towards the act that was influenced
       const ang = Math.atan2(y2 - y1, x2 - x1), r = e.nb.r * k + 3;
       c.setLineDash([]); c.fillStyle = c.strokeStyle; c.beginPath();
       c.moveTo(x2 - Math.cos(ang) * r, y2 - Math.sin(ang) * r);
@@ -1940,7 +1975,7 @@ function graphDraw() {
     const list = fid ? gv.nodes.filter(n => n.b.id === fid || (near && near.has(n.b.id))) : [...gv.nodes].sort((a, b) => b.deg - a.deg).slice(0, limit);
     for (const n of list) {
       if (n.sx == null) continue;
-      const w = c.measureText(n.b.name).width, x = n.sx + n.r * Math.sqrt(k) + 4, y = n.sy;
+      const w = n.tw || (n.tw = c.measureText(n.b.name).width), x = n.sx + n.r * Math.sqrt(k) + 4, y = n.sy;
       if (placed.some(p => x < p[2] && x + w > p[0] && y - 6 < p[3] && y + 6 > p[1])) continue;
       placed.push([x, y - 6, x + w, y + 6]);
       c.globalAlpha = 1;
@@ -1987,7 +2022,7 @@ function graphRefresh() { if (gv.open) { graphBuild(); graphDraw(); } }
 $('graphIcon').onclick = () => (gv.open ? graphClose() : graphOpen());
 $('gClose').onclick = graphClose;
 $('gFit').onclick = () => { graphFit(); graphDraw(); };
-$('gShake').onclick = () => { gv.pos.clear(); graphBuild(); graphHeat(1); setTimeout(() => { graphFit(); graphDraw(); }, 900); };
+$('gShake').onclick = () => { gv.pos.clear(); graphBuild(); graphFit(); graphDraw(); };
 [['gInfl', 'influence'], ['gShared', 'shared'], ['gLoose', 'loose'], ['gLabels', 'labels']].forEach(([id, key]) => {
   $(id).onchange = e => { gv.opts[key] = e.target.checked; key === 'labels' ? graphDraw() : (graphBuild(), graphDraw()); };
 });
@@ -2098,9 +2133,11 @@ if (document.fonts) {
   if (hp.get('releases') === 'all') setReleases('all', hp.get('live') === '1');
   if (hp.get('band') && bandById[hp.get('band')] && visible.includes(bandById[hp.get('band')])) {
     selected = bandById[hp.get('band')]; renderDetail();
-    const k = +hp.get('zoom') || 1.4, b = selected, cy = b.y + BAR_H / 2;
-    const cx = selYear != null ? (selYear + .5 - T0) * PX_YEAR : b.x0 + (b.x1 - b.x0) / 2;
-    goTo({ kx: k, ky: k, x: 300 + (W - 300 - 340) / 2 - cx * k, y: AXIS_H + (H - AXIS_H) / 2 - cy * k }, false);
+    if (hp.get('zoom')) {                                   // an explicit zoom in the link wins
+      const k = +hp.get('zoom') || 1.4, b = selected, cy = b.y + BAR_H / 2;
+      const cx = selYear != null ? (selYear + .5 - T0) * PX_YEAR : b.x0 + (b.x1 - b.x0) / 2;
+      goTo({ kx: k, ky: k, x: 300 + (W - 300 - 340) / 2 - cx * k, y: AXIS_H + (H - AXIS_H) / 2 - cy * k }, false);
+    } else { focusBand(selected, selYear ?? undefined); }
   } else if (hp.get('zoom')) {
     const k = +hp.get('zoom'), cy = +hp.get('cy') || 0;
     goTo({ kx: k, ky: k, x: 300 - ((+hp.get('from') || 1960) - T0) * PX_YEAR * k, y: AXIS_H - cy * k }, false);
@@ -2122,6 +2159,6 @@ requestAnimationFrame(frame);
 if (/perf/.test(location.hash)) {
   window.__atlas = { draw, layout, fit, setReleases, zoomAt, view, filters, bandById, bootMs: performance.now(), setRange, brushRange, brushMode, bx, yearAtB,
                      setCriterion, graphOpen, graphClose, revealBand, focusBand, get selected() { return selected; }, get visibleCount() { return visible.length; },
-                     graph: { get open() { return gv.open; }, get nodes() { return gv.nodes.length; }, get edges() { return gv.edges.length; }, pick(id) { const n = gv.byId.get(id); if (!n) return null; const [x, y] = gToScreen(n.p.x, n.p.y); const r = gcv.getBoundingClientRect(); return { x: x + r.left, y: y + r.top }; } } };
+                     graph: { bench() { const t0 = performance.now(); for (let i = 0; i < 20; i++) graphDraw(); const draw = (performance.now() - t0) / 20; const t1 = performance.now(); for (let i = 0; i < 10; i++) { gv.alpha = 0.5; graphTick(); cancelAnimationFrame(gv.raf); gv.raf = 0; } return { draw: +draw.toFixed(1), tick: +((performance.now() - t1) / 10).toFixed(1) }; }, get open() { return gv.open; }, get nodes() { return gv.nodes.length; }, get edges() { return gv.edges.length; }, pick(id) { const n = gv.byId.get(id); if (!n) return null; const [x, y] = gToScreen(n.p.x, n.p.y); const r = gcv.getBoundingClientRect(); return { x: x + r.left, y: y + r.top }; } } };
 }
 })();

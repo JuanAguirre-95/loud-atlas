@@ -42,6 +42,7 @@
 </head>
 <body>
 <a class="skip" href="#listview" id="skipLink">Skip to the list of acts</a>
+<noscript><div class="fatal"><h2>Loud Atlas needs JavaScript</h2><p>It is an interactive map drawn in the browser. Enable JavaScript to see it, or read the project on <a href="https://github.com/JuanAguirre-95/loud-atlas">GitHub</a>.</p></div></noscript>
 <canvas id="c" role="img" tabindex="0" aria-label="Interactive timeline of rock and metal. Press L for a text list of the acts."></canvas>
 <div id="live" class="sr" aria-live="polite" aria-atomic="true"></div>
 
@@ -259,15 +260,17 @@
 
     <section>
       <h2>How accurate is it?</h2>
-      <p class="muted">The dates, release years and influence links were written by hand and have not all been checked, and the
-        influence lines are judgement calls rather than facts. Lineups and the optional "All albums" lists come from MusicBrainz and may
-        include regional editions for 1960s acts. Corrections are welcome.</p>
+      <p class="muted">Years active and release years were checked against independent sources (Wikipedia, Wikidata and MusicBrainz),
+        and the key releases are chosen by rule: the best community-rated albums, or the most listened when that data is built in. The
+        genre and subgenre of an act, and the influence lines, are judgement calls rather than facts. Album lists come from MusicBrainz and
+        may include regional editions for 1960s acts. See something wrong? <a href="https://github.com/JuanAguirre-95/loud-atlas/issues/new/choose" target="_blank" rel="noopener">Tell us</a>.</p>
     </section>
 
     <section>
       <h2>Data and credits</h2>
       <ul class="tips">
-        <li>Lineups and album lists: <a href="https://musicbrainz.org" target="_blank" rel="noopener">MusicBrainz</a> (CC0).</li>
+        <li>Lineups, release dates, community ratings and official links: <a href="https://musicbrainz.org" target="_blank" rel="noopener">MusicBrainz</a> (CC0). Dates are cross-checked with <a href="https://www.wikidata.org" target="_blank" rel="noopener">Wikidata</a> (CC0).</li>
+        <li>Listen counts and top songs, when present: <a href="https://listenbrainz.org" target="_blank" rel="noopener">ListenBrainz</a> (CC0).</li>
         <li>Summaries: <a href="https://www.wikipedia.org" target="_blank" rel="noopener">Wikipedia</a> (CC BY-SA 4.0), shown with a link to each article.</li>
         <li>Fonts: Metal Mania, Cinzel and Barlow Condensed (SIL Open Font License).</li>
         <li>Band names, album titles and the music belong to their owners. This only maps the history.</li>
@@ -287,7 +290,7 @@
     <label><input type="checkbox" id="gLoose"> Unconnected acts</label>
     <label><input type="checkbox" id="gLabels" checked> Names</label>
     <button id="gFit" title="Fit the graph in the window">Fit</button>
-    <button id="gShake" title="Scramble and settle the layout again">Re-layout</button>
+    <button id="gShake" title="Put every act back where it started">Reset layout</button>
     <span id="gStats" class="muted"></span>
     <button id="gClose" aria-label="Back to the timeline" title="Back to the timeline (Esc)">✕ Timeline</button>
   </div>
