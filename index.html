@@ -119,10 +119,12 @@
     <section>
       <h2>Releases</h2>
       <label><input type="checkbox" id="optAlbums" checked> Show releases on the timeline</label>
-      <label>Key releases are the
+      <label>Key releases are chosen by
         <select id="optCriterion">
           <option value="acclaimed">Most acclaimed albums</option>
           <option value="popular">Most listened albums</option>
+          <option value="consensus">Acclaimed and listened</option>
+          <option value="balanced">Balanced (ratings, else listens)</option>
         </select>
       </label>
       <div class="muted" id="critNote"></div>
@@ -265,6 +267,7 @@
       <p><b>This is a snapshot, not live data.</b> Everything was downloaded on the dates below and bundled with the site. Changes made at the sources since then (new albums, corrected dates, new ratings) do not appear until the data is refreshed.</p>
       <ul class="tips" id="aboutSnapshot"></ul>
       <p><b>It has not been fact-checked by a person.</b> Years active and release years were compared automatically with Wikipedia, Wikidata and MusicBrainz and corrected where they agreed with each other, but all of them can be wrong or out of date, and a few disputed cases were settled by judgement. Genres, subgenres and the influence lines are opinions, not facts. Ratings and listen counts reflect the people who contribute to MusicBrainz and ListenBrainz, not everyone. Album lists can include regional editions, and some release days are placeholders.</p>
+      <p>Key releases are picked by a rule, not by hand: two to five albums per act, chosen by community rating, by listens, by both, or by a balance of the two (change it in the View tab). Albums with fewer than ten ratings are tagged "few ratings".</p>
       <p class="muted">See something wrong? <a href="https://github.com/JuanAguirre-95/loud-atlas/issues/new/choose" target="_blank" rel="noopener">Tell us</a>.</p>
     </section>
 

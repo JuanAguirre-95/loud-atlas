@@ -142,16 +142,18 @@ The data is a **snapshot, not live**: it was downloaded on the dates shown in th
 
 ### How the key releases are chosen
 
-Each act shows four **key releases**, and you choose the rule in the **View** tab:
+Each act shows **two to five key releases**, chosen by a rule you can switch in the **View** tab. Eligible albums are MusicBrainz studio albums (no live, compilation, reissue or demo titles) released while the act was active; duplicates collapse to the earliest, and release years were cross-checked (see Accuracy).
 
-- **Most acclaimed albums** (default): the studio albums with the best MusicBrainz community rating. Ratings are weighted
-  by the number of votes, `score = (votes × rating + 3 × mean) / (votes + 3)`, so one 5-star vote cannot beat seventy votes
-  averaging 4.6. An act with fewer than two rated albums also shows its debut, marked as unrated.
-- **Most listened albums**: the albums with the most ListenBrainz listens. This needs `data/popularity.json` (see below); until
-  it exists the option is disabled. Acts without listening data fall back to the acclaimed list and say so.
+| Strategy | What it picks |
+|---|---|
+| **Most acclaimed** (default) | The best MusicBrainz community ratings, weighted by vote count: `score = (votes × rating + 15 × mean) / (votes + 15)`, so a handful of votes cannot beat an established album. |
+| **Most listened** | The albums with the most ListenBrainz listens. Acts without listening data fall back to the acclaimed list. |
+| **Acclaimed and listened** | Half rating score, half listen share: an album has to do well on both. |
+| **Balanced** | Ratings when they are solid (3+ votes per album and 10+ across the picks); otherwise the most listened, and the details panel says so (about a third of acts). |
 
-Both are rules applied to public data, not a list written from memory. They have biases of their own: community ratings favour
-albums that many people bother to rate, and listen counts reflect ListenBrainz users, who are not everyone.
+How many: the best two always, then up to three more whose score is close to the best (within 0.18 for ratings, 0.35 for the combined score, at least 35% of the top album's listens for listens). An act with fewer than two rated albums also shows its debut, marked unrated. Albums with fewer than ten votes carry a "few ratings" tag.
+
+These are rules applied to public data, not a hand-written list, and each has biases: community ratings favour albums many people bother to rate (and for most acts there are fewer than ten votes), listen counts favour the streaming era and ListenBrainz users. The thresholds are in `tools/build-data.js`.
 
 ### Top songs
 

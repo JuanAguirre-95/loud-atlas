@@ -11,11 +11,14 @@
 //          data/bundle.links.js       lazy: official sites, social profiles, listening pages
 //          data/bundle.songs.js       lazy: top songs per act (only when data/popularity.json exists)
 //
-// KEY RELEASES are chosen by rule, not by hand. Each act keeps its top N studio albums under two criteria:
-//   acclaimed  MusicBrainz community rating, Bayesian-weighted so one 5-star vote cannot beat 70 votes averaging 4.6:
-//              score = (votes * rating + M * mean) / (votes + M), M = 3, mean = average rating of all rated albums
-//   popular    ListenBrainz listen count for the album (data/popularity.json, from tools/fetch-popularity.js)
-// An act with fewer than two rated albums also gets its debut album (marked as a fallback: it has no rating).
+// KEY RELEASES are chosen by rule, not by hand. Each act keeps between 2 and 5 studio albums, under four selectable strategies:
+//   acclaimed   MusicBrainz community rating, Bayesian-weighted with 15 virtual votes so a few votes cannot beat an established album:
+//               score = (votes * rating + 15 * mean) / (votes + 15), mean = average rating of all rated albums
+//   popular     ListenBrainz listen count for the album (data/popularity.json, from tools/fetch-popularity.js)
+//   consensus   half rating score, half listen share: an album has to do well on both
+//   balanced    acclaimed when the ratings are solid (albums need 3+ votes, 10+ votes across the picks), otherwise popular, flagged
+// How many: the best two always, then up to three more that score close to the best (within 0.12 of it for rating-based scores,
+// at least 35% of the top album's listens for popular). Acts with fewer than two rated albums also get their debut, shown unrated.
 
 const fs = require('fs');
 const path = require('path');
@@ -24,7 +27,7 @@ const { read } = require('./lib/json');
 const data = path.join(__dirname, '..', 'data');
 const has = f => fs.existsSync(path.join(data, f));
 const NOW = new Date().getFullYear();
-const TOP_N = 4, PRIOR_VOTES = 3;
+const MAX_N = 5, MIN_N = 2, PRIOR_VOTES = 15, CLOSE = 0.18, CLOSE_C = 0.35, LISTEN_SHARE = 0.35, THIN_VOTES = 10, MIN_VOTES = 3;
 
 const { genres, subOrder } = read(path.join(data, 'genres.json'));
 const acts = read(path.join(data, 'acts.json'));
@@ -66,31 +69,59 @@ for (const a of acts) { const m = mb[a.id]; if (!m) continue; for (const s of ca
 const MEAN = cnt ? sum / cnt : 3.8;
 
 const core = { rel: {}, all: {}, songs: {} };
-const stat = { acclaimed: 0, fallback: 0, popular: 0, none: 0, manual: 0 };
+const stat = { acclaimed: 0, fallback: 0, popular: 0, balancedFromListens: 0, none: 0, manual: 0, picks: 0 };
+const hybridFromListens = [];
+const bay = c => (c.v * c.r + PRIOR_VOTES * MEAN) / (c.v + PRIOR_VOTES);
+// best two always, then up to MAX_N while the score stays close to the best
+function adaptive(sorted, score, ok) {
+  if (!sorted.length) return [];
+  const best = score(sorted[0]);
+  return sorted.filter((c, i) => i < MIN_N || (i < MAX_N && ok(score(c), best)));
+}
+const rateClose = (v, best) => v >= best - CLOSE;
+const consClose = (v, best) => v >= best - CLOSE_C;
 for (const a of acts) {
   const m = mb[a.id];
   if (!m) {
-    if (manual[a.id]) { core.rel[a.id] = manual[a.id].map(x => [x.t, x.y, x.d || null, 1, 0, null, 0, 0]); stat.manual++; } else stat.none++;
+    if (manual[a.id]) { core.rel[a.id] = manual[a.id].map(x => [x.t, x.y, x.d || null, 1, 0, null, 0, 0, 1, 1]); stat.manual++; } else stat.none++;
     continue;
   }
   const cands = candidates(a, m);
   const lst = pop && pop[a.id] ? pop[a.id].albums : {};
-  const byKey = new Map(cands.map(c => [c.rg, { t: c.t, y: c.y, d: c.d, ar: 0, pr: 0, r: c.r, v: c.v || 0, l: lst[c.rg] || 0 }]));
-  // acclaimed
-  const rated = cands.filter(c => c.r != null && c.v > 0)
-    .map(c => ({ c, score: (c.v * c.r + PRIOR_VOTES * MEAN) / (c.v + PRIOR_VOTES) }))
-    .sort((x, y) => y.score - x.score || y.c.v - x.c.v || x.c.y - y.c.y).slice(0, TOP_N);
-  rated.forEach((x, i) => { byKey.get(x.c.rg).ar = i + 1; });
-  if (rated.length < 2 && cands.length) {                          // too few ratings: fall back to the debut and keep it visibly unrated
-    const debut = byKey.get(cands[0].rg);
-    if (!debut.ar) { debut.ar = rated.length + 1; stat.fallback++; }
-  }
+  const L = c => lst[c.rg] || 0;
+  const byKey = new Map(cands.map(c => [c.rg, { t: c.t, y: c.y, d: c.d, ar: 0, pr: 0, cr: 0, hr: 0, r: c.r, v: c.v || 0, l: L(c) }]));
+  const tieSort = (x, y) => y.score - x.score || (y.c.v || 0) - (x.c.v || 0) || x.c.y - y.c.y;
+  const rank = (picks, field) => picks.forEach((c, i) => { byKey.get(c.rg)[field] = i + 1; });
+  const withDebut = (picks, field) => {                                  // too few ratings: add the debut and keep it visibly unrated
+    if (picks.length < MIN_N && cands.length) { const d = cands.find(c => !picks.includes(c)); if (d) { picks.push(d); stat.fallback++; } }
+    rank(picks, field); return picks;
+  };
+  const rated = cands.filter(c => c.r != null && c.v > 0);
+  const byRating = rated.map(c => ({ c, score: bay(c) })).sort(tieSort);
+  const acclaimed = adaptive(byRating, x => x.score, rateClose).map(x => x.c);
+  withDebut(acclaimed, 'ar');
   if (rated.length) stat.acclaimed++;
   // popular
-  const hot = cands.filter(c => (lst[c.rg] || 0) > 0).sort((x, y) => lst[y.rg] - lst[x.rg]).slice(0, TOP_N);
-  hot.forEach((c, i) => { byKey.get(c.rg).pr = i + 1; });
-  if (hot.length) stat.popular++;
-  core.rel[a.id] = [...byKey.values()].filter(x => x.ar || x.pr).sort((x, y) => x.y - y.y).map(x => [x.t, x.y, x.d, x.ar, x.pr, x.r, x.v, x.l]);
+  const heard = cands.filter(c => L(c) > 0).sort((x, y) => L(y) - L(x) || x.y - y.y);
+  const popular = adaptive(heard, L, (v, best) => v >= best * LISTEN_SHARE);
+  rank(popular, 'pr');
+  if (popular.length) stat.popular++;
+  // consensus: half the rating score (scaled 0-1 within the act), half the listen share
+  if (heard.length) {
+    const lo = Math.min(...byRating.map(x => x.score), 5), hi = Math.max(...byRating.map(x => x.score), 0), span = hi - lo || 1, maxL = L(heard[0]);
+    const ratingPart = new Map(byRating.map(x => [x.c.rg, (x.score - lo) / span]));
+    const both = cands.map(c => ({ c, score: 0.5 * (ratingPart.get(c.rg) || 0) + 0.5 * L(c) / maxL })).filter(x => x.score > 0).sort(tieSort);
+    rank(adaptive(both, x => x.score, consClose).map(x => x.c), 'cr');
+  } else acclaimed.forEach((c, i) => { byKey.get(c.rg).cr = i + 1; });          // without listening data consensus is just the rating
+  // balanced: ratings when they are solid, listens when they are thin
+  const solid = byRating.filter(x => x.c.v >= MIN_VOTES);
+  const solidPicks = adaptive(solid, x => x.score, rateClose).map(x => x.c);
+  const solidVotes = solidPicks.reduce((n, c) => n + c.v, 0);
+  if (solidPicks.length >= MIN_N && solidVotes >= THIN_VOTES) rank(solidPicks, 'hr');
+  else if (popular.length >= MIN_N) { rank(popular, 'hr'); hybridFromListens.push(a.id); stat.balancedFromListens++; }
+  else acclaimed.forEach((c, i) => { byKey.get(c.rg).hr = i + 1; });
+  core.rel[a.id] = [...byKey.values()].filter(x => x.ar || x.pr || x.cr || x.hr).sort((x, y) => x.y - y.y).map(x => [x.t, x.y, x.d, x.ar, x.pr, x.r, x.v, x.l, x.cr, x.hr]);
+  stat.picks += core.rel[a.id].length;
   // every cleaned album, for the "All albums" mode and "On this day": [title, year, day (MM-DD), flag]  flag: 0 studio, 1 live
   core.all[a.id] = [
     ...cands.map(c => [c.t, c.y, c.d ? c.d.slice(5) : null, 0]),
@@ -146,7 +177,7 @@ const w = (file, varName, obj) => {
 };
 const sizes = {};
 sizes['bundle.core.js'] = w('bundle.core.js', 'ATLAS', {
-  generated: stamp, sources, topN: TOP_N, meanRating: +MEAN.toFixed(2), criteria: { acclaimed: true, popular: !!pop },
+  generated: stamp, sources, minN: MIN_N, maxN: MAX_N, hybridFromListens, meanRating: +MEAN.toFixed(2), criteria: { acclaimed: true, popular: !!pop },
   genres, subOrder,
   acts: acts.map(a => { const o = { ...a }; delete o.vsrc; delete o.review; return o; }),
   members, shared: [...pair.values()], rel: core.rel, pos,
@@ -158,6 +189,7 @@ sizes['bundle.links.js'] = w('bundle.links.js', 'ATLAS_LINKS', links);
 if (pop) sizes['bundle.songs.js'] = w('bundle.songs.js', 'ATLAS_SONGS', core.songs);
 else if (fs.existsSync(path.join(data, 'bundle.songs.js'))) fs.rmSync(path.join(data, 'bundle.songs.js'));
 
-console.log(`acts ${acts.length} | acclaimed picks for ${stat.acclaimed} acts (+${stat.fallback} debut fallbacks) | popular picks for ${stat.popular} acts | manual ${stat.manual} | no release data ${stat.none}`);
+console.log(`acts ${acts.length} | acclaimed picks for ${stat.acclaimed} acts (+${stat.fallback} debut fallbacks) | popular picks for ${stat.popular} acts | balanced uses listens for ${stat.balancedFromListens} acts | manual ${stat.manual} | no release data ${stat.none}`);
+console.log(`key releases: ${stat.picks} in total, ${(stat.picks / Math.max(1, acts.length - stat.none)).toFixed(2)} per act on average`);
 console.log(`mean community rating ${MEAN.toFixed(2)} | shared-member pairs ${pair.size}`);
 for (const [f, s] of Object.entries(sizes)) console.log('  ' + f.padEnd(22) + (s / 1024).toFixed(0).padStart(5) + ' KB');

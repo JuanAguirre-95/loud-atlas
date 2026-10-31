@@ -536,3 +536,5 @@ label.inl { display: inline-flex; flex-direction: row; gap: 5px; }
 .vz-cols > .vz-stage { width: auto; flex: 3 1 560px; min-width: 0; height: calc(100vh - 260px); }
 #dataNote { margin: 0 0 6px; font-size: 11.5px; line-height: 1.3; }
 #aboutData p { line-height: 1.45; }
+#detail .rate.few { opacity: .8; }
+#detail .rate.few em { font-style: normal; font-size: 11px; color: var(--muted); }

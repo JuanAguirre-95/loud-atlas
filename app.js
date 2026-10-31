@@ -95,10 +95,11 @@ peopleMap.forEach((p, k) => p.bands.forEach(id => bandById[id].peopleLC.push(k))
 // rating, votes, listens). The criterion in use decides which of them are the key releases. "All albums" adds every cleaned
 // studio album and, optionally, live albums from data/bundle.releases.js, which is only downloaded when the user asks for it.
 BANDS.forEach(b => {
-  b.rel = (A.rel[b.id] || []).map(([title, year, d, ar, pr, rating, votes, listens]) => ({ title, year, date: d ? d.slice(5) : undefined, ar, pr, rating, votes, listens }));
+  b.rel = (A.rel[b.id] || []).map(([title, year, d, ar, pr, rating, votes, listens, cr, hr]) => ({ title, year, date: d ? d.slice(5) : undefined, ar, pr, cr, hr, rating, votes, listens }));
 });
 const keyNorm = t => t.toLowerCase().replace(/[\u2018\u2019'`\u00b4]/g, '').replace(/&/g, 'and').replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, ' ').trim();
-const rankKey = () => (filters.criterion === 'popular' ? 'pr' : 'ar');
+const RANK_FIELD = { acclaimed: 'ar', popular: 'pr', consensus: 'cr', balanced: 'hr' };
+const rankKey = () => RANK_FIELD[filters.criterion] || 'ar';
 let allLoaded = false;
 function applyCriterion() {
   const k = rankKey();
@@ -988,8 +989,9 @@ function facts(b) {
 function releaseList(b) {
   const list = rels(b), all = filters.releases === 'all';
   const more = all || !b.all ? 0 : b.all.filter(a => !a.live).length - list.length;
-  const crit = filters.criterion === 'popular' ? (b.fallback ? 'most acclaimed (no listening data)' : 'most listened') : 'most acclaimed';
-  const stat = a => a.rating != null && a.votes ? ' <small class="rate" title="MusicBrainz community rating from ' + a.votes + ' votes">★ ' + a.rating.toFixed(1) + '</small>' : a.listens ? ' <small class="rate" title="ListenBrainz listens">' + a.listens.toLocaleString('en') + ' plays</small>' : '';
+  const c0 = filters.criterion, thin = c0 === 'balanced' && (A.hybridFromListens || []).includes(b.id);
+  const crit = c0 === 'popular' && b.fallback ? 'most acclaimed (no listening data)' : thin ? 'most listened (too few ratings to trust)' : CRITERIA[c0].label;
+  const stat = a => a.rating != null && a.votes ? ' <small class="rate' + (a.votes < 10 ? ' few' : '') + '" title="MusicBrainz community rating from ' + a.votes + ' vote' + (a.votes === 1 ? '' : 's') + (a.votes < 10 ? ' (few ratings)' : '') + '">★ ' + a.rating.toFixed(1) + (a.votes < 10 ? ' <em>' + a.votes + (a.votes === 1 ? ' vote' : ' votes') + '</em>' : '') + '</small>' : a.listens ? ' <small class="rate" title="ListenBrainz listens">' + a.listens.toLocaleString('en') + ' plays</small>' : '';
   return `<h4>${all ? 'Releases' : 'Key releases'} <span class="muted">${all ? '' : '· ' + crit + ' · '}(click a year)</span></h4>
     <ul class="rel">${list.map(a => `<li data-year="${a.year}" class="${a.year === selYear ? 'cur' : ''}${a.key ? '' : ' minor'}"><b>${a.year}</b><span>${esc(a.title)}${a.live ? ' <em>live</em>' : ''}${stat(a)}</span></li>`).join('')}</ul>
     ${more > 0 ? `<div class="muted">+ ${more} more studio album${more > 1 ? 's' : ''}: set <b>Releases</b> to All albums in the filters.</div>` : ''}`;
@@ -1572,18 +1574,22 @@ function setReleases(mode, live) {
   } else apply();
 }
 $('optReleases').onchange = e => setReleases(e.target.value);
+const CRITERIA = {
+  acclaimed: { label: 'most acclaimed', note: 'Albums with the best MusicBrainz community rating, weighted by the number of votes (so a few votes cannot beat an established album). Two to five per act; acts with fewer than two rated albums also show their debut.' },
+  popular: { label: 'most listened', note: 'Albums with the most ListenBrainz listens, two to five per act. Acts without listening data fall back to the acclaimed list.' },
+  consensus: { label: 'acclaimed and listened', note: 'Albums that do well on both community rating and ListenBrainz listens. Two to five per act.' },
+  balanced: { label: 'balanced', note: 'Community ratings when there are enough votes to trust (3+ per album, 10+ across the picks); otherwise the most listened albums, and the details panel says so.' },
+};
 function setCriterion(c) {
-  if (c === 'popular' && !A.criteria.popular) c = 'acclaimed';
+  if (!CRITERIA[c] || (['popular', 'consensus'].includes(c) && !A.criteria.popular)) c = 'acclaimed';
   filters.criterion = c; $('optCriterion').value = c;
   applyCriterion();
-  $('critNote').textContent = c === 'popular'
-    ? 'Top ' + A.topN + ' albums per act by ListenBrainz listen count. Acts without listening data fall back to acclaimed.'
-    : 'Top ' + A.topN + ' albums per act by MusicBrainz community rating, weighted by number of votes. Acts with fewer than two rated albums also show their debut.';
+  $('critNote').textContent = CRITERIA[c].note;
   if (selected) renderDetail();
   layout();
 }
 $('optCriterion').onchange = e => setCriterion(e.target.value);
-if (!A.criteria.popular) $('optCriterion').querySelector('[value=popular]').remove();      // offered only when listening data has been built in
+if (!A.criteria.popular) ['popular', 'consensus'].forEach(v => $('optCriterion').querySelector('[value=' + v + ']').remove());      // these need listening data to be built in
 $('optLive').onchange = e => { filters.live = e.target.checked; layout(); };
 $('optStatus').onchange = e => { filters.fade = e.target.checked; dirty = true; };
 $('optRel').onchange = e => { filters.rel = e.target.value; dirty = true; };
@@ -2170,7 +2176,7 @@ if (document.fonts) {
   if (hp.get('tab') && W <= 700) setPanel(true);                                // a link to a tab should show it on phones too
   if (hp.get('expand')) { hp.get('expand').split(',').forEach(g => expanded.add(g)); buildGenres(); }
   layout(); fit(false);
-  setCriterion(hp.get('criterion') === 'popular' ? 'popular' : 'acclaimed');
+  setCriterion(hp.get('criterion') || 'acclaimed');
   if (hp.get('releases') === 'all') setReleases('all', hp.get('live') === '1');
   if (hp.get('band') && bandById[hp.get('band')] && visible.includes(bandById[hp.get('band')])) {
     selected = bandById[hp.get('band')]; renderDetail();
