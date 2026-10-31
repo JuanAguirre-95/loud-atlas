@@ -20,7 +20,7 @@ function openAct(id) { const b = bandById[id]; if (b) App.select(b); }
 stage.addEventListener('click', e => { const a = e.target.closest('[data-act]'); if (a && !a.dataset.nav) openAct(a.dataset.act); });
 // the act list shown beside a chart
 function listBox(title, acts) {
-  return `<div class="vz-listhead">${title}</div><div class="vz-chips">${acts.slice(0, 80).map(actLink).join('')}${acts.length > 80 ? `<span class="muted">+ ${acts.length - 80} more</span>` : ''}</div>`;
+  return `<div class="vz-listhead">${title}</div><div class="vz-chips${acts.length > 60 ? ' long' : ''}">${acts.map(actLink).join('')}</div>`;
 }
 function actInput(id, value, ph) {
   return `<input id="${id}" list="bandlist" placeholder="${ph || 'Pick an act'}" value="${esc(value || '')}" autocomplete="off" aria-label="${ph || 'Act'}">`;
@@ -233,8 +233,8 @@ function renderMap() {
     });
     $('mapYearLabel').textContent = year;
     $('mapTotal').textContent = total + (mode === 'cum' ? ' acts formed by ' : ' acts active in ') + year;
-    const rank = [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12);
-    side.innerHTML = '<div class="vz-listhead">Top countries</div><ol class="vz-rank">' + rank.map(([c, n]) => `<li><button data-country="${esc(c)}">${esc(c.replace('United States of America', 'USA'))}</button><b>${n}</b></li>`).join('') + '</ol>' +
+    const rank = [...m.entries()].sort((a, b) => b[1] - a[1]);
+    side.innerHTML = '<div class="vz-listhead">Countries (' + rank.length + ')</div><ol class="vz-rank">' + rank.map(([c, n]) => `<li><button data-country="${esc(c)}">${esc(c.replace('United States of America', 'USA'))}</button><b>${n}</b></li>`).join('') + '</ol>' +
       (picked ? pickedList() : '<p class="muted">Click a country to list its acts.</p>');
   }
   function pickedList() {

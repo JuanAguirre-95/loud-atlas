@@ -613,3 +613,8 @@ label.inl { display: inline-flex; flex-direction: row; gap: 5px; }
 #vizbar .vz-share + .vz-close { margin-left: 8px; }
 .foot .actions { flex-wrap: wrap; }
 .foot .actions #shareBtn { flex-basis: 100%; }
+
+.sg-more, .pp-more { padding: 6px 10px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line-soft); }
+.pp-more { border-top: 0; padding-left: 2px; }
+.vz-chips.long { max-height: 340px; overflow-y: auto; padding-right: 4px; }
+.vz-rank { max-height: 340px; overflow-y: auto; }

@@ -169,7 +169,7 @@ function matches(b) {
   const q = filters.q.trim().toLowerCase();
   if (q) {
     const inName = b.name.toLowerCase().includes(q);
-    const inAlbum = rels(b).some(a => a.title.toLowerCase().includes(q));
+    const inAlbum = (b.all || b.albums).some(a => a.title.toLowerCase().includes(q));      // every album once the full lists are loaded (see needAlbumsForSearch)
     const inMember = b.peopleLC.some(n => n.includes(q));
     const ok = filters.scope === 'name' ? inName : filters.scope === 'album' ? inAlbum
              : filters.scope === 'member' ? inMember : (inName || inAlbum || inMember);
@@ -1391,7 +1391,7 @@ function buildGenres() {
     const d = document.createElement('div');
     d.className = 'chip' + (!on ? ' off' : off ? ' partial' : '');
     d.style.setProperty('--c', col(g));
-    d.innerHTML = '<i></i><span>' + g.name + '</span><em>' + n + '</em>' +
+    d.innerHTML = '<i></i><span>' + esc(g.name) + '</span><em>' + n + '</em>' +
       '<button class="car" aria-label="' + (open ? 'Hide' : 'Show') + ' subgenres of ' + g.name + '" aria-expanded="' + open + '">' + (open ? '▾' : '▸') + '</button>';
     d.title = 'Click to show or hide · Alt+click to show only this genre · arrow to list its subgenres';
     d.tabIndex = 0; d.setAttribute('role', 'button'); d.setAttribute('aria-pressed', String(on));
@@ -1409,7 +1409,7 @@ function buildGenres() {
       const sd = document.createElement('div');
       sd.className = 'subchip' + (!on || filters.subOff.has(key) ? ' off' : '');
       sd.style.setProperty('--c', col(g));
-      sd.innerHTML = '<i></i><span>' + name + '</span><em>' + cnt + '</em>';
+      sd.innerHTML = '<i></i><span>' + esc(name) + '</span><em>' + cnt + '</em>';
       sd.title = 'Click to show or hide · Alt+click to show only this subgenre';
       sd.tabIndex = 0; sd.setAttribute('role', 'button'); sd.setAttribute('aria-pressed', String(!(!on || filters.subOff.has(key))));
       sd.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sd.click(); } });
@@ -1441,8 +1441,9 @@ function renderPeople() {
   const box = $('people'), q = filters.q.trim().toLowerCase();
   if (q.length < 2 || filters.scope === 'name' || filters.scope === 'album') { box.innerHTML = ''; return; }
   const hits = [...peopleMap.values()].filter(p => p.name.toLowerCase().includes(q))
-    .sort((a, b) => b.bands.size - a.bands.size || a.name.localeCompare(b.name)).slice(0, 6);
-  box.innerHTML = hits.map(p => `<button data-name="${esc(p.name)}"><b>${esc(p.name)}</b><span>${[...p.bands].slice(0, 4).map(id => esc(bandById[id].name)).join(' · ')}${p.bands.size > 4 ? ' …' : ''}</span></button>`).join('');
+    .sort((a, b) => b.bands.size - a.bands.size || a.name.localeCompare(b.name));
+  const moreHits = Math.max(0, hits.length - 8); hits.length = Math.min(hits.length, 8);
+  box.innerHTML = hits.map(p => `<button data-name="${esc(p.name)}"><b>${esc(p.name)}</b><span>${[...p.bands].slice(0, 4).map(id => esc(bandById[id].name)).join(' · ')}${p.bands.size > 4 ? ' …' : ''}</span></button>`).join('') + (moreHits ? '<div class="muted pp-more">+ ' + moreHits + ' more people match: keep typing to narrow it</div>' : '');
 }
 $('people').addEventListener('click', e => {
   const b = e.target.closest('button[data-name]');
@@ -1451,10 +1452,15 @@ $('people').addEventListener('click', e => {
   $('search').value = filters.q; $('scope').value = 'member';
   renderPeople(); refilter();
 });
-$('scope').addEventListener('change', e => { filters.scope = e.target.value; renderPeople(); refilter(); });
+$('scope').addEventListener('change', e => { filters.scope = e.target.value; renderPeople(); refilter(); needAlbumsForSearch(); });
+// An album search has to look at every album, not just the key releases on the timeline, so load the full lists the first time one is needed.
+function needAlbumsForSearch() {
+  if (allLoaded || filters.q.trim().length < 3 || !['all', 'album'].includes(filters.scope)) return;
+  loadAlbums(ok => { if (ok) { refilter(); if (document.activeElement === $('search')) showSugg(); } });
+}
 let searchFit = 0;
 $('search').addEventListener('input', e => {
-  filters.q = e.target.value; renderPeople(); refilter();
+  filters.q = e.target.value; renderPeople(); refilter(); needAlbumsForSearch();
   clearTimeout(searchFit);
   searchFit = setTimeout(() => { if (filters.q.trim()) fit(); }, 350);       // frame the matches instead of leaving the view on empty space
   showSugg();
@@ -1469,7 +1475,7 @@ function buildSugg(q) {
   if (sc === 'all' || sc === 'name') {
     BANDS.filter(b => b.name.toLowerCase().includes(q))
       .sort((x, y) => (y.name.toLowerCase().startsWith(q) - x.name.toLowerCase().startsWith(q)) || x.name.length - y.name.length)
-      .slice(0, 6).forEach(b => out.push({ t: 'act', b }));
+      .slice(0, 8).forEach(b => out.push({ t: 'act', b }));
   }
   if (sc === 'all' || sc === 'member') {
     [...peopleMap.values()].filter(p => p.name.toLowerCase().includes(q) && !(p.bands.size === 1 && out.some(o => o.t === 'act' && p.bands.has(o.b.id))))
@@ -1479,6 +1485,7 @@ function buildSugg(q) {
     let n = 0;
     for (const b of BANDS) { for (const al of (b.all || b.albums)) if (al.title.toLowerCase().includes(q) && n < 4) { out.push({ t: 'album', b, al }); n++; } if (n >= 4) break; }
   }
+  out.more = sc === 'all' || sc === 'name' ? Math.max(0, BANDS.filter(b => b.name.toLowerCase().includes(q)).length - out.filter(o => o.t === 'act').length) : 0;
   return out;
 }
 function showSugg() {
@@ -1491,7 +1498,7 @@ function showSugg() {
     if (s.t === 'act') return '<div role="option" id="sg' + i + '" data-i="' + i + '"><b>' + esc(s.b.name) + '</b><small>' + esc(genreById[s.b.genre].name) + ' · ' + s.b.formed + '–' + (s.b.ended ?? 'present') + '</small></div>';
     if (s.t === 'person') return '<div role="option" id="sg' + i + '" data-i="' + i + '"><b>' + esc(s.p.name) + '</b><small>member · ' + [...s.p.bands].slice(0, 3).map(id => esc(bandById[id].name)).join(', ') + (s.p.bands.size > 3 ? '…' : '') + '</small></div>';
     return '<div role="option" id="sg' + i + '" data-i="' + i + '"><b>' + esc(s.al.title) + '</b><small>album · ' + esc(s.b.name) + ' · ' + s.al.year + '</small></div>';
-  }).join('');
+  }).join('') + (sugg.more ? '<div class="sg-more" aria-hidden="true">+ ' + sugg.more + ' more acts match: the timeline is showing all of them</div>' : '');
 }
 function closeSugg() { $('sugg').hidden = true; $('search').setAttribute('aria-expanded', 'false'); suggAt = -1; }
 function markSugg(i) {
@@ -1623,10 +1630,26 @@ countries.forEach(c => $('country').add(new Option(c, c)));
 // ---------- explore: connect (pathfinder), compare, on this day ----------
 const nameToBand = new Map(BANDS.map(b => [b.name.toLowerCase(), b]));
 $('bandlist').innerHTML = [...BANDS].sort((a, b) => a.name.localeCompare(b.name)).map(b => '<option value="' + esc(b.name) + '"></option>').join('');
+// Typing an act's name: exact names win, then forgiving matches. Ignores case, accents, punctuation and a leading "The", so "beatles",
+// "motorhead", "acdc" and "guns n roses" all work, and a word anywhere in the name ("maiden", "sabbath") finds the act.
+const nrm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').trim();
+const nameIndex = BANDS.map(b => { const n = nrm(b.name); return { b, n, nt: n.replace(/^the /, ''), compact: n.replace(/ /g, '') }; });
 function bandFromInput(v) {
-  v = v.trim().toLowerCase();
-  if (!v) return null;
-  return nameToBand.get(v) || (v.length >= 3 ? BANDS.find(b => b.name.toLowerCase().startsWith(v)) : null) || null;
+  const raw = (v || '').trim();
+  if (!raw) return null;
+  const exact = nameToBand.get(raw.toLowerCase());
+  if (exact) return exact;
+  const q = nrm(raw), qt = q.replace(/^the /, ''), qc = q.replace(/ /g, '');
+  if (!q || q === 'the') return null;
+  const pick = list => list.length ? list.sort((x, y) => x.n.length - y.n.length || x.n.localeCompare(y.n))[0].b : null;
+  const tiers = [
+    () => nameIndex.filter(e => e.n === q || e.nt === qt || e.compact === qc),                    // same name apart from case, accents, punctuation, "The"
+    () => q.length >= 3 ? nameIndex.filter(e => e.nt.startsWith(qt) || e.n.startsWith(q)) : [],        // starts with it
+    () => q.length >= 3 ? nameIndex.filter(e => (' ' + e.n + ' ').includes(' ' + q)) : [],             // a word of the name starts with it ("maiden")
+    () => q.length >= 4 ? nameIndex.filter(e => e.n.includes(q) || e.compact.includes(qc)) : [],       // anywhere in the name
+  ];
+  for (const [i, t] of tiers.entries()) { if (i && !qt) break; const r = pick(t()); if (r) return r; }       // a lone "the" matches nothing
+  return null;
 }
 
 // graph: influence edges (both ways) and shared-member edges
@@ -1777,7 +1800,14 @@ function stepDay(delta) {
   const d = new Date(2024, dayMD[0] - 1, dayMD[1] + delta);        // 2024 is a leap year, so 29 February exists
   dayMD = [d.getMonth() + 1, d.getDate()]; renderToday();
 }
+const DAYS_IN = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+function fillDays(m, d) {
+  const sel = $('dayDay'), n = DAYS_IN[m - 1];
+  if (sel.options.length !== n) { sel.innerHTML = ''; for (let i = 1; i <= n; i++) sel.add(new Option(String(i), String(i))); }
+  return Math.min(d, n);
+}
 function renderToday() {
+  dayMD = [dayMD[0], fillDays(dayMD[0], dayMD[1])];
   const [m, d] = dayMD, key = pad2(m) + '-' + pad2(d), stats = $('dayStats'), list = $('dayList');
   $('dayMonth').value = m; $('dayDay').value = d;
   if (!allLoaded) {
@@ -1806,6 +1836,8 @@ let listOpener = null;
 function renderList() {
   const key = $('lvSort').value;
   const rows = [...visible].sort((a, b) => key === 'formed' ? a.formed - b.formed || a.name.localeCompare(b.name)
+    : key === 'releases' ? b.albums.length - a.albums.length || a.name.localeCompare(b.name)
+    : key === 'span' ? ((b.ended ?? NOW) - b.formed) - ((a.ended ?? NOW) - a.formed) || a.name.localeCompare(b.name)
     : key === 'genre' ? genreById[a.genre].name.localeCompare(genreById[b.genre].name) || a.sub.localeCompare(b.sub) || a.name.localeCompare(b.name)
     : key === 'country' ? a.country.localeCompare(b.country) || a.name.localeCompare(b.name)
     : a.name.localeCompare(b.name));
