@@ -322,7 +322,16 @@ function axisStep() {
   return [1, 2, 5, 10, 20, 50].find(s => s * ppy >= 64) || 50;
 }
 
+// The map can be panned and zoomed freely, but at least a strip of it must stay on screen, or on a phone it is easy to lose.
+function clampView() {
+  const m = 90, top = AXIS_H + 20;
+  const x0 = world.x0 * view.kx + view.x, x1 = world.x1 * view.kx + view.x;
+  const y0 = world.y0 * view.ky + view.y, y1 = world.y1 * view.ky + view.y;
+  if (x1 < m) view.x += m - x1; else if (x0 > W - m) view.x -= x0 - (W - m);
+  if (y1 < top + 40) view.y += top + 40 - y1; else if (y0 > H - m) view.y -= y0 - (H - m);
+}
 function draw() {
+  if (!anim) clampView();
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.fillStyle = T.bg;
   ctx.fillRect(0, 0, W, H);
@@ -608,6 +617,7 @@ function draw() {
     const x = Math.round(sx((yr - T0) * PX_YEAR)) + .5;
     ctx.strokeStyle = T.tick;
     ctx.beginPath(); ctx.moveTo(x, AXIS_H - 8); ctx.lineTo(x, AXIS_H); ctx.stroke();
+    if (selYear != null && Math.abs(x - sx((selYear - T0) * PX_YEAR)) < 52) continue;      // the selected year is labelled on its own
     ctx.fillStyle = yr % 10 === 0 ? BONE : ASH;
     ctx.fillText(yr, x + 4, yy);
   }
@@ -1580,6 +1590,7 @@ $('optRel').onchange = e => { filters.rel = e.target.value; dirty = true; };
 $('optShared').onchange = e => { filters.shared = e.target.value; dirty = true; };
 $('optSplit').onchange = e => { filters.split = e.target.checked; layout(); fit(); };
 $('fit').onclick = () => fit();
+$('zfit').onclick = () => fit();
 function resetFilters() {
   Object.assign(filters, { q: '', genres: new Set(GENRES.map(g => g.id)), from: T0, to: NOW, country: '', kinds: new Set(['band', 'artist']), scope: 'all', eras: new Set(), yearOnly: false, focus: null, subOff: new Set() });
   $('scope').value = 'all'; $('yearOnly').checked = false; $('people').innerHTML = ''; buildEras(); selYear = null; $('yearIn').value = '';
