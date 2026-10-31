@@ -245,6 +245,12 @@ docs/             README screenshots
 Open an issue or a pull request for any correction: a wrong date, a missing release, an influence link you disagree with, or a band
 that should be on the map. For data changes, edit the JSON in `data/` (see "Adding or editing an act") and run `node tools/validate.js`.
 
+## License
+
+The code and the hand-made parts of the dataset (genres, subgenres, influence lines, shared-member notes) are under the [MIT License](LICENSE).
+
+Third-party material keeps its own licence and is not covered by it: MusicBrainz and ListenBrainz data (CC0), Wikipedia summaries (CC BY-SA 4.0, which requires attribution and share-alike), the fonts (SIL OFL), and the names and titles of bands and albums, which belong to their owners. See the credits below.
+
 ## Credits and data licences
 
 - **Lineups, release dates, community ratings and links** come from [MusicBrainz](https://musicbrainz.org), whose core data is released under CC0.
