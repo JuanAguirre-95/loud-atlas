@@ -26,6 +26,25 @@ const copy = f => {
 fs.readdirSync(path.join(root, 'data')).filter(f => /^bundle..*.js$/.test(f)).forEach(f => copy('data/' + f));
 fs.cpSync(path.join(root, 'fonts'), path.join(dist, 'fonts'), { recursive: true });
 
+// Cache busting. Every script and stylesheet is requested as "file?v=<hash of its content>", so a changed file has a new address and a
+// browser can never combine an old stylesheet with a new script. index.html itself is always revalidated (see _headers).
+const crypto = require('crypto');
+const stamp = f => crypto.createHash('sha1').update(fs.readFileSync(path.join(dist, f))).digest('hex').slice(0, 10);
+const lazy = ['viz.js', ...fs.readdirSync(path.join(dist, 'data')).filter(f => /^bundle\..*\.js$/.test(f)).map(f => 'data/' + f)];
+const versioned = {};
+lazy.forEach(f => { versioned[f] = stamp(f); });
+// app.js loads viz.js and the lazy data bundles by name
+let appJs = fs.readFileSync(path.join(dist, 'app.js'), 'utf8');
+appJs = appJs.replace(/(['"])((?:viz|data\/bundle\.[a-z]+)\.js)\1/g, (m, q, f) => (versioned[f] ? q + f + '?v=' + versioned[f] + q : m));
+fs.writeFileSync(path.join(dist, 'app.js'), appJs);
+const direct = ['style.css', 'fonts.css', 'app.js', 'data/bundle.core.js'];
+direct.forEach(f => { versioned[f] = stamp(f); });
+let html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
+html = html.replace(/(href|src)="(style\.css|fonts\.css|app\.js|data\/bundle\.core\.js)"/g, (m, a, f) => a + '="' + f + '?v=' + versioned[f] + '"');
+fs.writeFileSync(path.join(dist, 'index.html'), html);
+console.log('versioned asset URLs:', Object.keys(versioned).length);
+
+
 fs.writeFileSync(path.join(dist, '_headers'),
 `/*
   X-Content-Type-Options: nosniff
