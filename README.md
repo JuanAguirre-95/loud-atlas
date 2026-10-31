@@ -138,6 +138,8 @@ the page loads, so the site still opens straight from a file with no server.
 | `data/release-checks.json` | Second-source release years | `node tools/verify-releases.js` |
 | `data/export/*.csv` | Spreadsheet copies of the above | `node tools/export-csv.js` |
 
+**Everything is explained in the app:** open Insights (`V`) → **How it works** for the sources, formulas, thresholds and known weaknesses, with live numbers and a worked example. It is generated from the same build as the data, so it cannot drift from it.
+
 ### How current and how accurate
 
 The data is a **snapshot, not live**: it was downloaded on the dates shown in the About tab (recorded in `data/meta.json` by each fetch tool) and bundled with the site. It is **not fact-checked by a person**: years were compared automatically against Wikipedia, Wikidata and MusicBrainz, which can all be wrong; genres and influence lines are opinion; ratings and listen counts reflect their contributors. The app says so in the About tab and under the filters.

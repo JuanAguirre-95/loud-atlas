@@ -170,6 +170,20 @@ function geo() {
 const similar = has('similar.json') ? read(path.join(data, 'similar.json')) : {};
 const genreInfo = { articles: has('genre-articles.json') ? read(path.join(data, 'genre-articles.json')) : {}, summaries: has('genre-summaries.json') ? read(path.join(data, 'genre-summaries.json')) : {} };
 
+// numbers quoted on the "How it works" page, so the page can never disagree with the build
+const rc = Object.values(checks);
+const method = {
+  constants: { priorVotes: PRIOR_VOTES, minN: MIN_N, maxN: MAX_N, close: CLOSE, closeC: CLOSE_C, listenShare: LISTEN_SHARE, thinVotes: THIN_VOTES, minVotes: MIN_VOTES, fewRatings: 10 },
+  // words that disqualify an album title (kept in step with JUNK above)
+  junkWords: ['remaster', 'deluxe', 'anniversary', 'collection', 'greatest hits', 'best of', 'anthology', 'box set', 'rarities', 'b-sides', 'bootleg', 'karaoke', 'tribute', 'lost sessions', 'expanded', 'reissue', 're-recorded', 'the very best', 'essential', 'demo', 'sessions', 'rehearsals', 'tapes', 'broadcasts', 'outtakes', 'alternate', 'tour', 'mixes', 'radio', 'complete', 'bbc', 'recordings', 'archives'],
+  eligibleAlbums: Object.values(core.all).reduce((n, l) => n + l.filter(x => !x[3]).length, 0),
+  actsWithRatings: stat.acclaimed, actsWithListens: stat.popular, balancedFromListens: stat.balancedFromListens,
+  releaseChecks: { checked: rc.length, wikidataKnows: rc.filter(c => c.wd != null).length, agree: rc.filter(c => c.ok).length, corrected: rc.filter(c => c.final != null && c.final !== c.mb).length },
+  dates: { acts: acts.length, verified: acts.filter(a => a.verified).length, manual: acts.filter(a => a.vsrc && JSON.stringify(a.vsrc).includes('manual')).length, unresolved: acts.filter(a => a.review && a.review.length).length, mbConfirmed: acts.filter(a => a.mbMatch === 'confirmed').length },
+  shared: { curated: shared.length, total: pair.size },
+  songs: { acts: Object.keys(core.songs).length, perAct: 10 },
+};
+
 // ---------- write ----------
 const stamp = new Date().toISOString().slice(0, 10);
 const w = (file, varName, obj) => {
@@ -178,7 +192,7 @@ const w = (file, varName, obj) => {
 };
 const sizes = {};
 sizes['bundle.core.js'] = w('bundle.core.js', 'ATLAS', {
-  generated: stamp, sources, minN: MIN_N, maxN: MAX_N, hybridFromListens, meanRating: +MEAN.toFixed(2), criteria: { acclaimed: true, popular: !!pop },
+  generated: stamp, method, sources, minN: MIN_N, maxN: MAX_N, hybridFromListens, meanRating: +MEAN.toFixed(2), criteria: { acclaimed: true, popular: !!pop },
   genres, subOrder,
   acts: acts.map(a => { const o = { ...a }; delete o.vsrc; delete o.review; return o; }),
   members, shared: [...pair.values()], rel: core.rel, pos,

@@ -2124,6 +2124,7 @@ onDetail = () => { if (gv.open) graphDraw(); };
   $('aboutSnapshot').innerHTML = have.map(([k, what, from]) => '<li>' + what + ' (' + from + '): <b>' + fmt(S[k]) + '</b></li>').join('') || '<li>No pull dates recorded.</li>';
   const newest = S.musicbrainz || have.map(r => S[r[0]]).sort().pop();
   $('dataNote').innerHTML = 'Data snapshot from ' + (newest ? fmt(newest) : 'at an unknown date') + '. Not live, not fact-checked. <a href="#" id="dataNoteLink">Details</a>';
+  $('howLink').onclick = e => { e.preventDefault(); openViz('method'); };
   $('dataNoteLink').onclick = e => { e.preventDefault(); showTab('about'); $('aboutData').scrollIntoView({ block: 'start' }); };
 })();
 

@@ -109,6 +109,92 @@ function renderGuide() {
   });
 }
 
+// ============ How it works: where every number and ranking comes from ============
+let methodAct = 'beatles';
+function renderMethod() {
+  const M = A.method, K = M.constants, S = A.sources || {}, d = M.dates, rc = M.releaseChecks;
+  const fmt = x => { const t = new Date(x + 'T00:00:00'); return isNaN(t) ? x : t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); };
+  const src = (k, what, from, lic) => S[k] ? '<tr><td>' + what + '</td><td>' + from + '</td><td>' + fmt(S[k]) + '</td><td>' + lic + '</td></tr>' : '';
+  const b = bandById[methodAct] || bandById.beatles, rows = b.rel.filter(r => r.rating != null && r.votes > 0);
+  const mean = A.meanRating, score = (r, m) => (r.votes * r.rating + m * mean) / (r.votes + m);
+  const tick = n => n > 0 ? '✓' : '';
+  const table = rows.length ? '<div class="vz-scroll"><table class="mt-table"><thead><tr><th>Album</th><th>Year</th><th>Rating</th><th>Votes</th><th>Score (15 virtual votes)</th><th>Score (3)</th><th>Listens</th><th title="most acclaimed">Acclaimed</th><th>Listened</th><th>Both</th><th>Balanced</th></tr></thead><tbody>' +
+    [...rows].sort((x, y) => score(y, K.priorVotes) - score(x, K.priorVotes)).map(r => '<tr><td>' + esc(r.title) + '</td><td>' + r.year + '</td><td>' + r.rating.toFixed(2) + '</td><td' + (r.votes < K.fewRatings ? ' class="few"' : '') + '>' + r.votes + '</td><td><b>' + score(r, K.priorVotes).toFixed(2) + '</b></td><td class="muted">' + score(r, 3).toFixed(2) + '</td><td>' + (r.listens ? r.listens.toLocaleString('en') : '') + '</td><td>' + tick(r.ar) + '</td><td>' + tick(r.pr) + '</td><td>' + tick(r.cr) + '</td><td>' + tick(r.hr) + '</td></tr>').join('') + '</tbody></table></div>' +
+    '<p class="muted">Only the albums that at least one strategy picked are listed here (the full eligible list is longer). Score = (votes × rating + ' + K.priorVotes + ' × ' + mean.toFixed(2) + ') / (votes + ' + K.priorVotes + '), where ' + mean.toFixed(2) + ' is the average rating of all rated albums on the map. The "Score (3)" column is the old, lighter weighting for comparison.</p>' : '<p class="muted">' + esc(b.name) + ' has no rated key releases.</p>';
+  stage.innerHTML = '<article class="mt">' + head('How it works', 'Where each number, list and ranking on this site comes from, so you can judge how far to trust it. The figures on this page are produced by the same build that produces the data, so they cannot drift from it.') + `
+  <h4>The short version</h4>
+  <ul>
+    <li>Nothing here is live, and no person has fact-checked it. It is a snapshot of public data (dates below) that was compared automatically, plus <b>editorial choices</b> that are opinions.</li>
+    <li><b>Editorial (opinion):</b> which acts are on the map, each act's genre and subgenre, and the influence lines between acts.</li>
+    <li><b>Imported from open sources:</b> years active, albums and release dates, community ratings, lineups, official links, Wikipedia summaries, listen counts and top songs.</li>
+    <li><b>Computed by rules in this repository:</b> the key releases, the rankings and every chart. Each rule is explained below, and the code is open (<code>tools/build-data.js</code>).</li>
+  </ul>
+  <h4>Sources and when they were pulled</h4>
+  <div class="vz-scroll"><table class="mt-table"><thead><tr><th>Data</th><th>Source</th><th>Pulled</th><th>Licence</th></tr></thead><tbody>` +
+    src('musicbrainz', 'Albums, release dates, community ratings, lineups', 'MusicBrainz', 'CC0') + src('links', 'Official sites, social, listening pages', 'MusicBrainz', 'CC0') + src('summaries', 'Act summaries', 'Wikipedia', 'CC BY-SA 4.0') +
+    src('genre_summaries', 'Genre definitions', 'Wikipedia', 'CC BY-SA 4.0') + src('listens', 'Listen counts and top songs', 'ListenBrainz', 'CC0') + src('similar', 'Listening neighbourhoods', 'ListenBrainz Labs', 'CC0') +
+    src('dates_checked', 'Years active compared', 'Wikipedia, Wikidata, MusicBrainz', 'CC BY-SA / CC0') + src('release_years_checked', 'Release years compared', 'Wikidata, Wikipedia', 'CC0 / CC BY-SA') +
+    `</tbody></table></div>
+  <p class="muted">Changes made at those sources after these dates do not appear here. Band names, album titles and the music belong to their owners.</p>
+
+  <h4>Which acts, genres and influences</h4>
+  <p>The list of ${A.acts.length} acts, the genre and subgenre of each, and the "influenced by" lines were chosen by hand. They are judgement calls, not facts, and they are the part most open to disagreement. Every act is matched to its MusicBrainz identity so its albums, lineup and links come from the right artist: ${d.acts - d.mbConfirmed} matches were accepted automatically and ${d.mbConfirmed} weaker ones were checked by hand against MusicBrainz search results (the solo artists' start years in MusicBrainz are birth years, which is why those needed a manual look).</p>
+  <p><b>Shared members</b> (the dashed lines): ${M.shared.total} pairs in total: ${M.shared.curated} are curated notes, and the others come from two acts listing the same musician in their MusicBrainz lineups.</p>
+
+  <h4>Years active</h4>
+  <p>Each act's start and end year were compared with three independent sources: the "years active" field of the Wikipedia infobox, Wikidata, and the MusicBrainz life span. For a <b>group</b>, if the recorded start agrees with any source it is kept; otherwise the year two sources agree on wins, and a lone source is accepted only when it is the only one available. A <b>solo artist's</b> start is left alone, because sources disagree on whether it means career start or birth. The <b>end</b> year is kept when it matches any source (including the end of any Wikipedia span, which is how reunions are handled) and corrected only when two sources agree on another value. An empty end means still active.</p>
+  <p>${d.verified} of ${d.acts} acts have been compared. ${d.manual} disputed cases were settled by a written ruling (<code>data/date-decisions.json</code>); ${d.unresolved} are unresolved. Every change is listed in <code>tools/verify-report.md</code>. Agreement between sources is not proof: all three can share a mistake.</p>
+
+  <h4>Albums and release years</h4>
+  <p>Eligible albums are MusicBrainz release groups of type "album" with no secondary type, which removes live albums, compilations, soundtracks and remixes. Titles containing any of these words are dropped as reissues or extras: <i>${M.junkWords.join(', ')}</i>, as are titles with a live marker or a year at the end. An album must fall within the act's active years (give or take one), and albums with the same normalised title collapse to the earliest. ${M.eligibleAlbums.toLocaleString('en')} albums are eligible. These are text rules, so a real album can occasionally be dropped, and a regional edition can slip through.</p>
+  <p>Release years were cross-checked for the albums that can become key releases: Wikidata has a publication date for ${rc.wikidataKnows.toLocaleString('en')} of the ${rc.checked.toLocaleString('en')} checked. ${rc.agree.toLocaleString('en')} agree with MusicBrainz; where they differ, the Wikipedia infobox is the tie-breaker and two of three sources win (${rc.corrected} years were changed this way). Release <i>days</i> (the calendar, "On this day") come from MusicBrainz only, and some are placeholders such as January 1.</p>
+
+  <h4>Key releases</h4>
+  <p>Each act shows <b>two to five</b> key releases, chosen by a rule you can switch in the View tab. They are rules applied to data, not a hand-picked list.</p>
+  <ul>
+    <li><b>Most acclaimed</b>: MusicBrainz community rating, weighted by votes so a few votes cannot beat an established album: score = (votes × rating + ${K.priorVotes} × mean) / (votes + ${K.priorVotes}). The ${K.priorVotes} "virtual votes" pull small samples towards the average.</li>
+    <li><b>Most listened</b>: the albums with the most ListenBrainz listens. Acts without listening data fall back to acclaimed.</li>
+    <li><b>Acclaimed and listened</b>: half the rating score (rescaled 0 to 1 within the act) plus half the listen share (listens divided by the top album's). An album has to do well on both.</li>
+    <li><b>Balanced</b>: ratings when they are solid (albums with at least ${K.minVotes} votes, and at least ${K.thinVotes} votes across the picks), otherwise the most listened. ${M.balancedFromListens} acts use listens under this rule, and the details panel says so.</li>
+  </ul>
+  <p><b>How many:</b> the best two always, then up to ${K.maxN - K.minN} more while they stay close to the best: within ${K.close} of the rating score, within ${K.closeC} of the combined score, or with at least ${Math.round(K.listenShare * 100)}% of the top album's listens. An act with fewer than two rated albums also shows its debut, marked unrated. Albums with fewer than ${K.fewRatings} votes are tagged "few ratings".</p>
+  <p><b>Thresholds are judgement:</b> ${K.priorVotes} virtual votes and the "close" margins were tuned by looking at the results (about 3.0 to 3.7 key releases per act on average, depending on the strategy). The biggest weakness is thin data: for most acts there are only a handful of ratings, so the rating rule matters mainly for famous acts. Listen counts favour the streaming era and ListenBrainz users.</p>
+  <p><b>Worked example</b>, with real numbers for ` + '<span class="mt-pick">' + actInput('methodIn', b.name, 'Pick an act') + `</span>:</p>
+  ${table}
+
+  <h4>Top songs</h4>
+  <p>The ten most listened recordings per act on ListenBrainz (${M.songs.acts} acts have them). Versions of the same song are merged by normalised title (remaster, mono, stereo and similar tags are stripped), and recordings marked live, demo, remix, karaoke, instrumental, acoustic version, session or rehearsal are skipped. Counts reflect ListenBrainz users, not all listeners, and a famous song can be under-counted if its recordings are tagged inconsistently.</p>
+
+  <h4>Genre guide and influence rankings</h4>
+  <p>Genre definitions are Wikipedia summaries of the closest matching article (<code>data/genre-articles.json</code>); this map groups acts its own way, so a definition describes the genre, not exactly our group. Subgenres without a matching article have no definition. The overview sentence, the timeline (acts active in each year), the countries and the peak decade are counted from the map's own data.</p>
+  <p><b>"Most influential"</b> means the number of acts on this map that descend from an act through the influence lines (its children, their children and so on). It measures position in <i>our</i> editorial graph. It is not a verdict on musical importance, and an act with few recorded descendants may still be hugely influential.</p>
+
+  <h4>The Insights views</h4>
+  <ul>
+    <li><b>Scene map:</b> counts acts by country (USA, UK, USSR and Czechoslovakia are mapped to today's countries), either formed up to the chosen year or active in it. Map outlines are Natural Earth (public domain).</li>
+    <li><b>Lineup flow:</b> for the chosen band, each musician who also appears in another act's MusicBrainz lineup becomes a row. Another act goes "before" if the musician left it by about the time they joined the chosen band, otherwise "after / alongside". Dates are MusicBrainz's and are often missing or approximate.</li>
+    <li><b>Era fingerprint:</b> petal length is the square root of the number of acts of that genre active at any point in the decade.</li>
+    <li><b>Album constellation:</b> every key release (under any strategy) with a rating and votes; position is year and rating, size is votes.</li>
+    <li><b>Influence tree:</b> the influence lines, up to three generations each way, capped for readability (the page says how many are not drawn).</li>
+    <li><b>Six degrees:</b> hops along influence and shared-member lines; the shortest route is found by breadth-first search. The daily puzzle uses the date as its random seed.</li>
+    <li><b>Release calendar:</b> studio albums with a known release day, counted per day of the year.</li>
+    <li><b>Genre matrix:</b> counts influence lines between the genres of the two acts.</li>
+    <li><b>Listening neighbourhoods:</b> ListenBrainz Labs lists artists that people play in the same sessions. For each act the closest six on the map are kept, weighted relative to its own best match so very popular acts do not become hubs. Positions come from a force layout that starts from the genre map and pulls similar acts together; it is a picture of listening habits, not of sound.</li>
+    <li><b>Relationship graph and the main timeline</b> use the same data and rules; the graph layout is computed in the build.</li>
+  </ul>
+
+  <h4>What can go wrong</h4>
+  <ul>
+    <li>A source can be wrong, or change after the dates above. Cross-checking catches disagreements, not shared errors.</li>
+    <li>Text rules can mis-sort an album. Name matching can attach the wrong artist (that is why weak matches were checked by hand).</li>
+    <li>Ratings and listens are opinions and habits of the people who contribute, and many acts have very few.</li>
+    <li>The editorial parts are opinions, and the choice of acts is not a complete or neutral history of rock and metal.</li>
+  </ul>
+  <p>Found a mistake? <a href="https://github.com/JuanAguirre-95/loud-atlas/issues/new/choose" target="_blank" rel="noopener">Open an issue</a>. Everything is reproducible from the repository: <code>node tools/fetch-musicbrainz.js</code>, <code>fetch-popularity.js</code>, <code>verify.js</code>, <code>verify-releases.js</code>, then <code>build-data.js</code> (see the README).</p>
+  </article>`;
+  $('methodIn').addEventListener('change', e => { const x = byName(e.target.value); if (x) { methodAct = x.id; renderMethod(); } });
+}
+
 // ============ 1. Scene map (world map, years slider) ============
 const GEO_NAME = { USA: 'United States of America', UK: 'United Kingdom', Czechoslovakia: 'Czechia', USSR: 'Russia' };
 const countriesOf = b => String(b.country).split('/').map(x => x.trim()).filter(Boolean).map(x => GEO_NAME[x] || x);
@@ -553,7 +639,7 @@ function renderSimilar() {
 
 // ---------- the view switcher ----------
 const VIEWS = [
-  ['guide', 'Genre guide', renderGuide], ['map', 'Scene map', renderMap], ['flow', 'Lineup flow', renderFlow], ['era', 'Era fingerprint', renderFingerprint], ['stars', 'Album constellation', renderStars],
+  ['guide', 'Genre guide', renderGuide], ['method', 'How it works', renderMethod], ['map', 'Scene map', renderMap], ['flow', 'Lineup flow', renderFlow], ['era', 'Era fingerprint', renderFingerprint], ['stars', 'Album constellation', renderStars],
   ['tree', 'Influence tree', renderTree], ['game', 'Six degrees', renderGame], ['calendar', 'Calendar', renderCalendar], ['matrix', 'Genre matrix', renderMatrix], ['listen', 'Neighbourhoods', renderSimilar],
 ];
 bar.innerHTML = VIEWS.map(([id, label]) => `<button data-view="${id}" role="tab">${label}</button>`).join('') + '<button id="vizClose" class="vz-close" aria-label="Back to the timeline" title="Back to the timeline (Esc)">✕ Timeline</button>';

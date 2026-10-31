@@ -594,3 +594,15 @@ label.inl { display: inline-flex; flex-direction: row; gap: 5px; }
   #vizbar button { white-space: nowrap; flex: none; }
   #vizbar .vz-close { margin-left: 8px; }
 }
+
+/* ---------- how it works ---------- */
+.mt { max-width: 900px; }
+.mt h4 { margin: 22px 0 6px; font-family: 'Cinzel', Georgia, serif; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--head); }
+.mt p, .mt li { line-height: 1.5; }
+.mt ul { padding-left: 20px; margin: 6px 0; }
+.mt code { background: var(--surface-2); padding: 0 4px; border-radius: 3px; font-size: 12.5px; }
+.mt-table { border-collapse: collapse; font-size: 13px; width: 100%; }
+.mt-table th, .mt-table td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+.mt-table thead th { color: var(--head); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+.mt-table td.few { color: var(--muted); }
+.mt-pick input { background: var(--input); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }
