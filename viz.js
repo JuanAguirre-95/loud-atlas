@@ -411,12 +411,29 @@ function renderTree() {
     return out;
   };
   const L = place(roots, -1), R = place(kids, 1), all = new Map([...L, ...R].map(n => [n.id, n]));
-  $('treeNote').textContent = `${L.length} ancestors, ${R.length} descendants shown` + (hidden ? ` (${hidden} more not drawn)` : '');
+  // Label placement: names are tried in order of importance (nearest generation, then most descendants) and nudged up or down a little
+  // until they clear every other name and dot. The few that still cannot fit are left off (hover or focus a dot for its name).
+  const meas = document.createElement('canvas').getContext('2d'); meas.font = '12px "Barlow Condensed", sans-serif';
+  const taken = [[cx - 90, cy - 36, cx + 90, cy - 8]], dots = [...L, ...R].map(n => [n.x - 8, n.y - 8, n.x + 8, n.y + 8]);
+  const hits = (r, q) => r[0] < q[2] && r[2] > q[0] && r[1] < q[3] && r[3] > q[1];
+  const labelY = new Map();
+  let unlabelled = 0;
+  [...L, ...R].sort((p, q) => p.gen - q.gen || descendantCount(q.id) - descendantCount(p.id)).forEach(n => {
+    const side = n.x < cx ? -1 : 1, w = meas.measureText(bandById[n.id].name).width + 6, x0 = side > 0 ? n.x + 10 : n.x - 10 - w;
+    for (const dy of [0, 13, -13, 26, -26, 39, -39]) {
+      const y = n.y + dy, r = [x0, y - 7, x0 + w, y + 7];
+      if (r[1] < 24 || r[3] > H - 4 || r[0] < 2 || r[2] > W - 2) continue;
+      if (taken.some(q => hits(r, q)) || dots.some(q => hits(r, q))) continue;
+      taken.push(r); labelY.set(n.id, y); return;
+    }
+    unlabelled++;
+  });
+  $('treeNote').textContent = `${L.length} ancestors, ${R.length} descendants shown` + (hidden ? ` (${hidden} more not drawn)` : '') + (unlabelled ? ` · ${unlabelled} names left off to avoid overlap: hover a dot to see it` : '');
   const pos = id => id === b.id ? { x: cx, y: cy } : all.get(id);
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Influence tree around ${esc(b.name)}">`;
   for (let g = 1; g <= 3; g++) svg += `<ellipse class="vz-ring" cx="${cx}" cy="${cy}" rx="${g * step}" ry="${g * step * yk}"/>`;
   for (const n of [...L, ...R]) { const p = pos(n.parent) || { x: cx, y: cy }; const mx = (p.x + n.x) / 2; svg += `<path class="vz-link" d="M${p.x} ${p.y} C${mx} ${p.y} ${mx} ${n.y} ${n.x} ${n.y}" stroke="${col(genreById[bandById[n.id].genre], 58)}"/>`; }
-  const node = (o, x, y, side, big) => `<g class="vz-node" data-nav="1" data-tree="${o.id}" tabindex="0"><circle cx="${x}" cy="${y}" r="${big ? 11 : 6}" fill="${col(genreById[o.genre])}"${big ? ' stroke="var(--text)" stroke-width="2"' : ''}/><text x="${x + (big ? 0 : side * 10)}" y="${big ? y - 18 : y + 4}" text-anchor="${big ? 'middle' : side > 0 ? 'start' : 'end'}"${big ? ' class="big"' : ''}>${esc(o.name)}</text><title>${esc(o.name)} · ${years(o)}</title></g>`;
+  const node = (o, x, y, side, big) => { const ly = big ? y - 18 : labelY.get(o.id); return `<g class="vz-node" data-nav="1" data-tree="${o.id}" tabindex="0"><circle cx="${x}" cy="${y}" r="${big ? 11 : 6}" fill="${col(genreById[o.genre])}"${big ? ' stroke="var(--text)" stroke-width="2"' : ''}/>${ly == null ? '' : `<text x="${x + (big ? 0 : side * 10)}" y="${ly + (big ? 0 : 4)}" text-anchor="${big ? 'middle' : side > 0 ? 'start' : 'end'}"${big ? ' class="big"' : ''}>${esc(o.name)}</text>`}<title>${esc(o.name)} · ${years(o)}</title></g>`; };
   for (const n of L) svg += node(bandById[n.id], n.x, n.y, -1);
   for (const n of R) svg += node(bandById[n.id], n.x, n.y, 1);
   svg += node(b, cx, cy, 0, true);
