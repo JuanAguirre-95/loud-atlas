@@ -12,11 +12,12 @@
 
 const fs = require('fs');
 const path = require('path');
+require('./lib/env');
 const { cachedGet } = require('./lib/http');
 const { stamp } = require('./lib/meta');
 const { writeKeyed, read } = require('./lib/json');
 
-const token = process.env.LISTENBRAINZ_TOKEN;
+const token = process.env.LISTENBRAINZ_TOKEN || process.env.LISTENBRAINZ_USER_TOKEN;
 if (!token) {
   console.error('Set LISTENBRAINZ_TOKEN first (free token from https://listenbrainz.org/settings/). See the header of this file.');
   process.exit(1);
