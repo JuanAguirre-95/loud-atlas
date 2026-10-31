@@ -12,6 +12,7 @@
 const path = require('path');
 const fs = require('fs');
 const { cachedGet } = require('./lib/http');
+const { stamp } = require('./lib/meta');
 const { writeKeyed, read } = require('./lib/json');
 
 const data = path.join(__dirname, '..', 'data');
@@ -68,5 +69,6 @@ function trimExtract(text) {
     if (i % 25 === 0) writeKeyed(file, out);
   }
   writeKeyed(file, out);
+  stamp('summaries');
   console.log(`\nWrote data/summaries.json: ${Object.keys(out).length} summaries${miss.length ? ', none for ' + miss.join(', ') : ''}`);
 })();

@@ -50,6 +50,7 @@
   <header>
     <h1>Loud Atlas</h1>
     <button id="listIcon" class="iconbtn" title="Show the acts as a list (L)" aria-label="Show the acts as a list">☰</button>
+    <button id="vizIcon" class="iconbtn" title="Insights: more ways to see the data (V)" aria-label="Open Insights" aria-pressed="false">✦</button>
     <button id="graphIcon" class="iconbtn" title="Show the relationship graph (G)" aria-label="Show the relationship graph" aria-pressed="false">◎</button>
     <button id="themeBtn" class="iconbtn" title="Switch theme" aria-label="Switch theme">☀</button>
     <button id="collapse" title="Collapse panel" aria-label="Collapse panel">×</button>
@@ -106,6 +107,7 @@
 
     <div class="foot">
       <p id="count" class="muted"></p>
+      <p id="dataNote" class="muted"></p>
       <div class="actions">
         <button id="fit">Fit view</button>
         <button id="reset">Reset filters</button>
@@ -258,12 +260,12 @@
       </ul>
     </section>
 
-    <section>
-      <h2>How accurate is it?</h2>
-      <p class="muted">Years active and release years were checked against independent sources (Wikipedia, Wikidata and MusicBrainz),
-        and the key releases are chosen by rule: the best community-rated albums, or the most listened when that data is built in. The
-        genre and subgenre of an act, and the influence lines, are judgement calls rather than facts. Album lists come from MusicBrainz and
-        may include regional editions for 1960s acts. See something wrong? <a href="https://github.com/JuanAguirre-95/loud-atlas/issues/new/choose" target="_blank" rel="noopener">Tell us</a>.</p>
+    <section id="aboutData">
+      <h2>How current and how accurate?</h2>
+      <p><b>This is a snapshot, not live data.</b> Everything was downloaded on the dates below and bundled with the site. Changes made at the sources since then (new albums, corrected dates, new ratings) do not appear until the data is refreshed.</p>
+      <ul class="tips" id="aboutSnapshot"></ul>
+      <p><b>It has not been fact-checked by a person.</b> Years active and release years were compared automatically with Wikipedia, Wikidata and MusicBrainz and corrected where they agreed with each other, but all of them can be wrong or out of date, and a few disputed cases were settled by judgement. Genres, subgenres and the influence lines are opinions, not facts. Ratings and listen counts reflect the people who contribute to MusicBrainz and ListenBrainz, not everyone. Album lists can include regional editions, and some release days are placeholders.</p>
+      <p class="muted">See something wrong? <a href="https://github.com/JuanAguirre-95/loud-atlas/issues/new/choose" target="_blank" rel="noopener">Tell us</a>.</p>
     </section>
 
     <section>
@@ -295,6 +297,10 @@
     <button id="gClose" aria-label="Back to the timeline" title="Back to the timeline (Esc)">✕ Timeline</button>
   </div>
   <p id="gHint" class="muted">Drag to pan, scroll to zoom, drag an act to move it. Click an act for its details, double-click to find it on the timeline. Colour = genre. Solid line = influence, dashed = shared member.</p>
+</div>
+<div id="vizview" hidden>
+  <div id="vizbar" role="tablist" aria-label="Insights views"></div>
+  <div id="vizbody"></div>
 </div>
 <div id="listview" hidden role="dialog" aria-modal="true" aria-labelledby="lvTitle">
   <div class="lvbox">

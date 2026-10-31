@@ -34,6 +34,7 @@ const mb = has('musicbrainz.json') ? read(path.join(data, 'musicbrainz.json')) :
 const links = has('links.json') ? read(path.join(data, 'links.json')) : {};
 const summaries = has('summaries.json') ? read(path.join(data, 'summaries.json')) : {};
 const pop = has('popularity.json') ? read(path.join(data, 'popularity.json')) : null;
+const sources = has('meta.json') ? read(path.join(data, 'meta.json')) : {};
 const checks = has('release-checks.json') ? read(path.join(data, 'release-checks.json')) : {};   // second-source years from tools/verify-releases.js
 const manual = has('releases-manual.json') ? read(path.join(data, 'releases-manual.json')) : {};
 
@@ -118,6 +119,25 @@ if (pop) for (const [id, p] of Object.entries(pop)) if (p.songs && p.songs.lengt
 const { layout } = require('./lib/graph-layout');
 const pos = layout(acts, genres.map(g => g.id), acts.flatMap(a => (a.from || []).map(p => [p, a.id])), [...pair.values()].map(e => [e.a, e.b]));
 
+// world map for the scene view: Natural Earth 110m countries (public domain) decoded from TopoJSON into plain rings,
+// coordinates in tenths of a degree, Antarctica dropped. { "<country name>": [ [x0,y0,x1,y1,...] (outer rings) ] }
+function geo() {
+  if (!has('geo/world-110m.json')) return null;
+  const t = JSON.parse(fs.readFileSync(path.join(data, 'geo', 'world-110m.json'), 'utf8'));
+  const [sx, sy] = t.transform.scale, [tx, ty] = t.transform.translate;
+  const arcs = t.arcs.map(arc => { let x = 0, y = 0; return arc.map(([dx, dy]) => { x += dx; y += dy; return [x * sx + tx, y * sy + ty]; }); });
+  const ring = idx => { const pts = []; idx.forEach(i => { const a = i < 0 ? [...arcs[~i]].reverse() : arcs[i]; pts.push(...(pts.length ? a.slice(1) : a)); }); return pts.flatMap(p => [Math.round(p[0] * 10), Math.round(p[1] * 10)]); };
+  const out = {};
+  for (const g of t.objects.countries.geometries) {
+    const name = g.properties.name;
+    if (name === 'Antarctica') continue;
+    const polys = g.type === 'Polygon' ? [g.arcs] : g.type === 'MultiPolygon' ? g.arcs : [];
+    out[name] = polys.map(p => { const r = ring(p[0]); let jump = false; for (let i = 2; i < r.length; i += 2) if (Math.abs(r[i] - r[i - 2]) > 1800) jump = true; if (jump) for (let i = 0; i < r.length; i += 2) if (r[i] < 0) r[i] += 3600; return r; });   // rings that cross the 180th meridian continue past it instead of wrapping
+  }
+  return out;
+}
+const similar = has('similar.json') ? read(path.join(data, 'similar.json')) : {};
+
 // ---------- write ----------
 const stamp = new Date().toISOString().slice(0, 10);
 const w = (file, varName, obj) => {
@@ -126,11 +146,12 @@ const w = (file, varName, obj) => {
 };
 const sizes = {};
 sizes['bundle.core.js'] = w('bundle.core.js', 'ATLAS', {
-  generated: stamp, topN: TOP_N, meanRating: +MEAN.toFixed(2), criteria: { acclaimed: true, popular: !!pop },
+  generated: stamp, sources, topN: TOP_N, meanRating: +MEAN.toFixed(2), criteria: { acclaimed: true, popular: !!pop },
   genres, subOrder,
   acts: acts.map(a => { const o = { ...a }; delete o.vsrc; delete o.review; return o; }),
   members, shared: [...pair.values()], rel: core.rel, pos,
 });
+sizes['bundle.viz.js'] = w('bundle.viz.js', 'ATLAS_VIZ', { geo: geo(), similar });
 sizes['bundle.releases.js'] = w('bundle.releases.js', 'ATLAS_RELEASES', core.all);
 sizes['bundle.summaries.js'] = w('bundle.summaries.js', 'ATLAS_SUMMARIES', summaries);
 sizes['bundle.links.js'] = w('bundle.links.js', 'ATLAS_LINKS', links);

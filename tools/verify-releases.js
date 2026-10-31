@@ -13,6 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { cachedGet } = require('./lib/http');
+const { stamp } = require('./lib/meta');
 const { writeKeyed, read } = require('./lib/json');
 
 const data = path.join(__dirname, '..', 'data');
@@ -70,6 +71,7 @@ for (const a of acts) {
     if (top) c.final = top; else delete c.final;
   }
   writeKeyed(path.join(data, 'release-checks.json'), out);
+  stamp('release_years_checked');
   const known = todo.filter(x => out[x.rg] && out[x.rg].wd != null);
   const bad = known.filter(x => !out[x.rg].ok), fixed = bad.filter(x => out[x.rg].final != null && out[x.rg].final !== x.y), open = bad.filter(x => out[x.rg].final == null);
   const summary = `Wikidata knows ${known.length} of ${todo.length} key albums; ${known.length - bad.length} agree with MusicBrainz, ${bad.length} differ: ${bad.length - fixed.length - open.length} settled in MusicBrainz's favour, ${fixed.length} corrected by two sources, ${open.length} undecided.`;

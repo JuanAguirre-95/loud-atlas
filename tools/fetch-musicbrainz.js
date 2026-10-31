@@ -9,6 +9,7 @@
 
 const path = require('path');
 const { cachedGet } = require('./lib/http');
+const { stamp } = require('./lib/meta');
 const { writeKeyed, read } = require('./lib/json');
 
 const data = path.join(__dirname, '..', 'data');
@@ -85,5 +86,6 @@ async function artist(mbid) {
   }
   writeKeyed(path.join(data, 'musicbrainz.json'), out);
   writeKeyed(path.join(data, 'members.json'), members);
+  stamp('musicbrainz');
   console.log(`\nWrote data/musicbrainz.json (${Object.keys(out).length} acts) and data/members.json (${Object.keys(members).length}).`);
 })();

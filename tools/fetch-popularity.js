@@ -13,6 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { cachedGet } = require('./lib/http');
+const { stamp } = require('./lib/meta');
 const { writeKeyed, read } = require('./lib/json');
 
 const token = process.env.LISTENBRAINZ_TOKEN;
@@ -71,5 +72,6 @@ function topSongs(rows) {
     if (n % 40 === 0) writeKeyed(path.join(data, 'popularity.json'), out);
   }
   writeKeyed(path.join(data, 'popularity.json'), out);
+  stamp('listens');
   console.log(`\nWrote data/popularity.json (${Object.keys(out).length} acts, ${failed} errors).`);
 })();

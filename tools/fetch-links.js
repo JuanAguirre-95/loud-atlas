@@ -11,6 +11,7 @@
 const path = require('path');
 const fs = require('fs');
 const { cachedGet } = require('./lib/http');
+const { stamp } = require('./lib/meta');
 const { writeKeyed, read } = require('./lib/json');
 
 const data = path.join(__dirname, '..', 'data');
@@ -67,5 +68,6 @@ function parse(j) {
   }
   for (const id of Object.keys(out)) if (!acts.some(a => a.id === id && a.mbid)) delete out[id];
   writeKeyed(file, out);
+  stamp('links');
   console.log(`\nWrote data/links.json (${Object.keys(out).length} acts)`);
 })();

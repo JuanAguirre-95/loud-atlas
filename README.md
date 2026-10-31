@@ -18,6 +18,12 @@ connect.
 
 ![Relationship graph](docs/graph.png)
 
+![Insights: scene map](docs/insights-map.png)
+
+![Insights: era fingerprint](docs/insights-era.png)
+
+![Insights: listening neighbourhoods](docs/insights-neighbourhoods.png)
+
 ## Features
 
 | | |
@@ -38,6 +44,7 @@ connect.
 | **Filters** | Collapsible sections with a summary of each; genre, bands vs solo artists, country, year range. Each genre in the list has an **arrow** that opens its subgenres: click one to show or hide it, Alt+click to show only that one. A half-filled marker means some of a genre's subgenres are hidden. |
 | **Subgenre lanes** | Each genre lane splits into subgenre groups (for example Bay Area, Teutonic and Brazilian thrash). |
 | **About tab** | Explains the map, links to this repository and the issue tracker, and lists the data sources. |
+| **Insights** | Press `V` for nine more views: a **scene map** of where acts come from over time, **lineup flow** (where a band's musicians came from and went), an **era fingerprint** of each decade's genre mix, an **album constellation** of every rated album, a radial **influence tree**, a **six-degrees game** with a daily puzzle, a **release calendar**, a **genre matrix** of who influences whom across genres, and **listening neighbourhoods** (acts people listen to together, from ListenBrainz). |
 | **Relationship graph** | Press `G`: the acts that match your filters as a network, coloured by genre, with influences and shared members as lines. Drag, zoom, click an act for its details, double-click to find it on the timeline. |
 | **Two ways to pick key releases** | In the **View** tab choose the most acclaimed albums (community ratings) or the most listened (ListenBrainz). |
 | **Listen** | A **Listen** menu in each act's details: links to its page on Spotify, Apple Music, YouTube, Bandcamp and others (from MusicBrainz), or a search link where none is stored. Nothing is embedded or loaded from those services until you click. |
@@ -123,8 +130,15 @@ the page loads, so the site still opens straight from a file with no server.
 | `data/links.json` | Official website, social profiles, listening pages (Spotify, Apple Music, Bandcamp, YouTube, ...), reference pages | `node tools/fetch-links.js` (MusicBrainz) |
 | `data/summaries.json` | Short Wikipedia summaries | `node tools/fetch-summaries.js` |
 | `data/popularity.json` | Listen counts and the top 10 songs per act (optional) | `node tools/fetch-popularity.js` with a ListenBrainz token |
+| `data/similar.json` | "Listeners also like" neighbours between acts | `node tools/fetch-similar.js` (ListenBrainz Labs, no token) |
+| `data/geo/world-110m.json` | World map outlines (Natural Earth, public domain) | downloaded once from the `world-atlas` package |
+| `data/meta.json` | When each source was last pulled | written by the fetch tools |
 | `data/release-checks.json` | Second-source release years | `node tools/verify-releases.js` |
 | `data/export/*.csv` | Spreadsheet copies of the above | `node tools/export-csv.js` |
+
+### How current and how accurate
+
+The data is a **snapshot, not live**: it was downloaded on the dates shown in the About tab (recorded in `data/meta.json` by each fetch tool) and bundled with the site. It is **not fact-checked by a person**: years were compared automatically against Wikipedia, Wikidata and MusicBrainz, which can all be wrong; genres and influence lines are opinion; ratings and listen counts reflect their contributors. The app says so in the About tab and under the filters.
 
 ### How the key releases are chosen
 
@@ -192,6 +206,7 @@ hour or so.
 node tools/fetch-musicbrainz.js   # albums, ratings, lineups
 node tools/fetch-links.js         # websites, social, listening pages
 node tools/fetch-summaries.js     # Wikipedia summaries
+node tools/fetch-similar.js       # listening neighbourhoods (no token needed)
 node tools/verify.js --write      # check dates against three sources
 node tools/verify-releases.js     # check release years against Wikidata and Wikipedia
 node tools/validate.js            # sanity-check every JSON file
@@ -227,6 +242,7 @@ stripped out. Upload or serve the contents of `dist/`.
 ```
 index.html        page shell
 style.css         styling
+viz.js            Insights views (loaded on first use)
 app.js            canvas renderer, pan/zoom, filters, search, graph view, panels, time brush
 data/*.json       the dataset (source of truth)
 data/bundle.*.js  generated from the JSON by tools/build-data.js (what the page loads)

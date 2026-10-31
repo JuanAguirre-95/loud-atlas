@@ -1310,11 +1310,13 @@ function stepBand(delta) {
 window.addEventListener('keydown', e => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (!$('listview').hidden) { if (e.key === 'Escape') closeList(); return; }
+  if (vizOpen && e.key === 'Escape' && !e.target.matches('input, select, textarea')) { closeViz(); return; }
   if (gv.open && e.key === 'Escape' && !e.target.matches('input, select, textarea')) { graphClose(); return; }
   const t = e.target, typing = t.matches('input, select, textarea');
   if (typing) { if (e.key === 'Escape') t.blur(); return; }
   if (e.key === '/') { e.preventDefault(); setPanel(true); showTab('filters'); $('search').focus(); return; }
   if (e.key === 'l' || e.key === 'L') { openList(); return; }
+  if (e.key === 'v' || e.key === 'V') { vizOpen ? closeViz() : openViz(); return; }
   if (e.key === 'g' || e.key === 'G') { gv.open ? graphClose() : graphOpen(); return; }
   if (e.key === 't' || e.key === 'T') { $('themeBtn').click(); return; }
   if (t !== canvas && t !== document.body && t.matches('button, a, [role="button"], [role="slider"], [tabindex]')) return;   // let controls keep their keys
@@ -1999,6 +2001,7 @@ function graphNodeAt(px, py) {
 
 function graphOpen() {
   if (gv.open) return;
+  if (vizOpen) closeViz();
   gv.open = true;
   document.body.classList.add('graphopen');
   $('graphview').hidden = false;
@@ -2074,8 +2077,35 @@ gcv.addEventListener('wheel', e => {
   graphDraw();
 }, { passive: false });
 
+// ---------- Insights: extra visualizations in viz.js, loaded on first use ----------
+let vizOpen = false;
+function openViz(tab) {
+  if (gv.open) graphClose();
+  const go = () => { vizOpen = true; document.body.classList.add('vizopen', 'graphopen'); $('vizview').hidden = false; $('vizIcon').setAttribute('aria-pressed', 'true'); window.AtlasViz.show(tab || window.AtlasViz.current || 'map'); };
+  if (window.AtlasViz) return go();
+  loadScript('viz.js', ok => { if (!ok) { alert('Could not load viz.js'); return; } const a = ok && window.ATLAS_VIZ ? 1 : 0; if (window.ATLAS_VIZ) go(); else loadScript('data/bundle.viz.js', ok2 => ok2 ? go() : alert('Could not load data/bundle.viz.js')); });
+}
+function closeViz() {
+  if (!vizOpen) return;
+  vizOpen = false; document.body.classList.remove('vizopen', 'graphopen'); $('vizview').hidden = true; $('vizIcon').setAttribute('aria-pressed', 'false'); $('tip').hidden = true; dirty = true;
+}
+function openDay(m, d) { closeViz(); setPanel(true); dayMD = [m, d]; showTab('today'); renderToday(); }
+$('vizIcon').onclick = () => (vizOpen ? closeViz() : openViz());
+window.AtlasApp = { A, BANDS, GENRES, genreById, bandById, children, esc, col, NOW, T0, select, loadAlbums, bandFromInput, openDay, closeViz };
 onLayout = graphRefresh;
 onDetail = () => { if (gv.open) graphDraw(); };
+
+// ---------- data freshness: when each source was pulled, and what that does and does not mean ----------
+(() => {
+  const S = A.sources || {}, fmt = d => { const t = new Date(d + 'T00:00:00'); return isNaN(t) ? d : t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); };
+  const rows = [['musicbrainz', 'Albums, ratings, lineups', 'MusicBrainz'], ['links', 'Official links', 'MusicBrainz'], ['summaries', 'Summaries', 'Wikipedia'], ['similar', 'Listening neighbourhoods', 'ListenBrainz'],
+    ['listens', 'Listen counts and top songs', 'ListenBrainz'], ['dates_checked', 'Years active last compared', 'Wikipedia, Wikidata, MusicBrainz'], ['release_years_checked', 'Release years last compared', 'Wikidata, Wikipedia']];
+  const have = rows.filter(r => S[r[0]]);
+  $('aboutSnapshot').innerHTML = have.map(([k, what, from]) => '<li>' + what + ' (' + from + '): <b>' + fmt(S[k]) + '</b></li>').join('') || '<li>No pull dates recorded.</li>';
+  const newest = S.musicbrainz || have.map(r => S[r[0]]).sort().pop();
+  $('dataNote').innerHTML = 'Data snapshot from ' + (newest ? fmt(newest) : 'at an unknown date') + '. Not live, not fact-checked. <a href="#" id="dataNoteLink">Details</a>';
+  $('dataNoteLink').onclick = e => { e.preventDefault(); showTab('about'); $('aboutData').scrollIntoView({ block: 'start' }); };
+})();
 
 // tab panels for assistive technology
 ['tab-filters', 'tab-view', 'tab-explore', 'tab-about'].forEach(id => $(id).setAttribute('role', 'tabpanel'));
@@ -2146,6 +2176,7 @@ if (document.fonts) {
     $('pathA').value = bandById[hp.get('a')].name; $('pathB').value = bandById[hp.get('b')].name; showTab('connect'); runPath();
   }
   if (hp.get('cmp')) { compareIds = hp.get('cmp').split(',').filter(i => bandById[i]).slice(0, 3); showTab('compare'); renderCompare(true); }
+  if (hp.get('viz')) openViz(hp.get('viz'));                                     // #viz=matrix opens an Insights view
   if (hp.get('list')) openList();                                                // #list=1 opens the list view
   if (hp.get('md')) { const q = hp.get('md').split('-').map(Number); if (q.length === 2 && q[0] >= 1 && q[0] <= 12) dayMD = q; }
   if (hp.get('tab') === 'today') renderToday();

@@ -22,7 +22,7 @@ const copy = f => {
   if (!fs.existsSync(path.join(root, f))) { console.log('skip (missing):', f); return; }
   fs.copyFileSync(path.join(root, f), path.join(dist, f));
 };
-['index.html', 'style.css', 'app.js', 'fonts.css', 'og.png'].forEach(copy);
+['index.html', 'style.css', 'app.js', 'viz.js', 'fonts.css', 'og.png'].forEach(copy);
 fs.readdirSync(path.join(root, 'data')).filter(f => /^bundle..*.js$/.test(f)).forEach(f => copy('data/' + f));
 fs.cpSync(path.join(root, 'fonts'), path.join(dist, 'fonts'), { recursive: true });
 

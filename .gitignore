@@ -3,7 +3,16 @@ dist/
 tools/.cache/
 tools/*.log
 
+# secrets: never commit these (API tokens, client ids and secrets)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets*
+
 # OS / editor
 .DS_Store
 Thumbs.db
 .vscode/
+.env

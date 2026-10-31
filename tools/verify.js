@@ -17,6 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 const { cachedGet } = require('./lib/http');
+const { stamp } = require('./lib/meta');
 const { writeRecords, read } = require('./lib/json');
 
 const data = path.join(__dirname, '..', 'data');
@@ -187,6 +188,7 @@ async function wikipedia(titles) {
       '', '## Needs review (nothing changed for the disputed field)', '', ...findings.filter(f => f.kind === 'review').map(line),
       '', '## Unchecked (no source found)', '', ...findings.filter(f => f.kind === 'unchecked').map(f => `- ${f.name}`), ''];
     fs.writeFileSync(path.join(__dirname, 'verify-report.md'), md.join('\n'));
+    stamp('dates_checked');
     console.log('\nWrote data/acts.json and tools/verify-report.md');
   } else console.log('\n(dry run: nothing written. Use --write to apply.)');
 })();
