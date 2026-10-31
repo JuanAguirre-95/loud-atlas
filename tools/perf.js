@@ -9,6 +9,7 @@
 // Needs Node 22+ (global WebSocket). Frame times come from software rendering, so compare runs against each other
 // rather than reading them as absolute numbers.
 
+require('./lib/browser-cleanup');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const os = require('os');
