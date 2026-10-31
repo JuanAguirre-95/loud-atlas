@@ -44,7 +44,45 @@ const manual = has('releases-manual.json') ? read(path.join(data, 'releases-manu
 // ---------- which MusicBrainz "studio albums" are real albums ----------
 const norm = t => t.toLowerCase().replace(/\((remaster|deluxe|expanded|anniversary|bonus|mono|stereo|us |uk )[^)]*\)/g, ' ').replace(/[\[\]]/g, ' ')
   .replace(/[‘’'`´]/g, '').replace(/&/g, 'and').replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, ' ').trim();
-const JUNK = /\b(remaster(ed)?|deluxe|anniversary|collection|greatest hits|best of|anthology|box set|rarities|b-?sides|bootleg|karaoke|tribute|lost sessions|expanded|reissue|re-?recorded|the very best|essential|demos?|sessions?|rehearsals?|tapes|broadcasts?|outtakes|alternate|tour|mixes|radio|complete|bbc|recordings|archives?)\b/i;
+// Titles containing any of these are dropped as reissues or extras. Each entry is [regex alternative, the word shown on the "How it works" page],
+// so the filter and the page are built from this one list. The check below fails the build if a shown word would not actually be filtered.
+const JUNK_TERMS = [
+  ["remaster(ed)?", "remaster"],
+  ["deluxe", "deluxe"],
+  ["anniversary", "anniversary"],
+  ["collection", "collection"],
+  ["greatest hits", "greatest hits"],
+  ["best of", "best of"],
+  ["anthology", "anthology"],
+  ["box set", "box set"],
+  ["rarities", "rarities"],
+  ["b-?sides", "b-sides"],
+  ["bootleg", "bootleg"],
+  ["karaoke", "karaoke"],
+  ["tribute", "tribute"],
+  ["lost sessions", "lost sessions"],
+  ["expanded", "expanded"],
+  ["reissue", "reissue"],
+  ["re-?recorded", "re-recorded"],
+  ["the very best", "the very best"],
+  ["essential", "essential"],
+  ["demos?", "demo"],
+  ["sessions?", "sessions"],
+  ["rehearsals?", "rehearsals"],
+  ["tapes", "tapes"],
+  ["broadcasts?", "broadcasts"],
+  ["outtakes", "outtakes"],
+  ["alternate", "alternate"],
+  ["tour", "tour"],
+  ["mixes", "mixes"],
+  ["radio", "radio"],
+  ["complete", "complete"],
+  ["bbc", "bbc"],
+  ["recordings", "recordings"],
+  ["archives?", "archives"],
+];
+const JUNK = new RegExp('\\b(' + JUNK_TERMS.map(t => t[0]).join('|') + ')\\b', 'i');
+for (const [, word] of JUNK_TERMS) if (!JUNK.test('x ' + word + ' y')) throw new Error('JUNK_TERMS: "' + word + '" is shown on the page but the filter would not drop it');
 const LIVE = /\(live\b|\blive\b(?!\s*(wire|forever|and let|to tell))|\bin concert\b|\bunplugged\b|\bboth sides of\b/i;
 const YEARTAIL = /\s(19|20)\d\d(-(19|20)?\d\d)?$/;
 const clean = s => s.replace(/[’‘`´]/g, "'").replace(/[‐‑–—]/g, '-').replace(/\s+/g, ' ').trim();
@@ -174,8 +212,8 @@ const genreInfo = { articles: has('genre-articles.json') ? read(path.join(data, 
 const rc = Object.values(checks);
 const method = {
   constants: { priorVotes: PRIOR_VOTES, minN: MIN_N, maxN: MAX_N, close: CLOSE, closeC: CLOSE_C, listenShare: LISTEN_SHARE, thinVotes: THIN_VOTES, minVotes: MIN_VOTES, fewRatings: 10 },
-  // words that disqualify an album title (kept in step with JUNK above)
-  junkWords: ['remaster', 'deluxe', 'anniversary', 'collection', 'greatest hits', 'best of', 'anthology', 'box set', 'rarities', 'b-sides', 'bootleg', 'karaoke', 'tribute', 'lost sessions', 'expanded', 'reissue', 're-recorded', 'the very best', 'essential', 'demo', 'sessions', 'rehearsals', 'tapes', 'broadcasts', 'outtakes', 'alternate', 'tour', 'mixes', 'radio', 'complete', 'bbc', 'recordings', 'archives'],
+  // words that disqualify an album title, from the same list the filter uses
+  junkWords: JUNK_TERMS.map(t => t[1]),
   eligibleAlbums: Object.values(core.all).reduce((n, l) => n + l.filter(x => !x[3]).length, 0),
   actsWithRatings: stat.acclaimed, actsWithListens: stat.popular, balancedFromListens: stat.balancedFromListens,
   releaseChecks: { checked: rc.length, wikidataKnows: rc.filter(c => c.wd != null).length, agree: rc.filter(c => c.ok).length, corrected: rc.filter(c => c.final != null && c.final !== c.mb).length },
