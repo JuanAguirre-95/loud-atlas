@@ -168,6 +168,7 @@ function geo() {
   return out;
 }
 const similar = has('similar.json') ? read(path.join(data, 'similar.json')) : {};
+const genreInfo = { articles: has('genre-articles.json') ? read(path.join(data, 'genre-articles.json')) : {}, summaries: has('genre-summaries.json') ? read(path.join(data, 'genre-summaries.json')) : {} };
 
 // ---------- write ----------
 const stamp = new Date().toISOString().slice(0, 10);
@@ -182,7 +183,7 @@ sizes['bundle.core.js'] = w('bundle.core.js', 'ATLAS', {
   acts: acts.map(a => { const o = { ...a }; delete o.vsrc; delete o.review; return o; }),
   members, shared: [...pair.values()], rel: core.rel, pos,
 });
-sizes['bundle.viz.js'] = w('bundle.viz.js', 'ATLAS_VIZ', { geo: geo(), similar });
+sizes['bundle.viz.js'] = w('bundle.viz.js', 'ATLAS_VIZ', { geo: geo(), similar, genreInfo });
 sizes['bundle.releases.js'] = w('bundle.releases.js', 'ATLAS_RELEASES', core.all);
 sizes['bundle.summaries.js'] = w('bundle.summaries.js', 'ATLAS_SUMMARIES', summaries);
 sizes['bundle.links.js'] = w('bundle.links.js', 'ATLAS_LINKS', links);

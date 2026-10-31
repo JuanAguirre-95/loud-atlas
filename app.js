@@ -1068,7 +1068,7 @@ function renderDetail() {
   el.innerHTML = `
     <button class="close" aria-label="Close">×</button>
     <h3>${esc(b.name)}</h3>
-    <div class="tags"><span class="tag click" data-genre="${b.genre}" title="Show only ${esc(g.name)}">${esc(g.name)}</span>${b.sub && b.sub !== 'Other' ? `<span class="tag ghost click" data-genre="${b.genre}" data-sub="${esc(b.sub)}" title="Show only ${esc(b.sub)}">${esc(b.sub)}</span>` : ''}<span class="tag ghost">${b.kind === 'artist' ? 'Solo artist' : 'Band'}</span></div>
+    <div class="tags"><span class="tag click" data-genre="${b.genre}" title="Show only ${esc(g.name)}">${esc(g.name)}</span>${b.sub && b.sub !== 'Other' ? `<span class="tag ghost click" data-genre="${b.genre}" data-sub="${esc(b.sub)}" title="Show only ${esc(b.sub)}">${esc(b.sub)}</span>` : ''}<span class="tag ghost">${b.kind === 'artist' ? 'Solo artist' : 'Band'}</span><span class="tag ghost click" data-guide="${b.genre}" title="Open the guide to ${esc(g.name)}">Genre guide</span></div>
 
     ${listenMenu(b)}
     <div class="qa"><button data-qa="compare" title="Compare this act with others">⟷ Compare</button><button data-qa="connect" title="Find how this act connects to another">⇢ Connect</button></div>
@@ -1102,6 +1102,8 @@ $('detail').addEventListener('click', e => {
   if (e.target.closest('.close')) { selected = null; renderDetail(); dirty = true; return; }
   const qa = e.target.closest('[data-qa]');
   if (qa && selected) { qa.dataset.qa === 'compare' ? addCompare(selected.id) : startPathFrom(selected); return; }
+  const gd = e.target.closest('[data-guide]');
+  if (gd) { openGuide(gd.dataset.guide); return; }
   const gt = e.target.closest('[data-genre]');
   if (gt) { gt.dataset.sub ? filterSub(gt.dataset.genre, gt.dataset.sub) : filterGenre(gt.dataset.genre); return; }
   const fb = e.target.closest('[data-focus]');
@@ -2096,9 +2098,9 @@ gcv.addEventListener('wheel', e => {
 
 // ---------- Insights: extra visualizations in viz.js, loaded on first use ----------
 let vizOpen = false;
-function openViz(tab) {
+function openViz(tab, genre) {
   if (gv.open) graphClose();
-  const go = () => { vizOpen = true; document.body.classList.add('vizopen', 'graphopen'); $('vizview').hidden = false; $('vizIcon').setAttribute('aria-pressed', 'true'); window.AtlasViz.show(tab || window.AtlasViz.current || 'map'); };
+  const go = () => { vizOpen = true; document.body.classList.add('vizopen', 'graphopen'); $('vizview').hidden = false; $('vizIcon').setAttribute('aria-pressed', 'true'); if (genre !== undefined) window.AtlasViz.setGuide(genre); window.AtlasViz.show(tab || window.AtlasViz.current || 'guide'); };
   if (window.AtlasViz) return go();
   loadScript('viz.js', ok => { if (!ok) { alert('Could not load viz.js'); return; } const a = ok && window.ATLAS_VIZ ? 1 : 0; if (window.ATLAS_VIZ) go(); else loadScript('data/bundle.viz.js', ok2 => ok2 ? go() : alert('Could not load data/bundle.viz.js')); });
 }
@@ -2108,7 +2110,8 @@ function closeViz() {
 }
 function openDay(m, d) { closeViz(); setPanel(true); dayMD = [m, d]; showTab('today'); renderToday(); }
 $('vizIcon').onclick = () => (vizOpen ? closeViz() : openViz());
-window.AtlasApp = { A, BANDS, GENRES, genreById, bandById, children, esc, col, NOW, T0, select, loadAlbums, bandFromInput, openDay, closeViz };
+const openGuide = id => openViz('guide', id);
+window.AtlasApp = { openGuide, A, BANDS, GENRES, genreById, bandById, children, esc, col, NOW, T0, select, loadAlbums, bandFromInput, openDay, closeViz };
 onLayout = graphRefresh;
 onDetail = () => { if (gv.open) graphDraw(); };
 
@@ -2193,7 +2196,7 @@ if (document.fonts) {
     $('pathA').value = bandById[hp.get('a')].name; $('pathB').value = bandById[hp.get('b')].name; showTab('connect'); runPath();
   }
   if (hp.get('cmp')) { compareIds = hp.get('cmp').split(',').filter(i => bandById[i]).slice(0, 3); showTab('compare'); renderCompare(true); }
-  if (hp.get('viz')) openViz(hp.get('viz'));                                     // #viz=matrix opens an Insights view
+  if (hp.get('viz')) openViz(hp.get('viz'), hp.get('genre') || undefined);                                     // #viz=matrix opens an Insights view
   if (hp.get('list')) openList();                                                // #list=1 opens the list view
   if (hp.get('md')) { const q = hp.get('md').split('-').map(Number); if (q.length === 2 && q[0] >= 1 && q[0] <= 12) dayMD = q; }
   if (hp.get('tab') === 'today') renderToday();

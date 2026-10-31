@@ -1,0 +1,22 @@
+{
+ "roots": ["Blues", "Rock and roll"],
+ "funk": ["Funk", "Soul music", "Jazz fusion"],
+ "classic": ["Psychedelic rock", "Classic rock", "British Invasion"],
+ "hard": ["Hard rock"],
+ "glam": ["Glam metal", "Glam rock"],
+ "punk": ["Punk rock", "Hardcore punk"],
+ "postpunk": ["Post-punk", "New wave music"],
+ "heavy": ["Heavy metal music", "New Wave of British Heavy Metal"],
+ "thrash": ["Thrash metal"],
+ "death": ["Death metal", "Grindcore"],
+ "black": ["Black metal"],
+ "doom": ["Doom metal", "Stoner rock"],
+ "power": ["Power metal"],
+ "prog": ["Progressive rock", "Progressive metal"],
+ "postrock": ["Post-rock", "Shoegaze"],
+ "gothic": ["Gothic metal", "Symphonic metal"],
+ "grunge": ["Grunge", "Alternative rock"],
+ "industrial": ["Industrial metal", "Nu metal"],
+ "modern": ["Metalcore", "Deathcore"],
+ "roots|Delta & Chicago Blues": "Delta blues", "roots|Rock 'n' Roll": "Rock and roll", "funk|Funk & Soul": "Funk", "funk|Jazz Fusion": "Jazz fusion", "classic|British Invasion": "British Invasion", "classic|Proto-punk": "Proto-punk", "classic|Psychedelic & Blues Rock": "Psychedelic rock", "classic|British Blues Boom": "British blues", "classic|Folk Rock": "Folk rock", "classic|Garage & Surf": "Garage rock", "classic|Roots & Southern Rock": "Southern rock", "hard|Proto-metal": "Proto-metal", "hard|Classic Hard Rock": "Hard rock", "glam|Hair Metal": "Glam metal", "glam|Glam Rock": "Glam rock", "punk|Punk": "Punk rock", "punk|Hardcore": "Hardcore punk", "punk|Crossover": "Crossover thrash", "punk|Post-hardcore & Emo": "Post-hardcore", "punk|Pop Punk": "Pop punk", "postpunk|New Wave": "New wave music", "postpunk|Post-Punk": "Post-punk", "postpunk|Goth Rock": "Gothic rock", "heavy|NWOBHM": "New Wave of British Heavy Metal", "thrash|Bay Area": "Bay Area thrash metal", "thrash|Teutonic": "Teutonic thrash metal", "thrash|Groove": "Groove metal", "death|Grindcore & UK Death": "Grindcore", "death|American Death Metal": "Death metal", "death|Swedish Death Metal": "Swedish death metal", "death|Melodic Death": "Melodic death metal", "death|Technical & Blackened": "Technical death metal", "black|Symphonic Black": "Symphonic black metal", "doom|Traditional Doom": "Doom metal", "doom|Stoner Rock": "Stoner rock", "doom|Stoner & Sludge": "Sludge metal", "doom|Death-Doom": "Death-doom", "doom|Drone": "Drone metal", "doom|Post-metal": "Post-metal", "power|Epic & Symphonic": "Symphonic metal", "prog|Classic Prog": "Progressive rock", "prog|Progressive Metal": "Progressive metal", "prog|Djent & Tech": "Djent", "prog|Krautrock & Space": "Krautrock", "postrock|Post-Rock": "Post-rock", "postrock|Shoegaze & Dream Pop": "Shoegaze", "gothic|Gothic Metal": "Gothic metal", "gothic|Symphonic": "Symphonic metal", "grunge|Alt & Noise Rock": "Noise rock", "grunge|Grunge": "Grunge", "grunge|Post-grunge": "Post-grunge", "grunge|Indie & College Rock": "College rock", "grunge|Britpop": "Britpop", "industrial|Nu & Alt Metal": "Nu metal", "industrial|Industrial": "Industrial music", "modern|Metalcore": "Metalcore", "modern|Deathcore": "Deathcore"
+}

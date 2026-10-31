@@ -538,3 +538,59 @@ label.inl { display: inline-flex; flex-direction: row; gap: 5px; }
 #aboutData p { line-height: 1.45; }
 #detail .rate.few { opacity: .8; }
 #detail .rate.few em { font-style: normal; font-size: 11px; color: var(--muted); }
+
+/* ---------- genre guide ---------- */
+.gd-layout { display: flex; gap: 22px; align-items: flex-start; }
+.gd-nav { flex: none; width: 210px; position: sticky; top: 0; display: flex; flex-direction: column; gap: 2px; max-height: calc(100vh - 120px); overflow-y: auto; }
+.gd-nav button { --c: var(--accent); display: flex; align-items: center; gap: 8px; text-align: left; background: none; border: 0; border-radius: 6px; padding: 5px 8px; cursor: pointer; color: var(--text); }
+.gd-nav button i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); flex: none; }
+.gd-nav button small { margin-left: auto; color: var(--muted); }
+.gd-nav button:hover { background: var(--hover); }
+.gd-nav button.on { background: var(--hot-b); box-shadow: inset 2px 0 0 var(--c); }
+.gd-main { flex: 1; min-width: 0; max-width: 900px; }
+.gd-main h4 { margin: 20px 0 6px; font-family: 'Cinzel', Georgia, serif; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--head); }
+.gd-main p { line-height: 1.5; margin: 6px 0; }
+.gd-def { border-left: 3px solid var(--c, var(--accent)); padding: 2px 0 2px 12px; margin: 8px 0; }
+.gd-def p { font-size: 15px; }
+.gd-def .src { font-size: 12px; color: var(--muted); }
+.gd-spark { width: 100%; height: 56px; display: block; margin: 8px 0 2px; }
+.gd-cap { font-size: 12px; }
+.gd-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.gd-card { --c: var(--accent); display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 10px 12px; border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 8px; background: var(--surface); cursor: pointer; }
+.gd-card:hover { border-color: var(--c); background: var(--hover); }
+.gd-card b { font-family: 'Cinzel', Georgia, serif; color: var(--c); }
+.gd-card em { font-style: normal; font-size: 12.5px; color: var(--muted); }
+.gd-card small { font-size: 12px; color: var(--text); opacity: .85; }
+.gd-top { list-style: none; margin: 8px 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.gd-top li { display: grid; grid-template-columns: minmax(150px, 220px) 1fr 38px 100px; align-items: center; gap: 10px; }
+.gd-top li small { color: var(--muted); }
+.gd-top li b { text-align: right; }
+.gd-bar { height: 8px; border-radius: 4px; background: var(--line-soft); overflow: hidden; }
+.gd-bar i { display: block; height: 100%; background: var(--c); }
+.gd-subs { display: flex; flex-direction: column; gap: 12px; }
+.gd-sub { border: 1px solid var(--line-soft); border-radius: 8px; padding: 8px 12px 10px; }
+.gd-sub h5 { margin: 0 0 4px; font-size: 15px; }
+.gd-sub h5 small { color: var(--muted); font-weight: 400; margin-left: 6px; }
+.gd-subtop { margin: 6px 0; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.gd-more { margin: 6px 0; }
+.gd-more summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+@media (max-width: 800px) {
+  .gd-layout { flex-direction: column; }
+  .gd-nav { width: 100%; position: static; max-height: none; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; }
+  .gd-nav button { white-space: nowrap; }
+  .gd-top li { grid-template-columns: 1fr 70px 34px; }
+  .gd-top li small { display: none; }
+}
+
+.gd-sparkwrap { position: relative; margin: 8px 0 2px; }
+.gd-sparkwrap .gd-spark { margin: 0; }
+.gd-axis { position: relative; height: 16px; font-size: 11px; color: var(--muted); }
+.gd-axis span { position: absolute; transform: translateX(-50%); }
+.gd-card, .gd-card * , .gd-nav button, .gd-nav button * { text-transform: none; letter-spacing: normal; }
+.gd-card b { text-transform: uppercase; letter-spacing: .05em; }
+.gd-def .src a { color: var(--accent); }
+@media (max-width: 700px) {
+  #vizbar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; }
+  #vizbar button { white-space: nowrap; flex: none; }
+  #vizbar .vz-close { margin-left: 8px; }
+}

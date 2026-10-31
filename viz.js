@@ -28,6 +28,87 @@ function actInput(id, value, ph) {
 const byName = v => App.bandFromInput(v);
 const activeIn = (b, y0, y1) => b.formed <= y1 && (b.ended ?? NOW) >= y0;
 
+// ============ 0. Genre guide: definitions, overview and the most influential acts of each genre ============
+let guideId = '';                                   // '' = the overview of every genre
+let descMemo = null;
+// Influence score: how many acts on this map descend from an act through the influence lines (children, grandchildren, ...).
+function descendantCount(id) {
+  if (!descMemo) {
+    descMemo = new Map();
+    for (const b of BANDS) {
+      const seen = new Set(), stack = [b.id];
+      while (stack.length) for (const c of App.children[stack.pop()] || []) if (!seen.has(c)) { seen.add(c); stack.push(c); }
+      descMemo.set(b.id, seen.size);
+    }
+  }
+  return descMemo.get(id) || 0;
+}
+const topInfluential = (acts, n) => [...acts].map(b => [b, descendantCount(b.id)]).filter(x => x[1] > 0).sort((p, q) => q[1] - p[1] || p[0].formed - q[0].formed).slice(0, n);
+function genreStats(g) {
+  const acts = BANDS.filter(b => b.genre === g.id), perYear = new Array(NOW - T0 + 1).fill(0);
+  for (const b of acts) for (let y = Math.max(b.formed, T0); y <= (b.ended ?? NOW); y++) perYear[y - T0]++;
+  const first = [...acts].sort((x, y) => x.formed - y.formed)[0];
+  const dec = decades.map(d => [d, acts.filter(b => activeIn(b, d, d + 9)).length]).sort((x, y) => y[1] - x[1])[0];
+  const cn = {}; acts.forEach(b => String(b.country).split('/').map(x => x.trim()).filter(Boolean).forEach(c => { cn[c] = (cn[c] || 0) + 1; }));
+  const countries = Object.entries(cn).sort((x, y) => y[1] - x[1]);
+  const from = {}, to = {};
+  for (const b of acts) {
+    for (const p of b.from) { const pg = bandById[p] && bandById[p].genre; if (pg && pg !== g.id) from[pg] = (from[pg] || 0) + 1; }
+    for (const c of App.children[b.id] || []) { const cg = bandById[c] && bandById[c].genre; if (cg && cg !== g.id) to[cg] = (to[cg] || 0) + 1; }
+  }
+  const rank = o => Object.entries(o).sort((x, y) => y[1] - x[1]).slice(0, 4);
+  return { acts, perYear, first, peak: dec, countries, active: acts.filter(b => b.ended == null).length, bands: acts.filter(b => b.kind === 'band').length, from: rank(from), to: rank(to) };
+}
+function spark(perYear, color, labels) {
+  const W = 600, H = 56, max = Math.max(...perYear, 1), n = perYear.length;
+  const pts = perYear.map((c, i) => (i / (n - 1) * W).toFixed(1) + ' ' + (H - 2 - c / max * (H - 8)).toFixed(1));
+  let ticks = '', axis = '';
+  for (let y = 1940; y <= 2020; y += 20) { const x = (y - T0) / (NOW - T0); ticks += '<line x1="' + x * W + '" x2="' + x * W + '" y1="0" y2="' + H + '" class="vz-ring"/>'; axis += '<span style="left:' + (x * 100).toFixed(1) + '%">' + y + '</span>'; }
+  return '<div class="gd-sparkwrap"><svg class="gd-spark" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="Acts active per year, peaking at ' + max + '">' + ticks + '<path d="M0 ' + H + 'L' + pts.join('L') + 'L' + W + ' ' + H + 'Z" fill="' + color + '" fill-opacity=".35"/><path d="M' + pts.join('L') + '" fill="none" stroke="' + color + '" stroke-width="1.6"/></svg>' + (labels ? '<div class="gd-axis">' + axis + '</div>' : '') + '</div>';
+}
+const gInfo = () => window.ATLAS_VIZ.genreInfo || { articles: {}, summaries: {} };
+const wiki = t => { const s = gInfo().summaries[t]; return s ? s : null; };
+const wikiBlock = (t, note) => { const s = wiki(t); return s ? '<div class="gd-def"><p>' + esc(s.text) + '</p><div class="src">Source: <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Wikipedia: ' + esc(s.title) + '</a> (CC BY-SA 4.0)' + (note ? ' · ' + note : '') + '</div></div>' : ''; };
+const topCountries = st => st.countries.slice(0, 3).map(([c, n]) => c + ' (' + n + ')').join(', ');
+function renderGuide() {
+  const g0 = genreById[guideId] || null;
+  const nav = '<nav class="gd-nav" aria-label="Genres"><button data-gd="" class="' + (!g0 ? 'on' : '') + '">All genres</button>' + GENRES.map(g => '<button data-gd="' + g.id + '" class="' + (g0 === g ? 'on' : '') + '" style="--c:' + col(g) + '"><i></i>' + esc(g.name) + '<small>' + BANDS.filter(b => b.genre === g.id).length + '</small></button>').join('') + '</nav>';
+  let main;
+  if (!g0) {
+    main = '<div class="gd-main"><div class="vz-head"><h3>Genre guide</h3><p>What each genre is, how it looks on this map and which acts shaped it. Pick a genre on the left, or a card below. Definitions come from Wikipedia and are the closest article to how this map groups acts; the overview and influence figures are computed from this map&rsquo;s data.</p></div>' +
+      '<div class="gd-cards">' + GENRES.map(g => {
+        const st = genreStats(g), s = wiki((gInfo().articles[g.id] || [])[0]), top = topInfluential(st.acts, 3);
+        return '<button class="gd-card" data-gd="' + g.id + '" style="--c:' + col(g) + '"><b>' + esc(g.name) + '</b><span class="muted">' + st.acts.length + ' acts · ' + st.first.formed + ' to today</span>' + spark(st.perYear, col(g)) +
+          (s ? '<em>' + esc(s.desc) + '</em>' : '') + (top.length ? '<small>Most influential: ' + top.map(([b]) => esc(b.name)).join(', ') + '</small>' : '') + '</button>';
+      }).join('') + '</div></div>';
+  } else {
+    const st = genreStats(g0), color = col(g0), arts = gInfo().articles[g0.id] || [], top = topInfluential(st.acts, 8), maxD = top.length ? top[0][1] : 1;
+    const subs = {}; st.acts.forEach(b => (subs[b.sub] = subs[b.sub] || []).push(b));
+    const order = [...(App.A.subOrder[g0.id] || [])]; Object.keys(subs).forEach(s => { if (!order.includes(s)) order.push(s); });
+    const overview = esc(g0.name) + ' on this map: <b>' + st.acts.length + '</b> acts (' + st.bands + ' bands, ' + (st.acts.length - st.bands) + ' solo artists), starting with <b>' + esc(st.first.name) + '</b> in ' + st.first.formed + '. Most were active in the <b>' + st.peak[0] + 's</b> (' + st.peak[1] + ' acts), mostly from ' + esc(topCountries(st)) + '. ' + st.active + ' are still active.';
+    const flow = (arr, empty) => arr.length ? arr.map(([id, n]) => '<button class="vz-act" data-gd="' + id + '" style="--c:' + col(genreById[id]) + '">' + esc(genreById[id].name) + ' <small>' + n + '</small></button>').join(' ') : '<span class="muted">' + empty + '</span>';
+    main = '<div class="gd-main" style="--c:' + color + '"><div class="vz-head"><h3 style="color:' + color + '">' + esc(g0.name) + '</h3></div>' +
+      (arts.length ? wikiBlock(arts[0]) : '<p class="muted">No definition is linked for this genre.</p>') +
+      (arts.length > 1 ? '<details class="gd-more"><summary>Related definitions</summary>' + arts.slice(1).map(t => wikiBlock(t)).join('') + '</details>' : '') +
+      '<h4>Overview</h4><p>' + overview + '</p>' + spark(st.perYear, color, true) + '<div class="muted gd-cap">Acts active per year, 1930 to today</div>' +
+      '<h4>Most influential acts</h4><p class="muted">Ranked by how many acts on this map descend from them through the influence lines (children, grandchildren and so on). The lines are editorial judgements, so read this as "most influential on this map", not as a verdict.</p>' +
+      (top.length ? '<ol class="gd-top">' + top.map(([b, d]) => '<li><button class="vz-act" data-act="' + b.id + '" style="--c:' + color + '">' + esc(b.name) + '</button><span class="gd-bar"><i style="width:' + Math.round(d / maxD * 100) + '%"></i></span><b>' + d + '</b><small>' + years(b) + '</small></li>').join('') + '</ol>' : '<p class="muted">No acts in this genre are recorded as influences on others.</p>') +
+      '<h4>Where it comes from and where it goes</h4><p>Influenced by acts in: ' + flow(st.from, 'no other genre') + '</p><p>Influenced acts in: ' + flow(st.to, 'no other genre') + '</p>' +
+      '<h4>Subgenres on this map</h4><div class="gd-subs">' + order.filter(s => subs[s]).map(s => {
+        const acts = subs[s], tops = topInfluential(acts, 3), art = gInfo().articles[g0.id + '|' + s], w = art && wiki(art);
+        const yrs = acts.map(b => b.formed).sort((x, y) => x - y);
+        return '<section class="gd-sub"><h5>' + esc(s) + ' <small>' + acts.length + ' acts · from ' + yrs[0] + '</small></h5>' + (w ? wikiBlock(art, w.title.toLowerCase() === s.toLowerCase() ? '' : 'closest article to this map\'s “' + esc(s) + '” group') : '') +
+          (tops.length ? '<div class="gd-subtop">Most influential: ' + tops.map(([b, d]) => '<button class="vz-act" data-act="' + b.id + '" style="--c:' + color + '">' + esc(b.name) + ' <small>' + d + '</small></button>').join(' ') + '</div>' : '') +
+          '<details class="gd-more"><summary>All ' + acts.length + ' acts</summary><div class="vz-chips">' + [...acts].sort((x, y) => x.formed - y.formed).map(actLink).join('') + '</div></details></section>';
+      }).join('') + '</div></div>';
+  }
+  stage.innerHTML = '<div class="gd-layout">' + nav + main + '</div>';
+  stage.querySelector('.gd-layout').addEventListener('click', e => {
+    const b = e.target.closest('[data-gd]');
+    if (b && !b.dataset.act) { guideId = b.dataset.gd; renderGuide(); stage.scrollTop = 0; try { history.replaceState(null, '', '#viz=guide' + (guideId ? '&genre=' + guideId : '')); } catch (x) {} }
+  });
+}
+
 // ============ 1. Scene map (world map, years slider) ============
 const GEO_NAME = { USA: 'United States of America', UK: 'United Kingdom', Czechoslovakia: 'Czechia', USSR: 'Russia' };
 const countriesOf = b => String(b.country).split('/').map(x => x.trim()).filter(Boolean).map(x => GEO_NAME[x] || x);
@@ -472,21 +553,21 @@ function renderSimilar() {
 
 // ---------- the view switcher ----------
 const VIEWS = [
-  ['map', 'Scene map', renderMap], ['flow', 'Lineup flow', renderFlow], ['era', 'Era fingerprint', renderFingerprint], ['stars', 'Album constellation', renderStars],
+  ['guide', 'Genre guide', renderGuide], ['map', 'Scene map', renderMap], ['flow', 'Lineup flow', renderFlow], ['era', 'Era fingerprint', renderFingerprint], ['stars', 'Album constellation', renderStars],
   ['tree', 'Influence tree', renderTree], ['game', 'Six degrees', renderGame], ['calendar', 'Calendar', renderCalendar], ['matrix', 'Genre matrix', renderMatrix], ['listen', 'Neighbourhoods', renderSimilar],
 ];
 bar.innerHTML = VIEWS.map(([id, label]) => `<button data-view="${id}" role="tab">${label}</button>`).join('') + '<button id="vizClose" class="vz-close" aria-label="Back to the timeline" title="Back to the timeline (Esc)">✕ Timeline</button>';
 bar.addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view); if (e.target.closest('#vizClose')) App.closeViz(); });
 function show(id) {
-  if (!VIEWS.some(v => v[0] === id)) id = 'map';
+  if (!VIEWS.some(v => v[0] === id)) id = 'guide';
   if (cleanup) { cleanup(); cleanup = null; }
   stage._redraw = null; hideTip();
   current = id;
   bar.querySelectorAll('[data-view]').forEach(b => { const on = b.dataset.view === id; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
   stage.scrollTop = 0;
   VIEWS.find(v => v[0] === id)[2]();
-  try { history.replaceState(null, '', '#viz=' + id); } catch (e) {}
+  try { history.replaceState(null, '', '#viz=' + id + (id === 'guide' && guideId ? '&genre=' + guideId : '')); } catch (e) {}
 }
-window.addEventListener('resize', () => { if (!root.hidden && current && !['game', 'stars', 'listen'].includes(current)) show(current); else if (!root.hidden && stage._redraw) stage._redraw(); });
-window.AtlasViz = { show, get current() { return current; }, views: VIEWS.map(v => v[0]) };
+window.addEventListener('resize', () => { if (!root.hidden && current && !['game', 'stars', 'listen', 'guide'].includes(current)) show(current); else if (!root.hidden && stage._redraw) stage._redraw(); });
+window.AtlasViz = { show, setGuide(id) { guideId = genreById[id] ? id : ''; }, get current() { return current; }, views: VIEWS.map(v => v[0]) };
 })();
